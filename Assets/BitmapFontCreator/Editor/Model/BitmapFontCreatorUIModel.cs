@@ -38,15 +38,16 @@ namespace kleberswf.tools.bitmapfontcreator
 
 	internal static class Styles
 	{
-		public static readonly GUIStyle Header = new(EditorStyles.boldLabel)
+		public static readonly GUIStyle Header = new(EditorStyles.label)
 		{
-			margin = new(EditorStyles.boldLabel.margin.left, EditorStyles.boldLabel.margin.right, 10, 5),
+			margin = new(EditorStyles.label.margin.left, EditorStyles.label.margin.right, 5, 5),
 		};
 
 		public static readonly GUIStyle CreateButton = new(EditorStyles.miniButton)
 		{
 			fontSize = 12,
-			padding = new RectOffset(20, 20, 8, 8),
+			padding = new(20, 20, 8, 8),
+			margin = new(10, 10, 20, 20),
 			fixedHeight = 32,
 		};
 	}
