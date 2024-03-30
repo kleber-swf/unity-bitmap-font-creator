@@ -6,10 +6,10 @@ Font:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: FontBigNGreatWinValue
+  m_Name: NumericFont
   serializedVersion: 5
   m_LineSpacing: 0.1
-  m_DefaultMaterial: {fileID: 2100000, guid: b587e2ac84cad0f79a6b18008d6c20f8, type: 2}
+  m_DefaultMaterial: {fileID: 2100000, guid: 71dd7faeec889d1acb5ae59542ba0358, type: 2}
   m_FontSize: 0
   m_Texture: {fileID: 0}
   m_AsciiStartOffset: 0
@@ -208,7 +208,7 @@ Font:
       y: -112
       width: 155
       height: 224
-    advance: 46
+    advance: 51
     flipped: 0
   m_KerningValues: []
   m_PixelScale: 0.1
