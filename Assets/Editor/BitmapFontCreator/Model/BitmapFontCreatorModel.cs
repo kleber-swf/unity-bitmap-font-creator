@@ -25,7 +25,7 @@ namespace kleberswf.tools.bitmapfontcreator
 		public int Cols;
 		public int Rows;
 		public float AlphaThreshold;
-		public int LineSpacing;
+		// public int LineSpacing;
 		public bool Monospaced;
 		public int DefaultCharacterSpacing;
 		public List<CharacterProps> CustomCharacterProps;

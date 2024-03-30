@@ -11,7 +11,6 @@ namespace kleberswf.tools.bitmapfontcreator
 	{
 		private BitmapFontCreatorData _data = BitmapFontCreatorData.Default;
 		private CharacterPropsList _customCharPropsList;
-		private GUIStyle _buttonStyle;
 
 		private bool _initialized = false;
 		private Vector2 _scrollPos = Vector2.zero;
@@ -29,42 +28,41 @@ namespace kleberswf.tools.bitmapfontcreator
 		{
 			_initialized = true;
 			_customCharPropsList = new CharacterPropsList(_data.CustomCharacterProps);
-
-			_buttonStyle = new(EditorStyles.miniButton)
-			{
-				fontSize = 12,
-				padding = new RectOffset(20, 20, 8, 8),
-				fixedHeight = 32,
-			};
 		}
 
 		private void OnGUI()
 		{
+			// TODO use _initialized when finished
 			if (_customCharPropsList == null) Initialize();
 
 			GUILayout.BeginVertical();
 
-			_data.Texture = EditorGUILayout.ObjectField("Font Texture", _data.Texture, typeof(Texture2D), false) as Texture2D;
-			_data.Orientation = (Orientation)EditorGUILayout.EnumPopup("Orientation", _data.Orientation);
+			_data.Texture = EditorGUILayout.ObjectField(UI.Texture, _data.Texture, typeof(Texture2D), false) as Texture2D;
+			_data.Orientation = (Orientation)EditorGUILayout.EnumPopup(UI.Orientation, _data.Orientation);
 
-			_data.Cols = EditorGUILayout.IntField("Cols", _data.Cols);
-			_data.Rows = EditorGUILayout.IntField("Rows", _data.Rows);
-			_data.AlphaThreshold = EditorGUILayout.FloatField("Alpha Threshold", _data.AlphaThreshold);
-			_data.Monospaced = EditorGUILayout.Toggle("Monospaced", _data.Monospaced);
-			_data.LineSpacing = EditorGUILayout.IntField("Line Spacing", _data.LineSpacing);
+			_data.Cols = EditorGUILayout.IntField(UI.Cols, _data.Cols);
+			_data.Rows = EditorGUILayout.IntField(UI.Rows, _data.Rows);
+			_data.AlphaThreshold = EditorGUILayout.FloatField(UI.AlphaThreshold, _data.AlphaThreshold);
+			_data.Monospaced = EditorGUILayout.Toggle(UI.Monospaced, _data.Monospaced);
+			// _data.LineSpacing = EditorGUILayout.IntField("Line Spacing", _data.LineSpacing);
 
 			EditorGUILayout.Space();
 
-			GUILayout.Label("Characters", EditorStyles.boldLabel);
-			_scrollPos = GUILayout.BeginScrollView(_scrollPos, GUILayout.Height(100));
-			_data.Characters = EditorGUILayout.TextArea(_data.Characters, GUILayout.ExpandHeight(true));
+			DrawCharacterSetDropDown();
+
+			GUILayout.Label(UI.Characters, Styles.Header);
+			_scrollPos = GUILayout.BeginScrollView(_scrollPos, false, false, GUIStyle.none, GUI.skin.verticalScrollbar, GUILayout.Height(100));
+			EditorGUI.BeginChangeCheck();
+			_data.Characters = GUILayout.TextArea(_data.Characters, EditorStyles.textArea, GUILayout.ExpandHeight(true));
+			if (EditorGUI.EndChangeCheck())
+				_selectedCharacterSetIndex = 0;
 			GUILayout.EndScrollView();
 
 			EditorGUILayout.Space();
-			_data.DefaultCharacterSpacing = EditorGUILayout.IntField("Character Spacing", _data.DefaultCharacterSpacing);
+			_data.DefaultCharacterSpacing = EditorGUILayout.IntField(UI.DefaultCharacterSpacing, _data.DefaultCharacterSpacing);
 
 			EditorGUILayout.Space();
-			GUILayout.Label("Custom Character Properties", EditorStyles.boldLabel);
+			GUILayout.Label(UI.CustomCharacterProperties, Styles.Header);
 			_customCharPropsList.DoLayoutList();
 
 			DrawCreateFontButton();
@@ -79,12 +77,21 @@ namespace kleberswf.tools.bitmapfontcreator
 			GUILayout.FlexibleSpace();
 			GUI.color = Color.cyan;
 
-			if (GUILayout.Button("Create Font", _buttonStyle))
+			if (GUILayout.Button(UI.CreateFont, Styles.CreateButton))
 				BitmapFontCreator.CreateFont(_data);
 
 			GUI.color = Color.white;
 			GUILayout.FlexibleSpace();
 			GUILayout.EndHorizontal();
+		}
+
+		private int _selectedCharacterSetIndex = 0;
+		private void DrawCharacterSetDropDown()
+		{
+			_selectedCharacterSetIndex = EditorGUILayout.Popup(UI.CharacterSet, _selectedCharacterSetIndex, CharacterSets.Names);
+			if (!GUI.changed) return;
+			if (_selectedCharacterSetIndex == 0) return;
+			_data.Characters = CharacterSets.Characters[_selectedCharacterSetIndex];
 		}
 	}
 }
