@@ -17,9 +17,8 @@ namespace kleberswf.tools.bitmapfontcreator
 		public int Spacing = 0;
 	}
 
-	internal struct BitmapFontCreatorData
+	internal class BitmapFontCreatorData
 	{
-		public Texture2D Texture;
 		public string Characters;
 		public Orientation Orientation;
 		public int Cols;
@@ -30,7 +29,30 @@ namespace kleberswf.tools.bitmapfontcreator
 		public int DefaultCharacterSpacing;
 		public List<CharacterProps> CustomCharacterProps;
 
-		public static BitmapFontCreatorData Default => new()
+		public virtual void CopyFrom(BitmapFontCreatorData data)
+		{
+			Characters = data.Characters;
+			Orientation = data.Orientation;
+			Cols = data.Cols;
+			Rows = data.Rows;
+			AlphaThreshold = data.AlphaThreshold;
+			Monospaced = data.Monospaced;
+			DefaultCharacterSpacing = data.DefaultCharacterSpacing;
+
+			if (CustomCharacterProps != null) CustomCharacterProps.Clear();
+			else CustomCharacterProps = new List<CharacterProps>();
+
+			foreach (var e in data.CustomCharacterProps)
+				CustomCharacterProps.Add(new CharacterProps() { Character = e.Character, Spacing = e.Spacing });
+		}
+	}
+
+	internal class ExecutionData : BitmapFontCreatorData
+	{
+		public Texture2D Texture;
+
+		// TODO move this to ui
+		public static ExecutionData Default => new()
 		{
 			Texture = null,
 			Characters = "$ 0123456789 . ",
