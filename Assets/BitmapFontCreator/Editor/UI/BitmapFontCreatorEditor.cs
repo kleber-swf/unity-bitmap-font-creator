@@ -75,7 +75,15 @@ namespace kleberswf.tools.bitmapfontcreator
 			GUILayout.EndVertical();
 			GUILayout.EndScrollView();
 			GUILayout.FlexibleSpace();
+
+			DrawBottomMenu();
+		}
+
+		private void DrawBottomMenu()
+		{
+			GUILayout.BeginHorizontal(Styles.BottomMenu);
 			_profilesView.Draw();
+			GUILayout.EndHorizontal();
 		}
 
 		private void DrawCharacterSetDropDown()

@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using UnityEditor;
-using UnityEngine;
 
 namespace kleberswf.tools.bitmapfontcreator
 {
@@ -37,12 +36,9 @@ namespace kleberswf.tools.bitmapfontcreator
 
 		public void Draw()
 		{
-			GUILayout.BeginHorizontal();
 			EditorGUI.BeginChangeCheck();
-
 			var optionIndex = EditorGUILayout.Popup(UI.Profile, _optionIndex, _options);
 			if (EditorGUI.EndChangeCheck()) SelectOption(optionIndex);
-			GUILayout.EndHorizontal();
 		}
 
 		private void SelectOption(int index)
@@ -88,12 +84,11 @@ namespace kleberswf.tools.bitmapfontcreator
 
 		private void DeleteSelectedProfile()
 		{
-			if (EditorUtility.DisplayDialog("Delete Profile", "Are you sure you want to delete this profile?", "Yes", "No"))
-			{
-				_profiles.RemoveAt(_profiles.SelectedIndex);
-				_optionIndex = _profiles.SelectedIndex + 1;
-				UpdateOptions();
-			}
+			if (!EditorUtility.DisplayDialog("Delete Profile", "Are you sure you want to delete this profile?", "Yes", "No"))
+				return;
+			_profiles.RemoveAt(_profiles.SelectedIndex);
+			_optionIndex = _profiles.SelectedIndex + 1;
+			UpdateOptions();
 		}
 	}
 }

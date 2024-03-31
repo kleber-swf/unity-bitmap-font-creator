@@ -34,7 +34,7 @@ namespace kleberswf.tools.bitmapfontcreator
 		public static readonly GUIContent DefaultCharacterSpacing = new("Character Spacing", "Default spacing between characters");
 		public static readonly GUIContent CustomCharacterProperties = new("Custom Character Properties", "Custom properties for each characters, if any");
 		public static readonly GUIContent CreateFont = new("Create", "Create the font");
-		public static readonly GUIContent Profile = new("Profiles", "List of saved profiles");
+		public static readonly GUIContent Profile = new("Profile", "Manage profiles");
 	}
 
 	internal static class Styles
@@ -50,6 +50,11 @@ namespace kleberswf.tools.bitmapfontcreator
 			padding = new(20, 20, 8, 8),
 			margin = new(10, 10, 20, 20),
 			fixedHeight = 32,
+		};
+
+		public static readonly GUIStyle BottomMenu = new("flow background")
+		{
+			padding = new(3, 3, 5, 0),
 		};
 	}
 }
