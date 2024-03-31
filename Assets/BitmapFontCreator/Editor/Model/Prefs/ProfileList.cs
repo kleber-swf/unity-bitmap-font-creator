@@ -1,24 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEditor;
 using UnityEngine;
 
 namespace kleberswf.tools.bitmapfontcreator
 {
-	[Serializable]
-	internal class Profile : BitmapFontCreatorData
-	{
-		public string Name;
-		public Profile() { }
-
-		public Profile(string name, BitmapFontCreatorData src)
-		{
-			Name = name;
-			src?.CopyTo(this);
-		}
-	}
-
 	[Serializable]
 	internal class ProfileList
 	{
@@ -44,7 +30,7 @@ namespace kleberswf.tools.bitmapfontcreator
 
 		public string[] Names => _names;
 
-		public void CreateCache()
+		public void UpdateCache()
 		{
 			var lastSelected = _selectedIndex < 0 ? null : _profiles[_selectedIndex].Name;
 			_profiles.Sort((a, b) => a.Name.CompareTo(b.Name));
@@ -56,7 +42,7 @@ namespace kleberswf.tools.bitmapfontcreator
 		{
 			_profiles.Add(data);
 			_selectedIndex = _profiles.Count - 1;
-			CreateCache();
+			UpdateCache();
 		}
 
 		public bool RemoveAt(int index)
@@ -64,7 +50,7 @@ namespace kleberswf.tools.bitmapfontcreator
 			if (index < 0 || index >= _profiles.Count) return false;
 			_profiles.RemoveAt(index);
 			_selectedIndex = -1;
-			CreateCache();
+			UpdateCache();
 			return true;
 		}
 
@@ -75,27 +61,6 @@ namespace kleberswf.tools.bitmapfontcreator
 				Add(data);
 			else
 				data.CopyTo(_profiles[index]);
-		}
-	}
-
-	internal class BitmapFontCreatorPrefs : ScriptableObject
-	{
-		private const string PrefsFilename = "BitmapFontCreatorPrefs";
-		private const string PrefsFilepath = "Assets/BitmapFontCreator/Resources/" + PrefsFilename + ".asset";
-
-		public ProfileList Profiles;
-
-		public static BitmapFontCreatorPrefs Load()
-		{
-			var prefs = Resources.Load(PrefsFilename, typeof(BitmapFontCreatorPrefs)) as BitmapFontCreatorPrefs;
-			if (prefs == null)
-			{
-				prefs = CreateInstance<BitmapFontCreatorPrefs>();
-				AssetDatabase.CreateAsset(prefs, PrefsFilepath);
-				EditorUtility.SetDirty(prefs);
-			}
-			prefs.Profiles.CreateCache();
-			return prefs;
 		}
 	}
 }
