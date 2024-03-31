@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace kleberswf.tools.bitmapfontcreator
+namespace dev.klebersilva.tools.bitmapfontcreator
 {
 	internal enum Orientation
 	{

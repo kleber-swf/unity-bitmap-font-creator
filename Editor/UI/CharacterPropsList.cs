@@ -3,7 +3,7 @@ using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
 
-namespace kleberswf.tools.bitmapfontcreator
+namespace dev.klebersilva.tools.bitmapfontcreator
 {
 	internal class CharacterPropsList : ReorderableList
 	{

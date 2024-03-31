@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace kleberswf.tools.bitmapfontcreator
+namespace dev.klebersilva.tools.bitmapfontcreator
 {
 	[Serializable]
 	internal class ProfileList

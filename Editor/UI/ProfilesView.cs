@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEditor;
 
-namespace kleberswf.tools.bitmapfontcreator
+namespace dev.klebersilva.tools.bitmapfontcreator
 {
 	internal class ProfilesView
 	{

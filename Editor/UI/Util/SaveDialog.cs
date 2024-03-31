@@ -2,7 +2,7 @@ using System;
 using UnityEditor;
 using UnityEngine;
 
-namespace kleberswf.tools.bitmapfontcreator
+namespace dev.klebersilva.tools.bitmapfontcreator
 {
 	internal class SaveDialog : EditorWindow
 	{
