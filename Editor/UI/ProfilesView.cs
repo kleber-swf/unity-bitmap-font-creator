@@ -51,6 +51,14 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 		{
 			if (index < 0 || index >= _options.Length || index == _optionIndex) return;
 
+			if (index == 0)
+			{
+				// None selected. Just change the option index
+				_optionIndex = index;
+				_profiles.SelectedIndex = index - 1;
+				return;
+			}
+
 			if (index <= _profiles.Names.Length)
 			{
 				if (!_prefs.WarnOnReplaceSettings || EditorUtility.DisplayDialog("Warning", "Overwrite current settings?", "Yes", "No"))
