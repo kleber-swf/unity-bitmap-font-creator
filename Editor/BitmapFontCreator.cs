@@ -80,7 +80,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			var cellUVSize = new Vector2(1f / data.Cols, 1f / data.Rows);
 
 			var characters = new List<CharacterInfo>();
-			int xMin, yMin, xMax, yMax, advance;
+			int xMin, xMax, advance;
 			int largestAdvance = 0;
 
 			// horizontal
@@ -95,13 +95,14 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 					if (ch == ' ' || ch == '\r' || ch == '\n') continue;
 
 					GetCharacterBounds(
-						data.Texture,
-						data.AlphaThreshold,
-						col * (int)cellSize.x,
-						(data.Rows - row) * (int)cellSize.y,
-						(int)cellSize.x,
-						(int)cellSize.y,
-						out xMin, out yMin, out xMax, out yMax
+						tex: data.Texture,
+						alphaThreshold: data.AlphaThreshold,
+						x0: col * (int)cellSize.x,
+						y0: (data.Rows - row) * (int)cellSize.y,
+						width: (int)cellSize.x,
+						height: (int)cellSize.y,
+						xMin: out xMin,
+						xMax: out xMax
 					);
 
 					advance = xMax - xMin + data.DefaultCharacterSpacing;
@@ -138,14 +139,13 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			return characters.ToArray();
 		}
 
-		// TODO maybe we can remove yMin and yMax
-		private static void GetCharacterBounds(Texture2D tex, float alphaThreshold, int x0, int y0, int width, int height,
-			out int xMin, out int yMin, out int xMax, out int yMax)
+		private static void GetCharacterBounds(Texture2D tex, float alphaThreshold, int x0, int y0,
+			int width, int height, out int xMin, out int xMax)
 		{
 			xMin = width;
-			yMin = height;
 			xMax = 0;
-			yMax = 0;
+			// yMin = height;
+			// yMax = 0;
 
 			int xx, yy;
 			for (var y = 0; y < height; y++)
@@ -157,8 +157,8 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 					if (tex.GetPixel(xx, yy).a <= alphaThreshold) continue;
 					if (x < xMin) xMin = x;
 					if (x > xMax) xMax = x;
-					if (y < yMin) yMin = y;
-					if (y > yMax) yMax = y;
+					// if (y < yMin) yMin = y;
+					// if (y > yMax) yMax = y;
 				}
 			}
 		}
