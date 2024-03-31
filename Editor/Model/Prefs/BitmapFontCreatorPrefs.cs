@@ -6,19 +6,34 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 	internal class BitmapFontCreatorPrefs : ScriptableObject, ISerializationCallbackReceiver
 	{
 		private const string PrefsFilename = "BitmapFontCreatorPrefs";
-		private const string PrefsFilepath = "Assets/BitmapFontCreator/Resources/" + PrefsFilename + ".asset";
 
 		public ProfileList Profiles;
 
 		public static BitmapFontCreatorPrefs Load()
 		{
 			var prefs = Resources.Load(PrefsFilename, typeof(BitmapFontCreatorPrefs)) as BitmapFontCreatorPrefs;
-			if (prefs == null)
+			if (prefs == null) prefs = CreateAsset();
+			return prefs;
+		}
+
+		private static BitmapFontCreatorPrefs CreateAsset()
+		{
+			var folderPath = "Assets/Editor/Resources";
+
+			var basePath = string.Empty;
+			var folders = folderPath.Split('/');
+
+			for (var i = 1; i < folders.Length; i++)
 			{
-				prefs = CreateInstance<BitmapFontCreatorPrefs>();
-				AssetDatabase.CreateAsset(prefs, PrefsFilepath);
-				EditorUtility.SetDirty(prefs);
+				basePath += folders[i - 1];
+				AssetDatabase.CreateFolder(basePath, folders[i]);
+				basePath += "/";
 			}
+
+			var prefs = CreateInstance<BitmapFontCreatorPrefs>();
+			AssetDatabase.CreateAsset(prefs, $"{folderPath}/{PrefsFilename}.asset");
+			EditorUtility.SetDirty(prefs);
+
 			return prefs;
 		}
 
