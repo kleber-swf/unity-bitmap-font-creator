@@ -24,7 +24,6 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 		public int Cols;
 		public int Rows;
 		public float AlphaThreshold;
-		// public int LineSpacing;
 		public bool Monospaced;
 		public int DefaultCharacterSpacing;
 		public List<CharacterProps> CustomCharacterProps;
@@ -53,18 +52,17 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 	{
 		public Texture2D Texture;
 
-		// TODO move this to ui
 		public static ExecutionData Default => new()
 		{
 			Texture = null,
-			Characters = "$ 0123456789 . ",
+			Characters = "",
 			Orientation = Orientation.Horizontal,
-			Cols = 3,
-			Rows = 5,
+			Cols = 1,
+			Rows = 1,
 			AlphaThreshold = 0f,
 			DefaultCharacterSpacing = 10,
 			Monospaced = false,
-			CustomCharacterProps = new List<CharacterProps>() { new() { Character = ".", Spacing = 0 } },
+			CustomCharacterProps = new List<CharacterProps>(),
 		};
 	}
 }

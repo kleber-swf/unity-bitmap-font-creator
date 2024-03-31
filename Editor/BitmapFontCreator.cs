@@ -7,7 +7,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 {
 	internal static class BitmapFontCreator
 	{
-		public static void CreateFont(ExecutionData data)
+		public static void TryCreateFont(ExecutionData data, bool warnBeforeOverwrite)
 		{
 			var error = CheckForErrors(data);
 			if (!string.IsNullOrEmpty(error))
@@ -16,24 +16,32 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 				return;
 			}
 
-			// TODO check if the asset already exists to warn the user
-
 			var path = AssetDatabase.GetAssetPath(data.Texture);
 			var baseName = Path.GetFileNameWithoutExtension(path);
+			path = path[..path.LastIndexOf(".")];
+			var materialPath = path + ".mat";
+			var fontPath = path + ".fontsettings";
+
+			if (warnBeforeOverwrite && !(AssetDatabase.GUIDFromAssetPath(materialPath) == null && AssetDatabase.GUIDFromAssetPath(fontPath) == null))
+			{
+				if (!EditorUtility.DisplayDialog("Warning", "Asset already exists. Overwrite? (It will keep the references)", "Yes", "No"))
+					return;
+			}
 
 			var material = CreateMaterial(baseName, data.Texture);
 			var font = CreateFontAsset(baseName, material, data);
 
-			path = path[..path.LastIndexOf(".")];
-			AssetDatabase.CreateAsset(material, path + ".mat");
-			CreateOrReplaceAsset(font, path + ".fontsettings");
+			AssetDatabase.CreateAsset(material, materialPath);
+			CreateOrReplaceAsset(font, fontPath);
 
 			AssetDatabase.Refresh();
 		}
 
-		// TODO all checks
 		private static string CheckForErrors(ExecutionData data)
 		{
+			if (data.Cols < 1) return "Cols must be greater than 0";
+			if (data.Rows < 1) return "Rows must be greater than 0";
+
 			if (data.Texture == null) return "Texture cannot be null";
 			if (!data.Texture.isReadable) return "Texture must be readable. Set Read/Write Enabled to true inside Texture Properties";
 
@@ -72,7 +80,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			var cellUVSize = new Vector2(1f / data.Cols, 1f / data.Rows);
 
 			var characters = new List<CharacterInfo>();
-			int xMin, yMin, xMax, yMax, advance;
+			int xMin, xMax, advance;
 			int largestAdvance = 0;
 
 			// horizontal
@@ -87,13 +95,14 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 					if (ch == ' ' || ch == '\r' || ch == '\n') continue;
 
 					GetCharacterBounds(
-						data.Texture,
-						data.AlphaThreshold,
-						col * (int)cellSize.x,
-						(data.Rows - row) * (int)cellSize.y,
-						(int)cellSize.x,
-						(int)cellSize.y,
-						out xMin, out yMin, out xMax, out yMax
+						tex: data.Texture,
+						alphaThreshold: data.AlphaThreshold,
+						x0: col * (int)cellSize.x,
+						y0: (data.Rows - row) * (int)cellSize.y,
+						width: (int)cellSize.x,
+						height: (int)cellSize.y,
+						xMin: out xMin,
+						xMax: out xMax
 					);
 
 					advance = xMax - xMin + data.DefaultCharacterSpacing;
@@ -130,14 +139,13 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			return characters.ToArray();
 		}
 
-		// TODO maybe we can remove yMin and yMax
-		private static void GetCharacterBounds(Texture2D tex, float alphaThreshold, int x0, int y0, int width, int height,
-			out int xMin, out int yMin, out int xMax, out int yMax)
+		private static void GetCharacterBounds(Texture2D tex, float alphaThreshold, int x0, int y0,
+			int width, int height, out int xMin, out int xMax)
 		{
 			xMin = width;
-			yMin = height;
 			xMax = 0;
-			yMax = 0;
+			// yMin = height;
+			// yMax = 0;
 
 			int xx, yy;
 			for (var y = 0; y < height; y++)
@@ -149,8 +157,8 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 					if (tex.GetPixel(xx, yy).a <= alphaThreshold) continue;
 					if (x < xMin) xMin = x;
 					if (x > xMax) xMax = x;
-					if (y < yMin) yMin = y;
-					if (y > yMax) yMax = y;
+					// if (y < yMin) yMin = y;
+					// if (y > yMax) yMax = y;
 				}
 			}
 		}
