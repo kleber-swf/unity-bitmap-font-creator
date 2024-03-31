@@ -13,7 +13,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 
 		public void Draw()
 		{
-			if (GUILayout.Button(UI.Prefs, Styles.PrefsButton)) PopupWindow.Show(_buttonRect, new PrefsPopup(_model));
+			if (GUILayout.Button(UI.PreferencesButton, Styles.PreferencesButton)) PopupWindow.Show(_buttonRect, new PrefsPopup(_model));
 			if (Event.current.type == EventType.Repaint) _buttonRect = GUILayoutUtility.GetLastRect();
 		}
 	}
@@ -22,7 +22,12 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 	{
 		private readonly PrefsModel _model;
 		private static readonly RectOffset _padding = new(8, 8, 6, 8);
-		private static readonly Vector2 _size = new(190 + _padding.horizontal, EditorGUIUtility.singleLineHeight * 2 + _padding.vertical);
+		private const int _headerHeight = 26;
+
+		private static readonly Vector2 _size = new(
+			200 + _padding.horizontal,
+			EditorGUIUtility.singleLineHeight * 3 + _padding.vertical + _headerHeight
+		);
 
 		public PrefsPopup(PrefsModel model) : base() { _model = model; }
 
@@ -30,12 +35,19 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 
 		public override void OnGUI(Rect rect)
 		{
-			rect.height = EditorGUIUtility.singleLineHeight;
+			rect.height = _headerHeight;
+			GUI.Label(rect, UI.PreferencesLabel, Styles.SectionLabel);
+
 			rect.x += _padding.left;
-			rect.y += _padding.right;
-			_model.WarnBeforeOverwrite = EditorGUI.ToggleLeft(rect, UI.WarnBeforeOverwrite, _model.WarnBeforeOverwrite);
+			rect.y += _padding.top + rect.height;
+			rect.height = EditorGUIUtility.singleLineHeight;
+			_model.WarnOnReplaceFont = EditorGUI.ToggleLeft(rect, UI.WarnOnReplaceFont, _model.WarnOnReplaceFont);
+
 			rect.y += rect.height;
-			_model.WarnBeforeReplacingSettings = EditorGUI.ToggleLeft(rect, UI.WarnBeforeReplacingSettings, _model.WarnBeforeReplacingSettings);
+			_model.WarnOnReplaceSettings = EditorGUI.ToggleLeft(rect, UI.WarnOnReplaceSettings, _model.WarnOnReplaceSettings);
+
+			rect.y += rect.height;
+			_model.WarnOnReplaceProfile = EditorGUI.ToggleLeft(rect, UI.WarnOnReplaceProfile, _model.WarnOnReplaceProfile);
 		}
 
 		public override void OnClose()

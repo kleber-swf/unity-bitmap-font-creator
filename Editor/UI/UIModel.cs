@@ -35,9 +35,11 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 		public static readonly GUIContent CustomCharacterProperties = new("Custom Character Properties", "Custom properties for each characters, if any");
 		public static readonly GUIContent CreateFont = new("Create", "Create the font");
 
-		public static readonly GUIContent Prefs = new(string.Empty, "Preferences");
-		public static readonly GUIContent WarnBeforeOverwrite = new("Warn before overwrite", "Warn before overwriting an existing font. This will replace the old font keeping the references");
-		public static readonly GUIContent WarnBeforeReplacingSettings = new("Warn before replacing settings", "Warn before replacing settings when selecting a profile");
+		public static readonly GUIContent PreferencesButton = new(string.Empty, "Preferences");
+		public static readonly GUIContent PreferencesLabel = new("Preferences");
+		public static readonly GUIContent WarnOnReplaceFont = new("Warn before replacing font files", "Warn before replacing an existing font. This will replace the old font keeping the references");
+		public static readonly GUIContent WarnOnReplaceSettings = new("Warn before replacing settings", "Warn before replacing settings when selecting a profile");
+		public static readonly GUIContent WarnOnReplaceProfile = new("Warn before replacing profile", "Warn before replacing an existing profile");
 	}
 
 	internal static class Styles
@@ -47,6 +49,12 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			margin = new(EditorStyles.label.margin.left, EditorStyles.label.margin.right, 5, 5),
 		};
 
+		public static readonly GUIStyle SectionLabel = new("ContentToolbar")
+		{
+			padding = new(5, 5, 5, 5),
+			fixedHeight = 25,
+		};
+
 		public static readonly GUIStyle CreateButton = new(GUI.skin.button)
 		{
 			padding = new(20, 20, 7, 8),
@@ -54,14 +62,16 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			fixedHeight = 32,
 		};
 
-		public static readonly GUIStyle BottomMenu = new("TE BoxBackground")
+		// public static readonly GUIStyle BottomMenu = new("TE BoxBackground")
+		public static readonly GUIStyle BottomMenu = new("AnimLeftPaneSeparator")
 		{
-			padding = new(4, 2, 5, 0),
-			stretchWidth = true,
-			fixedHeight = 28,
+			padding = new(1, 1, 1, 1),
+			// stretchWidth = true,
+			fixedHeight = 20,
 		};
 
+		// public static readonly GUIStyle ProfilesButton = new("ToolbarPopupLeft");
 		public static readonly GUIStyle ProfilesButton = new("ToolbarPopupLeft");
-		public static readonly GUIStyle PrefsButton = new("PaneOptions");
+		public static readonly GUIStyle PreferencesButton = new("PaneOptions");
 	}
 }
