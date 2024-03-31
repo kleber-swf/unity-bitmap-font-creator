@@ -5,6 +5,8 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 {
 	public class BitmapFontCreatorEditor : EditorWindow
 	{
+		public const string MenuItemPath = "Window/Bitmap Font Creator";
+
 		private readonly ExecutionData _data = ExecutionData.Default;
 		private CharacterPropsList _customCharPropsList;
 		private ProfilesView _profilesView;
@@ -15,8 +17,8 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 		private Vector2 _mainScrollPos = Vector2.zero;
 		private int _selectedCharacterSetIndex = 0;
 
-		[MenuItem("Window/Bitmap Font Creator")]
-		private static void ShowWindow()
+		[MenuItem(MenuItemPath)]
+		public static void ShowWindow()
 		{
 			var size = new Vector2(300, 550);
 			var window = GetWindowWithRect<BitmapFontCreatorEditor>(
