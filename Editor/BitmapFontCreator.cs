@@ -7,7 +7,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 {
 	internal static class BitmapFontCreator
 	{
-		public static void TryCreateFont(ExecutionData data)
+		public static void TryCreateFont(ExecutionData data, bool warnBeforeOverwrite)
 		{
 			var error = CheckForErrors(data);
 			if (!string.IsNullOrEmpty(error))
@@ -22,7 +22,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			var materialPath = path + ".mat";
 			var fontPath = path + ".fontsettings";
 
-			if (!(AssetDatabase.GUIDFromAssetPath(materialPath) == null && AssetDatabase.GUIDFromAssetPath(fontPath) == null))
+			if (warnBeforeOverwrite && !(AssetDatabase.GUIDFromAssetPath(materialPath) == null && AssetDatabase.GUIDFromAssetPath(fontPath) == null))
 			{
 				if (!EditorUtility.DisplayDialog("Warning", "Asset already exists. Overwrite? (It will keep the references)", "Yes", "No"))
 					return;

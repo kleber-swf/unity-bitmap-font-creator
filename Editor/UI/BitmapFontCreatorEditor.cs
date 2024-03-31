@@ -8,9 +8,9 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 	public class BitmapFontCreatorEditor : EditorWindow
 	{
 		private readonly ExecutionData _data = ExecutionData.Default;
-		private BitmapFontCreatorPrefs _prefs;
 		private CharacterPropsList _customCharPropsList;
 		private ProfilesView _profilesView;
+		private OptionsView _optionsView;
 
 		private Vector2 _charactersScrollPos = Vector2.zero;
 		private Vector2 _mainScrollPos = Vector2.zero;
@@ -33,16 +33,18 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 
 		private void Setup()
 		{
-			_prefs = BitmapFontCreatorPrefs.Load();
+			var prefs = BitmapFontCreatorPrefs.Load();
+			prefs.Profiles.Selected?.CopyTo(_data);
+
 			_customCharPropsList = new CharacterPropsList(_data.CustomCharacterProps);
-			_profilesView = new ProfilesView(_data, _prefs.Profiles);
-			_prefs.Profiles.Selected?.CopyTo(_data);
+			_profilesView = new ProfilesView(_data, prefs.Profiles);
+			_optionsView = new OptionsView(OptionsModel.Load());
 		}
 
 		private void OnGUI()
 		{
-			// DEV
-			// if (_customCharPropsList == null) Initialize();
+			// DEV - do not commit
+			if (_customCharPropsList == null) Setup();
 
 			_mainScrollPos = GUILayout.BeginScrollView(_mainScrollPos, false, false, GUIStyle.none, GUI.skin.verticalScrollbar, GUILayout.ExpandHeight(true));
 			GUILayout.BeginVertical();
@@ -59,7 +61,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 
 			DrawCharacterSetDropDown();
 
-			GUILayout.Label(UI.Characters, Styles.Header);
+			GUILayout.Label(UI.Characters, Styles.HeaderLabel);
 			_charactersScrollPos = GUILayout.BeginScrollView(_charactersScrollPos, false, false, GUIStyle.none, GUI.skin.verticalScrollbar, GUILayout.Height(100));
 			EditorGUI.BeginChangeCheck();
 			DrawCharactersField();
@@ -69,7 +71,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			_data.DefaultCharacterSpacing = EditorGUILayout.IntField(UI.DefaultCharacterSpacing, _data.DefaultCharacterSpacing);
 
 			EditorGUILayout.Space();
-			GUILayout.Label(UI.CustomCharacterProperties, Styles.Header);
+			GUILayout.Label(UI.CustomCharacterProperties, Styles.HeaderLabel);
 			_customCharPropsList.DoLayoutList();
 
 			DrawCreateFontButton();
@@ -79,13 +81,6 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			GUILayout.FlexibleSpace();
 
 			DrawBottomMenu();
-		}
-
-		private void DrawBottomMenu()
-		{
-			GUILayout.BeginHorizontal(Styles.BottomMenu);
-			_profilesView.Draw();
-			GUILayout.EndHorizontal();
 		}
 
 		private void DrawCharacterSetDropDown()
@@ -110,10 +105,19 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			GUI.color = Color.cyan;
 
 			if (GUILayout.Button(UI.CreateFont, Styles.CreateButton))
-				BitmapFontCreator.TryCreateFont(_data);
+				BitmapFontCreator.TryCreateFont(_data, _optionsView.Model.WarnBeforeOverwrite);
 
 			GUI.color = Color.white;
 			GUILayout.FlexibleSpace();
+			GUILayout.EndHorizontal();
+		}
+
+		private void DrawBottomMenu()
+		{
+			GUILayout.BeginHorizontal(Styles.BottomMenu);
+			_profilesView.Draw();
+			GUILayout.FlexibleSpace();
+			_optionsView.Draw();
 			GUILayout.EndHorizontal();
 		}
 	}

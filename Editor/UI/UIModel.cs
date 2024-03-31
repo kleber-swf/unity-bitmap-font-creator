@@ -34,12 +34,15 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 		public static readonly GUIContent DefaultCharacterSpacing = new("Character Spacing", "Default spacing between characters");
 		public static readonly GUIContent CustomCharacterProperties = new("Custom Character Properties", "Custom properties for each characters, if any");
 		public static readonly GUIContent CreateFont = new("Create", "Create the font");
-		public static readonly GUIContent Profile = new("Profile", "Manage profiles");
+
+		public static readonly GUIContent Options = new(string.Empty, "Options");
+		public static readonly GUIContent WarnBeforeOverwrite = new("Warn before overwrite", "Warn before overwriting an existing font. This will replace the old font keeping the references");
+		public static readonly GUIContent WarnBeforeReplaceingSettings = new("Warn before replacing settings", "Warn before replacing settings when selecting a profile");
 	}
 
 	internal static class Styles
 	{
-		public static readonly GUIStyle Header = new(EditorStyles.label)
+		public static readonly GUIStyle HeaderLabel = new(EditorStyles.label)
 		{
 			margin = new(EditorStyles.label.margin.left, EditorStyles.label.margin.right, 5, 5),
 		};
@@ -51,9 +54,14 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			fixedHeight = 32,
 		};
 
-		public static readonly GUIStyle BottomMenu = new("flow background")
+		public static readonly GUIStyle BottomMenu = new("TE BoxBackground")
 		{
-			padding = new(3, 3, 5, 0),
+			padding = new(4, 2, 5, 0),
+			stretchWidth = true,
+			fixedHeight = 28,
 		};
+
+		public static readonly GUIStyle ProfilesButton = new("ToolbarPopupLeft");
+		public static readonly GUIStyle OptionsButton = new("PaneOptions");
 	}
 }

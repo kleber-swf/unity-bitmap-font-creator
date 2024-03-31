@@ -36,9 +36,12 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 
 		public void Draw()
 		{
+			var lw = EditorGUIUtility.labelWidth;
+			EditorGUIUtility.labelWidth = 60;
 			EditorGUI.BeginChangeCheck();
-			var optionIndex = EditorGUILayout.Popup(UI.Profile, _optionIndex, _options);
+			var optionIndex = EditorGUILayout.Popup(_optionIndex, _options, Styles.ProfilesButton);
 			if (EditorGUI.EndChangeCheck()) SelectOption(optionIndex);
+			EditorGUIUtility.labelWidth = lw;
 		}
 
 		private void SelectOption(int index)
