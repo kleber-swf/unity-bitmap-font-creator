@@ -6,6 +6,7 @@ namespace kleberswf.tools.bitmapfontcreator
 {
 	internal class SaveDialog : EditorWindow
 	{
+		private const string TextFieldId = "_tf";
 		private string _text = "";
 		public event Action<string> OnSave;
 
@@ -20,9 +21,11 @@ namespace kleberswf.tools.bitmapfontcreator
 		private void OnGUI()
 		{
 			GUILayout.BeginVertical();
+			GUI.SetNextControlName(TextFieldId);
 			_text = EditorGUILayout.TextField(_text);
 			if (GUILayout.Button("Save")) RequestSaveAndClose();
 			GUILayout.EndVertical();
+			EditorGUI.FocusTextInControl(TextFieldId);
 		}
 
 		private void RequestSaveAndClose()
