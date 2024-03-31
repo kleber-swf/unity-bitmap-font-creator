@@ -31,9 +31,11 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			AssetDatabase.Refresh();
 		}
 
-		// TODO all checks
 		private static string CheckForErrors(ExecutionData data)
 		{
+			if (data.Cols < 1) return "Cols must be greater than 0";
+			if (data.Rows < 1) return "Rows must be greater than 0";
+
 			if (data.Texture == null) return "Texture cannot be null";
 			if (!data.Texture.isReadable) return "Texture must be readable. Set Read/Write Enabled to true inside Texture Properties";
 

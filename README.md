@@ -7,6 +7,8 @@ A simple tool to create bitmap fonts from a texture sprite sheet to be used with
 ## How to use it
 Select a texture, set the [options](#options) accondingly and hit _Create_. It will create a _Material_ and a _Font Settings_ asset with the same name as the texture and in the same folder.
 
+Make sure your texture has the _Read/Write_ enabled inside its properties.
+
 Because of some [limitation](#limitations), it'll not set the _Line Spacing_ field. If you need support to multi-line text, set it on the generated Font Settings file.
 
 ## Options
