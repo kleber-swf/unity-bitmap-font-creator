@@ -26,7 +26,8 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			for (var i = 1; i < folders.Length; i++)
 			{
 				basePath += folders[i - 1];
-				AssetDatabase.CreateFolder(basePath, folders[i]);
+				if (AssetDatabase.GUIDFromAssetPath($"{basePath}/{folders[i]}") == null)
+					AssetDatabase.CreateFolder(basePath, folders[i]);
 				basePath += "/";
 			}
 

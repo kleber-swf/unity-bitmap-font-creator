@@ -3,7 +3,6 @@ using UnityEditor;
 
 namespace dev.klebersilva.tools.bitmapfontcreator
 {
-	// TODO no error on play
 	public class BitmapFontCreatorEditor : EditorWindow
 	{
 		private readonly ExecutionData _data = ExecutionData.Default;
@@ -45,7 +44,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 		private void OnGUI()
 		{
 			// DEV - do not commit
-			if (_customCharPropsList == null) Setup();
+			// if (_customCharPropsList == null) Setup();
 
 			_mainScrollPos = GUILayout.BeginScrollView(_mainScrollPos, false, false, GUIStyle.none, GUI.skin.verticalScrollbar, GUILayout.ExpandHeight(true));
 			GUILayout.BeginVertical();
