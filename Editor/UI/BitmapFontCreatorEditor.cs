@@ -4,8 +4,6 @@ using UnityEditor;
 namespace dev.klebersilva.tools.bitmapfontcreator
 {
 	// TODO save last configuration
-	// TODO pre configured profiles
-	// TODO save profiles to the project
 	// TODO no error on play
 	public class BitmapFontCreatorEditor : EditorWindow
 	{
@@ -14,23 +12,27 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 		private CharacterPropsList _customCharPropsList;
 		private ProfilesView _profilesView;
 
-		private bool _initialized = false;
 		private Vector2 _charactersScrollPos = Vector2.zero;
 		private Vector2 _mainScrollPos = Vector2.zero;
-		private int _selectedCharacterSetIndex = 0;  // TODO put this inside data
+		private int _selectedCharacterSetIndex = 0;
 
 		[MenuItem("Window/Bitmap Font Creator")]
 		private static void ShowWindow()
 		{
-			var window = GetWindow<BitmapFontCreatorEditor>();
-			window.titleContent = new GUIContent("Bitmap Font Creator");
-			window.minSize = new Vector2(300, 300);
-			window.Show();
+			var size = new Vector2(300, 550);
+			var window = GetWindowWithRect<BitmapFontCreatorEditor>(
+				new Rect((Screen.width - size.x) * 0.5f, (Screen.height - size.y) * 0.5f, size.x, size.y),
+				false,
+				"Bitmap Font Creator",
+				true
+			);
+			window.Setup();
+			window.minSize = Vector2.zero;
+			window.maxSize = new Vector2(1000, 1000);
 		}
 
-		private void Initialize()
+		private void Setup()
 		{
-			_initialized = true;
 			_prefs = BitmapFontCreatorPrefs.Load();
 			_customCharPropsList = new CharacterPropsList(_data.CustomCharacterProps);
 			_profilesView = new ProfilesView(_data, _prefs.Profiles);
@@ -38,8 +40,8 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 
 		private void OnGUI()
 		{
-			// TODO use _initialized when finished
-			if (_customCharPropsList == null) Initialize();
+			// DEV
+			// if (_customCharPropsList == null) Initialize();
 
 			_mainScrollPos = GUILayout.BeginScrollView(_mainScrollPos, false, false, GUIStyle.none, GUI.skin.verticalScrollbar, GUILayout.ExpandHeight(true));
 			GUILayout.BeginVertical();
@@ -51,7 +53,6 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			_data.Rows = EditorGUILayout.IntField(UI.Rows, _data.Rows);
 			_data.AlphaThreshold = EditorGUILayout.Slider(UI.AlphaThreshold, _data.AlphaThreshold, 0f, 1f);
 			_data.Monospaced = EditorGUILayout.Toggle(UI.Monospaced, _data.Monospaced);
-			// _data.LineSpacing = EditorGUILayout.IntField("Line Spacing", _data.LineSpacing);
 
 			EditorGUILayout.Space();
 
