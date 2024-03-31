@@ -12,13 +12,16 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 
 		private readonly BitmapFontCreatorData _editorData;
 		private readonly ProfileList _profiles;
+		private readonly PrefsModel _prefs;
+
 		private string[] _options;
 		private int _optionIndex = 0;
 
-		public ProfilesView(BitmapFontCreatorData editorData, ProfileList profiles)
+		public ProfilesView(BitmapFontCreatorData editorData, ProfileList profiles, PrefsModel prefs)
 		{
 			_editorData = editorData;
 			_profiles = profiles;
+			_prefs = prefs;
 			UpdateOptions();
 			_optionIndex = _profiles.SelectedIndex + 1;
 		}
@@ -36,20 +39,34 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 
 		public void Draw()
 		{
+			var lw = EditorGUIUtility.labelWidth;
+			EditorGUIUtility.labelWidth = 60;
 			EditorGUI.BeginChangeCheck();
-			var optionIndex = EditorGUILayout.Popup(UI.Profile, _optionIndex, _options);
+			var optionIndex = EditorGUILayout.Popup(_optionIndex, _options, Styles.ProfilesButton);
 			if (EditorGUI.EndChangeCheck()) SelectOption(optionIndex);
+			EditorGUIUtility.labelWidth = lw;
 		}
 
 		private void SelectOption(int index)
 		{
-			if (index < 0 || index >= _options.Length) return;
+			if (index < 0 || index >= _options.Length || index == _optionIndex) return;
+
+			if (index == 0)
+			{
+				// None selected. Just change the option index
+				_optionIndex = index;
+				_profiles.SelectedIndex = index - 1;
+				return;
+			}
 
 			if (index <= _profiles.Names.Length)
 			{
-				_optionIndex = index;
-				_profiles.SelectedIndex = index - 1;
-				_profiles.Selected?.CopyTo(_editorData);
+				if (!_prefs.WarnOnReplaceSettings || EditorUtility.DisplayDialog("Warning", "Overwrite current settings?", "Yes", "No"))
+				{
+					_optionIndex = index;
+					_profiles.SelectedIndex = index - 1;
+					_profiles.Selected?.CopyTo(_editorData);
+				}
 				return;
 			}
 
@@ -78,8 +95,9 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			}
 
 			// profile does exit. Ask if it should be replaced
-			if (EditorUtility.DisplayDialog("Profile Exists", "Profile already exists. Overwrite?", "Yes", "No"))
-				_profiles.Update(_profiles.SelectedIndex, new Profile(profileName, _editorData));
+			if (_prefs.WarnOnReplaceProfile && !EditorUtility.DisplayDialog("Profile Exists", "Profile already exists. Overwrite?", "Yes", "No"))
+				return;
+			_profiles.Update(_profiles.SelectedIndex, new Profile(profileName, _editorData));
 		}
 
 		private void DeleteSelectedProfile()
