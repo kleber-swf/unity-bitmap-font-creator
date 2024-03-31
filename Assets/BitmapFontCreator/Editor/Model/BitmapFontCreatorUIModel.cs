@@ -44,10 +44,9 @@ namespace kleberswf.tools.bitmapfontcreator
 			margin = new(EditorStyles.label.margin.left, EditorStyles.label.margin.right, 5, 5),
 		};
 
-		public static readonly GUIStyle CreateButton = new(EditorStyles.miniButton)
+		public static readonly GUIStyle CreateButton = new(GUI.skin.button)
 		{
-			fontSize = 12,
-			padding = new(20, 20, 8, 8),
+			padding = new(20, 20, 7, 8),
 			margin = new(10, 10, 20, 20),
 			fixedHeight = 32,
 		};

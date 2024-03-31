@@ -49,7 +49,7 @@ namespace kleberswf.tools.bitmapfontcreator
 
 			_data.Cols = EditorGUILayout.IntField(UI.Cols, _data.Cols);
 			_data.Rows = EditorGUILayout.IntField(UI.Rows, _data.Rows);
-			_data.AlphaThreshold = EditorGUILayout.FloatField(UI.AlphaThreshold, _data.AlphaThreshold);
+			_data.AlphaThreshold = EditorGUILayout.Slider(UI.AlphaThreshold, _data.AlphaThreshold, 0f, 1f);
 			_data.Monospaced = EditorGUILayout.Toggle(UI.Monospaced, _data.Monospaced);
 			// _data.LineSpacing = EditorGUILayout.IntField("Line Spacing", _data.LineSpacing);
 
