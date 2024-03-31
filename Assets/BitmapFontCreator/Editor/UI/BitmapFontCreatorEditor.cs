@@ -10,8 +10,9 @@ namespace kleberswf.tools.bitmapfontcreator
 	public class BitmapFontCreatorEditor : EditorWindow
 	{
 		private readonly ExecutionData _data = ExecutionData.Default;
+		private BitmapFontCreatorPrefs _prefs;
 		private CharacterPropsList _customCharPropsList;
-		private ProfilesView _profiles;
+		private ProfilesView _profilesView;
 
 		private bool _initialized = false;
 		private Vector2 _charactersScrollPos = Vector2.zero;
@@ -30,8 +31,9 @@ namespace kleberswf.tools.bitmapfontcreator
 		private void Initialize()
 		{
 			_initialized = true;
+			_prefs = BitmapFontCreatorPrefs.Load();
 			_customCharPropsList = new CharacterPropsList(_data.CustomCharacterProps);
-			_profiles = new ProfilesView(_data);
+			_profilesView = new ProfilesView(_data, _prefs.Profiles);
 		}
 
 		private void OnGUI()
@@ -71,9 +73,9 @@ namespace kleberswf.tools.bitmapfontcreator
 			DrawCreateFontButton();
 
 			GUILayout.EndScrollView();
-			GUILayout.FlexibleSpace();
-			_profiles.Draw();
 			GUILayout.EndVertical();
+			GUILayout.FlexibleSpace();
+			_profilesView.Draw();
 		}
 
 		private void DrawCharacterSetDropDown()

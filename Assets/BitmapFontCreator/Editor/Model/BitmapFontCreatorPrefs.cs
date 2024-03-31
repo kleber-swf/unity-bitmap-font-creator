@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor;
 using UnityEngine;
 
 namespace kleberswf.tools.bitmapfontcreator
@@ -18,61 +19,83 @@ namespace kleberswf.tools.bitmapfontcreator
 		}
 	}
 
-	internal class BitmapFontCreatorPrefs : ScriptableObject
+	[Serializable]
+	internal class ProfileList
 	{
-		[SerializeField] private int _selectedProfileIndex = -1;
+		[SerializeField] private int _selectedIndex = -1;
 		[SerializeField] private List<Profile> _profiles = new();
 
-		private string[] _profileNames;
+		private string[] _names;
 
-		public int SelectedProfileIndex
+		public int SelectedIndex
 		{
-			get => _selectedProfileIndex;
-			set => _selectedProfileIndex = value;
+			get => _selectedIndex;
+			set => _selectedIndex = value;
 		}
 
-		public Profile SelectedProfile
+		public Profile Selected
 		{
 			get
 			{
-				return _selectedProfileIndex < 0 || _selectedProfileIndex >= _profiles.Count
-					? null : _profiles[_selectedProfileIndex];
+				return _selectedIndex < 0 || _selectedIndex >= _profiles.Count
+					? null : _profiles[_selectedIndex];
 			}
 		}
 
-		public string[] ProfileNames => _profileNames;
+		public string[] Names => _names;
 
 		public void CreateCache()
 		{
-			var lastSelected = _selectedProfileIndex < 0 ? null : _profiles[_selectedProfileIndex].Name;
+			var lastSelected = _selectedIndex < 0 ? null : _profiles[_selectedIndex].Name;
 			_profiles.Sort((a, b) => a.Name.CompareTo(b.Name));
-			_profileNames = _profiles.Select(e => e.Name).ToArray();
-			if (!string.IsNullOrEmpty(lastSelected)) _selectedProfileIndex = Array.IndexOf(_profileNames, lastSelected);
+			_names = _profiles.Select(e => e.Name).ToArray();
+			if (!string.IsNullOrEmpty(lastSelected)) _selectedIndex = Array.IndexOf(_names, lastSelected);
 		}
 
-		public void AddProfile(Profile data)
+		public void Add(Profile data)
 		{
 			_profiles.Add(data);
-			_selectedProfileIndex = _profiles.Count - 1;
+			_selectedIndex = _profiles.Count - 1;
 			CreateCache();
 		}
 
-		public bool RemoveProfileAt(int index)
+		public bool RemoveAt(int index)
 		{
 			if (index < 0 || index >= _profiles.Count) return false;
 			_profiles.RemoveAt(index);
-			_selectedProfileIndex = -1;
+			_selectedIndex = -1;
 			CreateCache();
 			return true;
 		}
 
-		public void UpdateProfile(int index, Profile data)
+		public void Update(int index, Profile data)
 		{
 			if (data == null) return;
 			if (index < 0 || index >= _profiles.Count)
-				AddProfile(data);
+				Add(data);
 			else
 				data.CopyTo(_profiles[index]);
+		}
+	}
+
+	internal class BitmapFontCreatorPrefs : ScriptableObject
+	{
+		private const string PrefsFilename = "BitmapFontCreatorPrefs";
+		private const string PrefsFilepath = "Assets/BitmapFontCreator/Resources/" + PrefsFilename + ".asset";
+
+		public ProfileList Profiles;
+
+		public static BitmapFontCreatorPrefs Load()
+		{
+			var prefs = Resources.Load(PrefsFilename, typeof(BitmapFontCreatorPrefs)) as BitmapFontCreatorPrefs;
+			if (prefs == null)
+			{
+				prefs = CreateInstance<BitmapFontCreatorPrefs>();
+				AssetDatabase.CreateAsset(prefs, PrefsFilepath);
+				EditorUtility.SetDirty(prefs);
+			}
+			prefs.Profiles.CreateCache();
+			return prefs;
 		}
 	}
 }

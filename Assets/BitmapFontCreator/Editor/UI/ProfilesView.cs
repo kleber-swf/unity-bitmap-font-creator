@@ -7,36 +7,27 @@ namespace kleberswf.tools.bitmapfontcreator
 {
 	internal class ProfilesView
 	{
-		private const string PrefsFilename = "BitmapFontCreatorPrefs";
-		private const string PrefsFilepath = "Assets/BitmapFontCreator/Resources/" + PrefsFilename + ".asset";
 		private const string NoneOption = "None";
 		private const string SaveProfileOption = "Save Profile";
 		private const string DeleteProfileOption = "Delete Profile";
 
 		private readonly BitmapFontCreatorData _editorData;
-		private readonly BitmapFontCreatorPrefs _prefs;
+		private readonly ProfileList _profiles;
 		private string[] _options;
 		private int _optionIndex = 0;
 
-		public ProfilesView(BitmapFontCreatorData editorData)
+		public ProfilesView(BitmapFontCreatorData editorData, ProfileList profiles)
 		{
 			_editorData = editorData;
-			_prefs = Resources.Load(PrefsFilename, typeof(BitmapFontCreatorPrefs)) as BitmapFontCreatorPrefs;
-			if (_prefs == null)
-			{
-				_prefs = ScriptableObject.CreateInstance<BitmapFontCreatorPrefs>();
-				AssetDatabase.CreateAsset(_prefs, PrefsFilepath);
-				EditorUtility.SetDirty(_prefs);
-			}
-			_prefs.CreateCache();
+			_profiles = profiles;
 			UpdateOptions();
-			_optionIndex = _prefs.SelectedProfileIndex + 1;
+			_optionIndex = _profiles.SelectedIndex + 1;
 		}
 
 		private void UpdateOptions()
 		{
 			var options = new List<string> { NoneOption };
-			var names = _prefs.ProfileNames;
+			var names = _profiles.Names;
 			foreach (var name in names)
 				options.Add(name);
 			options.Add(SaveProfileOption);
@@ -58,11 +49,11 @@ namespace kleberswf.tools.bitmapfontcreator
 		{
 			if (index < 0 || index >= _options.Length) return;
 
-			if (index <= _prefs.ProfileNames.Length)
+			if (index <= _profiles.Names.Length)
 			{
 				_optionIndex = index;
-				_prefs.SelectedProfileIndex = index - 1;
-				_prefs.SelectedProfile?.CopyTo(_editorData);
+				_profiles.SelectedIndex = index - 1;
+				_profiles.Selected?.CopyTo(_editorData);
 				return;
 			}
 
@@ -75,32 +66,32 @@ namespace kleberswf.tools.bitmapfontcreator
 		{
 			var window = EditorWindow.GetWindow<SaveDialog>();
 			window.OnSave += TrySaveOrAddProfile;
-			window.Open("Save Profile", _prefs.SelectedProfile?.Name ?? "Profile");
+			window.Open("Save Profile", _profiles.Selected?.Name ?? "Profile");
 		}
 
 		private void TrySaveOrAddProfile(string profileName)
 		{
-			var index = Array.IndexOf(_prefs.ProfileNames, profileName);
+			var index = Array.IndexOf(_profiles.Names, profileName);
 			if (index < 0)
 			{
 				// profile doesn't exist. Creating one and selecting it
-				_prefs.AddProfile(new Profile(profileName, _editorData));
+				_profiles.Add(new Profile(profileName, _editorData));
 				UpdateOptions();
-				_optionIndex = _prefs.SelectedProfileIndex + 1;
+				_optionIndex = _profiles.SelectedIndex + 1;
 				return;
 			}
 
 			// profile does exit. Ask if it should be replaced
 			if (EditorUtility.DisplayDialog("Profile Exists", "Profile already exists. Overwrite?", "Yes", "No"))
-				_prefs.UpdateProfile(_prefs.SelectedProfileIndex, new Profile(profileName, _editorData));
+				_profiles.Update(_profiles.SelectedIndex, new Profile(profileName, _editorData));
 		}
 
 		private void DeleteSelectedProfile()
 		{
 			if (EditorUtility.DisplayDialog("Delete Profile", "Are you sure you want to delete this profile?", "Yes", "No"))
 			{
-				_prefs.RemoveProfileAt(_prefs.SelectedProfileIndex);
-				_optionIndex = _prefs.SelectedProfileIndex + 1;
+				_profiles.RemoveAt(_profiles.SelectedIndex);
+				_optionIndex = _profiles.SelectedIndex + 1;
 				UpdateOptions();
 			}
 		}

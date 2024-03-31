@@ -12,23 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb8b8f135d13600eb9ec2a1f77af5d16, type: 3}
   m_Name: BitmapFontCreatorPrefs
   m_EditorClassIdentifier: 
-  _selectedProfileIndex: -1
-  _profiles:
-  - Characters: 
-    Orientation: 0
-    Cols: 0
-    Rows: 0
-    AlphaThreshold: 0
-    Monospaced: 0
-    DefaultCharacterSpacing: 0
-    CustomCharacterProps: []
-    Name: Profile 1
-  - Characters: 
-    Orientation: 0
-    Cols: 0
-    Rows: 0
-    AlphaThreshold: 0
-    Monospaced: 0
-    DefaultCharacterSpacing: 0
-    CustomCharacterProps: []
-    Name: Profile 2
+  Profiles:
+    _selectedIndex: -1
+    _profiles: []
