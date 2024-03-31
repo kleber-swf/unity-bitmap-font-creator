@@ -1,3 +1,5 @@
+using System;
+using System.IO;
 using UnityEditor;
 using UnityEngine;
 
@@ -18,21 +20,21 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 
 		private static Settings CreateAsset()
 		{
-			var folderPath = "Assets/Editor/Resources";
+			var folderPath = "Editor/Resources";
+			var folders = folderPath.Split("/");
+			var path = Application.dataPath;
 
-			var basePath = string.Empty;
-			var folders = folderPath.Split('/');
-
-			for (var i = 1; i < folders.Length; i++)
+			for (var i = 0; i < folders.Length; i++)
 			{
-				basePath += folders[i - 1];
-				if (AssetDatabase.GUIDFromAssetPath($"{basePath}/{folders[i]}") == null)
-					AssetDatabase.CreateFolder(basePath, folders[i]);
-				basePath += "/";
+				path = Path.Combine(path, folders[i]);
+				if (!Directory.Exists(path))
+					Directory.CreateDirectory(path);
 			}
 
+			AssetDatabase.Refresh();
+
 			var settings = CreateInstance<Settings>();
-			AssetDatabase.CreateAsset(settings, $"{folderPath}/{SettingsFilename}.asset");
+			AssetDatabase.CreateAsset(settings, $"Assets/{folderPath}/{SettingsFilename}.asset");
 			EditorUtility.SetDirty(settings);
 
 			return settings;
