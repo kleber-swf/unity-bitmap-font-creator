@@ -115,7 +115,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 		private void DrawBottomMenu()
 		{
 			GUILayout.BeginHorizontal(Styles.BottomMenu);
-			_profilesView.Draw();
+			_profilesView.Draw(_prefsView.Model.WarnBeforeReplacingSettings);
 			GUILayout.FlexibleSpace();
 			_prefsView.Draw();
 			GUILayout.EndHorizontal();

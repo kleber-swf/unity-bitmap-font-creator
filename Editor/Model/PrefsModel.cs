@@ -8,7 +8,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 		private const string EditorPrefsKey = "dev.klebersilva.tools.bitmapfontcreator.preferences";
 
 		public bool WarnBeforeOverwrite = true;
-		public bool WarnBeforeReplaceingSettings = true;
+		public bool WarnBeforeReplacingSettings = true;
 
 		public static PrefsModel Load()
 		{

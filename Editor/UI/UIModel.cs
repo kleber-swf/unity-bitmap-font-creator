@@ -37,7 +37,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 
 		public static readonly GUIContent Prefs = new(string.Empty, "Preferences");
 		public static readonly GUIContent WarnBeforeOverwrite = new("Warn before overwrite", "Warn before overwriting an existing font. This will replace the old font keeping the references");
-		public static readonly GUIContent WarnBeforeReplaceingSettings = new("Warn before replacing settings", "Warn before replacing settings when selecting a profile");
+		public static readonly GUIContent WarnBeforeReplacingSettings = new("Warn before replacing settings", "Warn before replacing settings when selecting a profile");
 	}
 
 	internal static class Styles

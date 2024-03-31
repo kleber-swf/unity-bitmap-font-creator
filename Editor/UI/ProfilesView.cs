@@ -34,24 +34,26 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			_options = options.ToArray();
 		}
 
-		public void Draw()
+		public void Draw(bool warnBeforeOverwrite)
 		{
 			var lw = EditorGUIUtility.labelWidth;
 			EditorGUIUtility.labelWidth = 60;
 			EditorGUI.BeginChangeCheck();
 			var optionIndex = EditorGUILayout.Popup(_optionIndex, _options, Styles.ProfilesButton);
-			if (EditorGUI.EndChangeCheck()) SelectOption(optionIndex);
+			if (EditorGUI.EndChangeCheck()) SelectOption(optionIndex, warnBeforeOverwrite);
 			EditorGUIUtility.labelWidth = lw;
 		}
 
-		private void SelectOption(int index)
+		private void SelectOption(int index, bool warnBeforeOverwrite)
 		{
-			if (index < 0 || index >= _options.Length) return;
+			if (index < 0 || index >= _options.Length || index == _optionIndex) return;
 
 			if (index <= _profiles.Names.Length)
 			{
 				_optionIndex = index;
 				_profiles.SelectedIndex = index - 1;
+				if (warnBeforeOverwrite && !EditorUtility.DisplayDialog("Warning", "Overwrite current settings?", "Yes", "No"))
+					return;
 				_profiles.Selected?.CopyTo(_editorData);
 				return;
 			}

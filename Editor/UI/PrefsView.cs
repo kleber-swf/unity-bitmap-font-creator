@@ -35,7 +35,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			rect.y += _padding.right;
 			_model.WarnBeforeOverwrite = EditorGUI.ToggleLeft(rect, UI.WarnBeforeOverwrite, _model.WarnBeforeOverwrite);
 			rect.y += rect.height;
-			_model.WarnBeforeReplaceingSettings = EditorGUI.ToggleLeft(rect, UI.WarnBeforeReplaceingSettings, _model.WarnBeforeReplaceingSettings);
+			_model.WarnBeforeReplacingSettings = EditorGUI.ToggleLeft(rect, UI.WarnBeforeReplacingSettings, _model.WarnBeforeReplacingSettings);
 		}
 
 		public override void OnClose()
