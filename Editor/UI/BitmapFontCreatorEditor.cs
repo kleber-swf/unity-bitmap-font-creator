@@ -33,11 +33,11 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 
 		private void Setup()
 		{
-			var prefs = BitmapFontCreatorPrefs.Load();
-			prefs.Profiles.Selected?.CopyTo(_data);
+			var settings = Settings.Load();
+			settings.Profiles.Selected?.CopyTo(_data);
 
 			_customCharPropsList = new CharacterPropsList(_data.CustomCharacterProps);
-			_profilesView = new ProfilesView(_data, prefs.Profiles);
+			_profilesView = new ProfilesView(_data, settings.Profiles);
 			_optionsView = new OptionsView(OptionsModel.Load());
 		}
 
