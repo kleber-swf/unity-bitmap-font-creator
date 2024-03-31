@@ -7,7 +7,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 {
 	internal static class BitmapFontCreator
 	{
-		public static void CreateFont(ExecutionData data)
+		public static void TryCreateFont(ExecutionData data)
 		{
 			var error = CheckForErrors(data);
 			if (!string.IsNullOrEmpty(error))
@@ -16,17 +16,23 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 				return;
 			}
 
-			// TODO check if the asset already exists to warn the user
-
 			var path = AssetDatabase.GetAssetPath(data.Texture);
 			var baseName = Path.GetFileNameWithoutExtension(path);
+			path = path[..path.LastIndexOf(".")];
+			var materialPath = path + ".mat";
+			var fontPath = path + ".fontsettings";
+
+			if (!(AssetDatabase.GUIDFromAssetPath(materialPath) == null && AssetDatabase.GUIDFromAssetPath(fontPath) == null))
+			{
+				if (!EditorUtility.DisplayDialog("Warning", "Asset already exists. Overwrite? (It will keep the references)", "Yes", "No"))
+					return;
+			}
 
 			var material = CreateMaterial(baseName, data.Texture);
 			var font = CreateFontAsset(baseName, material, data);
 
-			path = path[..path.LastIndexOf(".")];
-			AssetDatabase.CreateAsset(material, path + ".mat");
-			CreateOrReplaceAsset(font, path + ".fontsettings");
+			AssetDatabase.CreateAsset(material, materialPath);
+			CreateOrReplaceAsset(font, fontPath);
 
 			AssetDatabase.Refresh();
 		}

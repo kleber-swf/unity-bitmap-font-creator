@@ -110,7 +110,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			GUI.color = Color.cyan;
 
 			if (GUILayout.Button(UI.CreateFont, Styles.CreateButton))
-				BitmapFontCreator.CreateFont(_data);
+				BitmapFontCreator.TryCreateFont(_data);
 
 			GUI.color = Color.white;
 			GUILayout.FlexibleSpace();
