@@ -9,8 +9,10 @@ namespace kleberswf.tools.bitmapfontcreator
 	// TODO no error on play
 	public class BitmapFontCreatorEditor : EditorWindow
 	{
-		private BitmapFontCreatorData _data = BitmapFontCreatorData.Default;
+		private readonly ExecutionData _data = ExecutionData.Default;
+		private BitmapFontCreatorPrefs _prefs;
 		private CharacterPropsList _customCharPropsList;
+		private ProfilesView _profilesView;
 
 		private bool _initialized = false;
 		private Vector2 _charactersScrollPos = Vector2.zero;
@@ -29,7 +31,9 @@ namespace kleberswf.tools.bitmapfontcreator
 		private void Initialize()
 		{
 			_initialized = true;
+			_prefs = BitmapFontCreatorPrefs.Load();
 			_customCharPropsList = new CharacterPropsList(_data.CustomCharacterProps);
+			_profilesView = new ProfilesView(_data, _prefs.Profiles);
 		}
 
 		private void OnGUI()
@@ -45,7 +49,7 @@ namespace kleberswf.tools.bitmapfontcreator
 
 			_data.Cols = EditorGUILayout.IntField(UI.Cols, _data.Cols);
 			_data.Rows = EditorGUILayout.IntField(UI.Rows, _data.Rows);
-			_data.AlphaThreshold = EditorGUILayout.FloatField(UI.AlphaThreshold, _data.AlphaThreshold);
+			_data.AlphaThreshold = EditorGUILayout.Slider(UI.AlphaThreshold, _data.AlphaThreshold, 0f, 1f);
 			_data.Monospaced = EditorGUILayout.Toggle(UI.Monospaced, _data.Monospaced);
 			// _data.LineSpacing = EditorGUILayout.IntField("Line Spacing", _data.LineSpacing);
 
@@ -70,6 +74,16 @@ namespace kleberswf.tools.bitmapfontcreator
 
 			GUILayout.EndVertical();
 			GUILayout.EndScrollView();
+			GUILayout.FlexibleSpace();
+
+			DrawBottomMenu();
+		}
+
+		private void DrawBottomMenu()
+		{
+			GUILayout.BeginHorizontal(Styles.BottomMenu);
+			_profilesView.Draw();
+			GUILayout.EndHorizontal();
 		}
 
 		private void DrawCharacterSetDropDown()

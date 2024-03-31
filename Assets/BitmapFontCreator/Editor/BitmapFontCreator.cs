@@ -7,7 +7,7 @@ namespace kleberswf.tools.bitmapfontcreator
 {
 	internal static class BitmapFontCreator
 	{
-		public static void CreateFont(BitmapFontCreatorData data)
+		public static void CreateFont(ExecutionData data)
 		{
 			var error = CheckForErrors(data);
 			if (!string.IsNullOrEmpty(error))
@@ -32,7 +32,7 @@ namespace kleberswf.tools.bitmapfontcreator
 		}
 
 		// TODO all checks
-		private static string CheckForErrors(BitmapFontCreatorData data)
+		private static string CheckForErrors(ExecutionData data)
 		{
 			if (data.Texture == null) return "Texture cannot be null";
 			if (!data.Texture.isReadable) return "Texture must be readable. Set Read/Write Enabled to true inside Texture Properties";
@@ -52,7 +52,7 @@ namespace kleberswf.tools.bitmapfontcreator
 			};
 		}
 
-		private static Font CreateFontAsset(string baseName, Material material, BitmapFontCreatorData data)
+		private static Font CreateFontAsset(string baseName, Material material, ExecutionData data)
 		{
 			var map = new Dictionary<char, CharacterProps>();
 			foreach (var e in data.CustomCharacterProps)
@@ -65,7 +65,7 @@ namespace kleberswf.tools.bitmapfontcreator
 			};
 		}
 
-		private static CharacterInfo[] CreateCharacters(BitmapFontCreatorData data, Dictionary<char, CharacterProps> map)
+		private static CharacterInfo[] CreateCharacters(ExecutionData data, Dictionary<char, CharacterProps> map)
 		{
 			var texSize = new Vector2(data.Texture.width, data.Texture.height);
 			var cellSize = new Vector2(texSize.x / data.Cols, texSize.y / data.Rows);

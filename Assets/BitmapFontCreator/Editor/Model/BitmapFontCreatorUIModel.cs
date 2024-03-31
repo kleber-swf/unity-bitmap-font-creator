@@ -30,10 +30,11 @@ namespace kleberswf.tools.bitmapfontcreator
 		public static readonly GUIContent AlphaThreshold = new("Alpha Threshold", "Alpha threshold to identify characters bounds");
 		public static readonly GUIContent Monospaced = new("Monospaced", "Whether the result font should be monospaced");
 		public static readonly GUIContent CharacterSet = new("Character Set", "Predefined character set to use");
-		public static readonly GUIContent Characters = new("Characters", "Characters used in the font in order they appear in the texture");
+		public static readonly GUIContent Characters = new("Characters", "Characters used in the font in order they appear in the texture. Use the space character to represent blank spaces in the texture");
 		public static readonly GUIContent DefaultCharacterSpacing = new("Character Spacing", "Default spacing between characters");
 		public static readonly GUIContent CustomCharacterProperties = new("Custom Character Properties", "Custom properties for each characters, if any");
 		public static readonly GUIContent CreateFont = new("Create", "Create the font");
+		public static readonly GUIContent Profile = new("Profile", "Manage profiles");
 	}
 
 	internal static class Styles
@@ -43,12 +44,16 @@ namespace kleberswf.tools.bitmapfontcreator
 			margin = new(EditorStyles.label.margin.left, EditorStyles.label.margin.right, 5, 5),
 		};
 
-		public static readonly GUIStyle CreateButton = new(EditorStyles.miniButton)
+		public static readonly GUIStyle CreateButton = new(GUI.skin.button)
 		{
-			fontSize = 12,
-			padding = new(20, 20, 8, 8),
+			padding = new(20, 20, 7, 8),
 			margin = new(10, 10, 20, 20),
 			fixedHeight = 32,
+		};
+
+		public static readonly GUIStyle BottomMenu = new("flow background")
+		{
+			padding = new(3, 3, 5, 0),
 		};
 	}
 }
