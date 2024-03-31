@@ -36,6 +36,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			_prefs = BitmapFontCreatorPrefs.Load();
 			_customCharPropsList = new CharacterPropsList(_data.CustomCharacterProps);
 			_profilesView = new ProfilesView(_data, _prefs.Profiles);
+			_prefs.Profiles.Selected?.CopyTo(_data);
 		}
 
 		private void OnGUI()
