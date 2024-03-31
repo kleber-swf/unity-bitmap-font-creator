@@ -3,22 +3,22 @@ using UnityEngine;
 
 namespace dev.klebersilva.tools.bitmapfontcreator
 {
-	internal class OptionsModel
+	internal class PrefsModel
 	{
-		private const string EditorPrefsKey = "Options";
+		private const string EditorPrefsKey = "dev.klebersilva.tools.bitmapfontcreator.preferences";
 
 		public bool WarnBeforeOverwrite = true;
 		public bool WarnBeforeReplaceingSettings = true;
 
-		public static OptionsModel Load()
+		public static PrefsModel Load()
 		{
 			var content = EditorPrefs.GetString(EditorPrefsKey, null);
 			return string.IsNullOrEmpty(content)
-				? new OptionsModel()
-				: JsonUtility.FromJson<OptionsModel>(content);
+				? new PrefsModel()
+				: JsonUtility.FromJson<PrefsModel>(content);
 		}
 
-		public static void Save(OptionsModel model)
+		public static void Save(PrefsModel model)
 		{
 			var content = JsonUtility.ToJson(model);
 			EditorPrefs.SetString(EditorPrefsKey, content);

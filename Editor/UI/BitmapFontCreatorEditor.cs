@@ -10,7 +10,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 		private readonly ExecutionData _data = ExecutionData.Default;
 		private CharacterPropsList _customCharPropsList;
 		private ProfilesView _profilesView;
-		private OptionsView _optionsView;
+		private PrefsView _prefsView;
 
 		private Vector2 _charactersScrollPos = Vector2.zero;
 		private Vector2 _mainScrollPos = Vector2.zero;
@@ -38,7 +38,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 
 			_customCharPropsList = new CharacterPropsList(_data.CustomCharacterProps);
 			_profilesView = new ProfilesView(_data, settings.Profiles);
-			_optionsView = new OptionsView(OptionsModel.Load());
+			_prefsView = new PrefsView(PrefsModel.Load());
 		}
 
 		private void OnGUI()
@@ -105,7 +105,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			GUI.color = Color.cyan;
 
 			if (GUILayout.Button(UI.CreateFont, Styles.CreateButton))
-				BitmapFontCreator.TryCreateFont(_data, _optionsView.Model.WarnBeforeOverwrite);
+				BitmapFontCreator.TryCreateFont(_data, _prefsView.Model.WarnBeforeOverwrite);
 
 			GUI.color = Color.white;
 			GUILayout.FlexibleSpace();
@@ -117,7 +117,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			GUILayout.BeginHorizontal(Styles.BottomMenu);
 			_profilesView.Draw();
 			GUILayout.FlexibleSpace();
-			_optionsView.Draw();
+			_prefsView.Draw();
 			GUILayout.EndHorizontal();
 		}
 	}

@@ -35,7 +35,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 		public static readonly GUIContent CustomCharacterProperties = new("Custom Character Properties", "Custom properties for each characters, if any");
 		public static readonly GUIContent CreateFont = new("Create", "Create the font");
 
-		public static readonly GUIContent Options = new(string.Empty, "Options");
+		public static readonly GUIContent Prefs = new(string.Empty, "Preferences");
 		public static readonly GUIContent WarnBeforeOverwrite = new("Warn before overwrite", "Warn before overwriting an existing font. This will replace the old font keeping the references");
 		public static readonly GUIContent WarnBeforeReplaceingSettings = new("Warn before replacing settings", "Warn before replacing settings when selecting a profile");
 	}
@@ -62,6 +62,6 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 		};
 
 		public static readonly GUIStyle ProfilesButton = new("ToolbarPopupLeft");
-		public static readonly GUIStyle OptionsButton = new("PaneOptions");
+		public static readonly GUIStyle PrefsButton = new("PaneOptions");
 	}
 }
