@@ -1,0 +1,23 @@
+{
+	"name": "dev.klebersilva.tools.bitmapfontcreator",
+	"version": "1.0.0",
+	"description": "A simple tool to create bitmap fonts from a texture sprite sheet to be used with Text component.",
+	"displayName": "Bitmap Font Creator",
+	"unity": "2021.3",
+	"author": {
+		"name": "Kleber Silva",
+		"url": "https://klebersilva.dev"
+	},
+	"license":"MIT",
+	"licensesUrl": "https://github.com/klebersilva/BitmapFontCreator/blob/master/LICENSE.md",
+	"changelogUrl":"https://github.com/klebersilva/BitmapFontCreator/blob/master/CHANGELOG.md",
+	"documentationUrl": "https://github.com/klebersilva/BitmapFontCreator/blob/master/README.md",
+	"keywords": [
+		"font",
+		"bitmap",
+		"texture",
+		"sprite",
+		"sprite-sheet",
+		"texture-packer"
+	]
+}
