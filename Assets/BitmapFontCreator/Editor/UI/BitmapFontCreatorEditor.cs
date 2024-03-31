@@ -11,7 +11,7 @@ namespace kleberswf.tools.bitmapfontcreator
 	{
 		private readonly ExecutionData _data = ExecutionData.Default;
 		private CharacterPropsList _customCharPropsList;
-		private ProfilesUI _profiles;
+		private ProfilesView _profiles;
 
 		private bool _initialized = false;
 		private Vector2 _charactersScrollPos = Vector2.zero;
@@ -31,7 +31,7 @@ namespace kleberswf.tools.bitmapfontcreator
 		{
 			_initialized = true;
 			_customCharPropsList = new CharacterPropsList(_data.CustomCharacterProps);
-			_profiles = new ProfilesUI(_data);
+			_profiles = new ProfilesView(_data);
 		}
 
 		private void OnGUI()

@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace kleberswf.tools.bitmapfontcreator
 {
-	internal class ProfilesUI
+	internal class ProfilesView
 	{
 		private const string PrefsFilename = "BitmapFontCreatorPrefs";
 		private const string PrefsFilepath = "Assets/BitmapFontCreator/Resources/" + PrefsFilename + ".asset";
@@ -18,7 +18,7 @@ namespace kleberswf.tools.bitmapfontcreator
 		private string[] _options;
 		private int _optionIndex = 0;
 
-		public ProfilesUI(BitmapFontCreatorData editorData)
+		public ProfilesView(BitmapFontCreatorData editorData)
 		{
 			_editorData = editorData;
 			_prefs = Resources.Load(PrefsFilename, typeof(BitmapFontCreatorPrefs)) as BitmapFontCreatorPrefs;
@@ -62,7 +62,7 @@ namespace kleberswf.tools.bitmapfontcreator
 			{
 				_optionIndex = index;
 				_prefs.SelectedProfileIndex = index - 1;
-				ProfileController.LoadProfile(_editorData, _prefs.SelectedProfile);
+				_prefs.SelectedProfile?.CopyTo(_editorData);
 				return;
 			}
 
@@ -73,24 +73,26 @@ namespace kleberswf.tools.bitmapfontcreator
 
 		private void ShowSaveDialog()
 		{
-			var window = EditorWindow.GetWindow<InputWindow>();
-			window.OnClose += TrySaveProfile;
-			window.Open(_prefs.SelectedProfile?.Name);
+			var window = EditorWindow.GetWindow<SaveDialog>();
+			window.OnSave += TrySaveOrAddProfile;
+			window.Open("Save Profile", _prefs.SelectedProfile?.Name ?? "Profile");
 		}
 
-		private void TrySaveProfile(string profileName)
+		private void TrySaveOrAddProfile(string profileName)
 		{
 			var index = Array.IndexOf(_prefs.ProfileNames, profileName);
 			if (index < 0)
 			{
-				_prefs.AddProfile(ProfileController.CreateProfile(_editorData, profileName));
+				// profile doesn't exist. Creating one and selecting it
+				_prefs.AddProfile(new Profile(profileName, _editorData));
 				UpdateOptions();
 				_optionIndex = _prefs.SelectedProfileIndex + 1;
 				return;
 			}
 
+			// profile does exit. Ask if it should be replaced
 			if (EditorUtility.DisplayDialog("Profile Exists", "Profile already exists. Overwrite?", "Yes", "No"))
-				_prefs.UpdateProfile(_prefs.SelectedProfileIndex, ProfileController.CreateProfile(_editorData, profileName));
+				_prefs.UpdateProfile(_prefs.SelectedProfileIndex, new Profile(profileName, _editorData));
 		}
 
 		private void DeleteSelectedProfile()
@@ -101,48 +103,6 @@ namespace kleberswf.tools.bitmapfontcreator
 				_optionIndex = _prefs.SelectedProfileIndex + 1;
 				UpdateOptions();
 			}
-		}
-
-	}
-
-	internal static class ProfileController
-	{
-		public static void LoadProfile(BitmapFontCreatorData editorData, Profile profile)
-		{
-			if (profile != null) editorData.CopyFrom(profile);
-		}
-
-		public static Profile CreateProfile(BitmapFontCreatorData editorData, string name)
-		{
-			var profile = new Profile() { Name = name };
-			profile.CopyFrom(editorData);
-			return profile;
-		}
-	}
-
-	internal class InputWindow : EditorWindow
-	{
-		private string _text = "";
-		public event Action<string> OnClose;
-
-		public void Open(string text)
-		{
-			titleContent = new GUIContent("Save Profile");
-			_text = text ?? "Profile";
-		}
-
-		private void OnGUI()
-		{
-			GUILayout.BeginVertical();
-			_text = EditorGUILayout.TextField(_text);
-			if (GUILayout.Button("Save")) DoClose();
-			GUILayout.EndVertical();
-		}
-
-		private void DoClose()
-		{
-			Close();
-			OnClose?.Invoke(_text);
 		}
 	}
 }

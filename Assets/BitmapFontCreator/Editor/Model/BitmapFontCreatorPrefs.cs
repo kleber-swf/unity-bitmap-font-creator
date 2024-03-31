@@ -9,6 +9,13 @@ namespace kleberswf.tools.bitmapfontcreator
 	internal class Profile : BitmapFontCreatorData
 	{
 		public string Name;
+		public Profile() { }
+
+		public Profile(string name, BitmapFontCreatorData src)
+		{
+			Name = name;
+			src?.CopyTo(this);
+		}
 	}
 
 	internal class BitmapFontCreatorPrefs : ScriptableObject
@@ -65,7 +72,7 @@ namespace kleberswf.tools.bitmapfontcreator
 			if (index < 0 || index >= _profiles.Count)
 				AddProfile(data);
 			else
-				_profiles[index].CopyFrom(data);
+				data.CopyTo(_profiles[index]);
 		}
 	}
 }

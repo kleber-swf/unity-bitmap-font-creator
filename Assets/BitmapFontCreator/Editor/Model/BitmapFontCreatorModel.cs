@@ -29,21 +29,23 @@ namespace kleberswf.tools.bitmapfontcreator
 		public int DefaultCharacterSpacing;
 		public List<CharacterProps> CustomCharacterProps;
 
-		public virtual void CopyFrom(BitmapFontCreatorData data)
+		public virtual void CopyTo(BitmapFontCreatorData dest)
 		{
-			Characters = data.Characters;
-			Orientation = data.Orientation;
-			Cols = data.Cols;
-			Rows = data.Rows;
-			AlphaThreshold = data.AlphaThreshold;
-			Monospaced = data.Monospaced;
-			DefaultCharacterSpacing = data.DefaultCharacterSpacing;
+			if (dest == null) return;
 
-			if (CustomCharacterProps != null) CustomCharacterProps.Clear();
-			else CustomCharacterProps = new List<CharacterProps>();
+			dest.Characters = Characters;
+			dest.Orientation = Orientation;
+			dest.Cols = Cols;
+			dest.Rows = Rows;
+			dest.AlphaThreshold = AlphaThreshold;
+			dest.Monospaced = Monospaced;
+			dest.DefaultCharacterSpacing = DefaultCharacterSpacing;
 
-			foreach (var e in data.CustomCharacterProps)
-				CustomCharacterProps.Add(new CharacterProps() { Character = e.Character, Spacing = e.Spacing });
+			if (dest.CustomCharacterProps != null) dest.CustomCharacterProps.Clear();
+			else dest.CustomCharacterProps = new List<CharacterProps>();
+
+			foreach (var e in CustomCharacterProps)
+				dest.CustomCharacterProps.Add(new CharacterProps() { Character = e.Character, Spacing = e.Spacing });
 		}
 	}
 
