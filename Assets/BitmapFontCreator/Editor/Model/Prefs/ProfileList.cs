@@ -11,7 +11,7 @@ namespace kleberswf.tools.bitmapfontcreator
 		[SerializeField] private int _selectedIndex = -1;
 		[SerializeField] private List<Profile> _profiles = new();
 
-		private string[] _names;
+		private string[] _names = new string[0];
 
 		public int SelectedIndex
 		{

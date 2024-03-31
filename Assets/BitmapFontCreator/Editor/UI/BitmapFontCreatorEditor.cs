@@ -41,8 +41,8 @@ namespace kleberswf.tools.bitmapfontcreator
 			// TODO use _initialized when finished
 			if (_customCharPropsList == null) Initialize();
 
-			GUILayout.BeginVertical();
 			_mainScrollPos = GUILayout.BeginScrollView(_mainScrollPos, false, false, GUIStyle.none, GUI.skin.verticalScrollbar, GUILayout.ExpandHeight(true));
+			GUILayout.BeginVertical();
 
 			_data.Texture = EditorGUILayout.ObjectField(UI.Texture, _data.Texture, typeof(Texture2D), false) as Texture2D;
 			_data.Orientation = (Orientation)EditorGUILayout.EnumPopup(UI.Orientation, _data.Orientation);
@@ -72,8 +72,8 @@ namespace kleberswf.tools.bitmapfontcreator
 
 			DrawCreateFontButton();
 
-			GUILayout.EndScrollView();
 			GUILayout.EndVertical();
+			GUILayout.EndScrollView();
 			GUILayout.FlexibleSpace();
 			_profilesView.Draw();
 		}
