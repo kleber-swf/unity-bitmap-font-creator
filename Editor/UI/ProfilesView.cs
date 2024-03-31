@@ -53,11 +53,12 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 
 			if (index <= _profiles.Names.Length)
 			{
-				_optionIndex = index;
-				_profiles.SelectedIndex = index - 1;
-				if (_prefs.WarnOnReplaceSettings && !EditorUtility.DisplayDialog("Warning", "Overwrite current settings?", "Yes", "No"))
-					return;
-				_profiles.Selected?.CopyTo(_editorData);
+				if (!_prefs.WarnOnReplaceSettings || EditorUtility.DisplayDialog("Warning", "Overwrite current settings?", "Yes", "No"))
+				{
+					_optionIndex = index;
+					_profiles.SelectedIndex = index - 1;
+					_profiles.Selected?.CopyTo(_editorData);
+				}
 				return;
 			}
 
