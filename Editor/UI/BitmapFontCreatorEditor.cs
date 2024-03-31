@@ -3,7 +3,6 @@ using UnityEditor;
 
 namespace dev.klebersilva.tools.bitmapfontcreator
 {
-	// TODO save last configuration
 	// TODO no error on play
 	public class BitmapFontCreatorEditor : EditorWindow
 	{
@@ -11,6 +10,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 		private CharacterPropsList _customCharPropsList;
 		private ProfilesView _profilesView;
 		private PrefsView _prefsView;
+		private Settings _settings;
 
 		private Vector2 _charactersScrollPos = Vector2.zero;
 		private Vector2 _mainScrollPos = Vector2.zero;
@@ -33,12 +33,12 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 
 		private void Setup()
 		{
-			var settings = Settings.Load();
+			_settings = Settings.Load();
 			var prefs = PrefsModel.Load();
-			settings.Profiles.Selected?.CopyTo(_data);
+			_settings.Profiles.Selected?.CopyTo(_data);
 
 			_customCharPropsList = new CharacterPropsList(_data.CustomCharacterProps);
-			_profilesView = new ProfilesView(_data, settings.Profiles, prefs);
+			_profilesView = new ProfilesView(_data, _settings.Profiles, prefs);
 			_prefsView = new PrefsView(prefs);
 		}
 
@@ -105,7 +105,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			GUILayout.FlexibleSpace();
 			GUI.color = Color.cyan;
 
-			if (GUILayout.Button(UI.CreateFont, Styles.CreateButton))
+			if (GUILayout.Button(UI.CreateButton, Styles.CreateButton))
 				BitmapFontCreator.TryCreateFont(_data, _prefsView.Model.WarnOnReplaceFont);
 
 			GUI.color = Color.white;
@@ -117,9 +117,17 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 		{
 			GUILayout.BeginHorizontal(Styles.BottomMenu);
 			_profilesView.Draw();
+			if (GUILayout.Button(UI.RollbackButton, Styles.RollbackButton))
+				RollbackSettings();
 			GUILayout.FlexibleSpace();
 			_prefsView.Draw();
 			GUILayout.EndHorizontal();
+		}
+
+		private void RollbackSettings()
+		{
+			var profile = (BitmapFontCreatorData)_settings.Profiles.Selected ?? ExecutionData.Default;
+			profile.CopyTo(_data);
 		}
 	}
 }

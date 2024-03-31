@@ -33,8 +33,9 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 		public static readonly GUIContent Characters = new("Characters", "Characters used in the font in order they appear in the texture. Use the space character to represent blank spaces in the texture");
 		public static readonly GUIContent DefaultCharacterSpacing = new("Character Spacing", "Default spacing between characters");
 		public static readonly GUIContent CustomCharacterProperties = new("Custom Character Properties", "Custom properties for each characters, if any");
-		public static readonly GUIContent CreateFont = new("Create", "Create the font");
+		public static readonly GUIContent CreateButton = new("Create", "Create font files");
 
+		public static readonly GUIContent RollbackButton = new("Rollback", "Rollback settings to the selected profile or default");
 		public static readonly GUIContent PreferencesButton = new(string.Empty, "Preferences");
 		public static readonly GUIContent PreferencesLabel = new("Preferences");
 		public static readonly GUIContent WarnOnReplaceFont = new("Warn before replacing font files", "Warn before replacing an existing font. This will replace the old font keeping the references");
@@ -62,16 +63,22 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			fixedHeight = 32,
 		};
 
-		// public static readonly GUIStyle BottomMenu = new("TE BoxBackground")
-		public static readonly GUIStyle BottomMenu = new("AnimLeftPaneSeparator")
+		public static readonly GUIStyle BottomMenu = new("DD Background")
 		{
 			padding = new(1, 1, 1, 1),
-			// stretchWidth = true,
-			fixedHeight = 20,
+			margin = new(),
 		};
 
-		// public static readonly GUIStyle ProfilesButton = new("ToolbarPopupLeft");
 		public static readonly GUIStyle ProfilesButton = new("ToolbarPopupLeft");
-		public static readonly GUIStyle PreferencesButton = new("PaneOptions");
+
+		public static readonly GUIStyle RollbackButton = new("TE toolbarbutton")
+		{
+			padding = new(10, 6, 0, 0),
+		};
+
+		public static readonly GUIStyle PreferencesButton = new("PaneOptions")
+		{
+			margin = new(0, 0, 3, 0),
+		};
 	}
 }
