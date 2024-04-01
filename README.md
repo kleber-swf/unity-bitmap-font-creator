@@ -23,7 +23,7 @@ Settings can be saved to [profiles](#profiles) and retrieved to be used later.
 -  **Alpha Threshold**: Alpha threshold to identify characters bounds.
 -  **Monospaced**: Whether the result font should be monospaced.
 -  **Character Set**: Predefined character set to use. This is not saved to the profile.
--  **Characters**: Characters used in the font in order they appear in the texture. Use the space character to represent blank spaces in the texture.
+-  **Characters**: Characters used in the font in order they appear in the texture. Use the space character to represent blank spaces in the texture. You can break lines as much as you need to make it easier to add the character according to the texture.
 -  **Default Character Spacing**: Default spacing between characters.
 -  **Custom Character Properties**: Custom properties for each characters, if any. For now the only custom property is the spacing.
 
