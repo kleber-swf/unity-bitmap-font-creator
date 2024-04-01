@@ -56,6 +56,35 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			fixedHeight = 25,
 		};
 
+		public static readonly GUIStyle CounterLabelRight = new(EditorStyles.label)
+		{
+			stretchHeight = true,
+			alignment = TextAnchor.LowerCenter,
+			fontStyle = FontStyle.Italic,
+			normal = new()
+			{
+				background = new GUIStyle("WinBtnMaxMac").normal.background,
+				textColor = EditorStyles.label.normal.textColor,
+			},
+			imagePosition = ImagePosition.ImageLeft,
+			contentOffset = new Vector2(-17, 0),
+		};
+
+		public static readonly GUIStyle CounterLabelWrong = new(EditorStyles.label)
+		{
+			stretchHeight = true,
+			stretchWidth = true,
+			alignment = TextAnchor.LowerCenter,
+			fontStyle = FontStyle.Italic,
+			normal = new()
+			{
+				background = new GUIStyle("WinBtnCloseMac").normal.background,
+				textColor = EditorStyles.label.normal.textColor,
+			},
+			imagePosition = ImagePosition.ImageLeft,
+			contentOffset = new Vector2(-17, 0),
+		};
+
 		public static readonly GUIStyle CreateButton = new(GUI.skin.button)
 		{
 			padding = new(20, 20, 7, 8),

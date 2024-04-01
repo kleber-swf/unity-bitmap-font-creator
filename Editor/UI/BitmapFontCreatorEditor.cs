@@ -45,9 +45,10 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 
 		private void OnGUI()
 		{
-			// DEV - do not commit
-			// if (_customCharPropsList == null) Setup();
-
+#if BITMAP_FONT_CREATOR_DEBUG
+			// Dev only
+			if (_customCharPropsList == null) Setup();
+#endif
 			_mainScrollPos = GUILayout.BeginScrollView(_mainScrollPos, false, false, GUIStyle.none, GUI.skin.verticalScrollbar, GUILayout.ExpandHeight(true));
 			GUILayout.BeginVertical();
 
@@ -60,14 +61,10 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			_data.Monospaced = EditorGUILayout.Toggle(UI.Monospaced, _data.Monospaced);
 
 			EditorGUILayout.Space();
-
 			DrawCharacterSetDropDown();
 
-			GUILayout.Label(UI.Characters, Styles.HeaderLabel);
-			_charactersScrollPos = GUILayout.BeginScrollView(_charactersScrollPos, false, false, GUIStyle.none, GUI.skin.verticalScrollbar, GUILayout.Height(100));
-			EditorGUI.BeginChangeCheck();
+			EditorGUILayout.Space();
 			DrawCharactersField();
-			GUILayout.EndScrollView();
 
 			EditorGUILayout.Space();
 			_data.DefaultCharacterSpacing = EditorGUILayout.IntField(UI.DefaultCharacterSpacing, _data.DefaultCharacterSpacing);
@@ -95,9 +92,22 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 
 		private void DrawCharactersField()
 		{
+			var count = _data.Characters.Length;
+			GUILayout.BeginHorizontal();
+			GUILayout.Label(UI.Characters, Styles.HeaderLabel);
+			GUILayout.FlexibleSpace();
+			GUILayout.Label(count.ToString(), count == _data.Cols * _data.Rows ? Styles.CounterLabelRight : Styles.CounterLabelWrong);
+			GUILayout.EndHorizontal();
+
+			_charactersScrollPos = GUILayout.BeginScrollView(_charactersScrollPos, false, false, GUIStyle.none, GUI.skin.verticalScrollbar, GUILayout.Height(100));
+
+			EditorGUI.BeginChangeCheck();
 			_data.Characters = GUILayout.TextArea(_data.Characters, EditorStyles.textArea, GUILayout.ExpandHeight(true));
 			if (EditorGUI.EndChangeCheck())
 				_selectedCharacterSetIndex = 0;
+
+			GUILayout.EndScrollView();
+
 		}
 
 		private void DrawCreateFontButton()
