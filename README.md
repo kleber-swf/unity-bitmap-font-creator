@@ -17,13 +17,13 @@ Because of some [limitation](#limitations), it'll not set the _Line Spacing_ fie
 Settings can be saved to [profiles](#profiles) and retrieved to be used later.
 
 -  **Texture**: Texture used for the font. This is not saved to the profile.
--  **Orientation**: Order to look up for characters in the texture. Values: horizontal, vertical.
 -  **Cols**: Number of columns in the texture.
 -  **Rows**: Number of rows in the texture.
+-  **Orientation**: Order to look up for characters in the texture. Values: horizontal, vertical.
 -  **Alpha Threshold**: Alpha threshold to identify characters bounds.
 -  **Monospaced**: Whether the result font should be monospaced.
 -  **Character Set**: Predefined character set to use. This is not saved to the profile.
--  **Characters**: Characters used in the font in order they appear in the texture. Use the space character to represent blank spaces in the texture.
+-  **Characters**: Characters used in the font in order they appear in the texture. Use the space character to represent blank spaces in the texture. You can break lines as much as you need to make it easier to add the character according to the texture.
 -  **Default Character Spacing**: Default spacing between characters.
 -  **Custom Character Properties**: Custom properties for each characters, if any. For now the only custom property is the spacing.
 
@@ -37,6 +37,7 @@ Preferences are saved in the editor using _EditorPrefs_.
 
 ## Buttons
 
+-  **Guess**. Guess the number of rows and columns of the texture based on transparency gaps.
 -  **Create**. Creates the font using the given settings.
 -  **Rollback**. Rollback settings to the selected profile or default if none is selected.
 

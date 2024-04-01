@@ -27,6 +27,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 		public static readonly GUIContent Orientation = new("Orientation", "Order to look up for characters in the texture");
 		public static readonly GUIContent Cols = new("Cols", "Number of columns in the texture");
 		public static readonly GUIContent Rows = new("Rows", "Number of rows in the texture");
+		public static readonly GUIContent GuessButton = new("Guess", "Guess Rows and Cols");
 		public static readonly GUIContent AlphaThreshold = new("Alpha Threshold", "Alpha threshold to identify characters bounds");
 		public static readonly GUIContent Monospaced = new("Monospaced", "Whether the result font should be monospaced");
 		public static readonly GUIContent CharacterSet = new("Character Set", "Predefined character set to use");
@@ -54,6 +55,42 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 		{
 			padding = new(5, 5, 5, 5),
 			fixedHeight = 25,
+		};
+
+		public static readonly GUIStyle CounterLabelRight = new(EditorStyles.label)
+		{
+			stretchHeight = true,
+			alignment = TextAnchor.LowerCenter,
+			fontStyle = FontStyle.Italic,
+			normal = new()
+			{
+				background = new GUIStyle("WinBtnMaxMac").normal.background,
+				textColor = EditorStyles.label.normal.textColor,
+			},
+			imagePosition = ImagePosition.ImageLeft,
+			contentOffset = new Vector2(-17, 0),
+		};
+
+		public static readonly GUIStyle CounterLabelWrong = new(EditorStyles.label)
+		{
+			stretchHeight = true,
+			stretchWidth = true,
+			alignment = TextAnchor.LowerCenter,
+			fontStyle = FontStyle.Italic,
+			normal = new()
+			{
+				background = new GUIStyle("WinBtnCloseMac").normal.background,
+				textColor = EditorStyles.label.normal.textColor,
+			},
+			imagePosition = ImagePosition.ImageLeft,
+			contentOffset = new Vector2(-17, 0),
+		};
+
+		public static readonly GUIStyle CharactersField = new(EditorStyles.textArea)
+		{
+			font = Resources.Load<Font>("Fonts/monospaced"),
+			stretchHeight = true,
+			normal = new() { textColor = Color.white },
 		};
 
 		public static readonly GUIStyle CreateButton = new(GUI.skin.button)

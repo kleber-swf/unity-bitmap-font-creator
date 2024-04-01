@@ -17,9 +17,12 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 		public int Spacing = 0;
 	}
 
-	internal class BitmapFontCreatorData
+	[Serializable]
+	internal class BitmapFontCreatorData : ISerializationCallbackReceiver
 	{
-		public string Characters;
+		private const string IgnoreCharacter = "\n";
+
+		[SerializeField] private string _characters = string.Empty;
 		public Orientation Orientation;
 		public int Cols;
 		public int Rows;
@@ -28,11 +31,25 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 		public int DefaultCharacterSpacing;
 		public List<CharacterProps> CustomCharacterProps;
 
+		public string Characters
+		{
+			get { return _characters; }
+			set
+			{
+				if (_characters == value) return;
+				_characters = value;
+				UpdateChacters();
+			}
+		}
+
+		public string ValidCharacters { get; protected set; } = string.Empty;
+		public int ValidCharactersCount { get; protected set; } = 0;
+
 		public virtual void CopyTo(BitmapFontCreatorData dest)
 		{
 			if (dest == null) return;
 
-			dest.Characters = Characters;
+			dest.Characters = _characters;
 			dest.Orientation = Orientation;
 			dest.Cols = Cols;
 			dest.Rows = Rows;
@@ -45,7 +62,19 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 
 			foreach (var e in CustomCharacterProps)
 				dest.CustomCharacterProps.Add(new CharacterProps() { Character = e.Character, Spacing = e.Spacing });
+
+			UpdateChacters();
 		}
+
+		// TODO this should be called automatically when the field Characters changes
+		private void UpdateChacters()
+		{
+			ValidCharacters = _characters.Replace(IgnoreCharacter, string.Empty);
+			ValidCharactersCount = ValidCharacters.Length;
+		}
+
+		public void OnBeforeSerialize() { }
+		public void OnAfterDeserialize() { UpdateChacters(); }
 	}
 
 	internal class ExecutionData : BitmapFontCreatorData
@@ -55,7 +84,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 		public static ExecutionData Default => new()
 		{
 			Texture = null,
-			Characters = "",
+			Characters = string.Empty,
 			Orientation = Orientation.Horizontal,
 			Cols = 1,
 			Rows = 1,
@@ -63,6 +92,8 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			DefaultCharacterSpacing = 10,
 			Monospaced = false,
 			CustomCharacterProps = new List<CharacterProps>(),
+			ValidCharacters = string.Empty,
+			ValidCharactersCount = 0
 		};
 	}
 }
