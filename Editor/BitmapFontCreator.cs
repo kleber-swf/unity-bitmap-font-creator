@@ -7,6 +7,8 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 {
 	internal static class BitmapFontCreator
 	{
+		private const char IgnoreCharacter = ' ';
+
 		public static void TryCreateFont(ExecutionData data, bool warnBeforeOverwrite)
 		{
 			var error = CheckForErrors(data);
@@ -45,8 +47,8 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			if (data.Texture == null) return "Texture cannot be null";
 			if (!data.Texture.isReadable) return "Texture must be readable. Set Read/Write Enabled to true inside Texture Properties";
 
-			if (data.Characters.Length != data.Cols * data.Rows)
-				return $"Characters length ({data.Characters.Length}) must be equal to Cols ({data.Cols}) * Rows ({data.Rows})";
+			if (data.ValidCharactersCount != data.Cols * data.Rows)
+				return $"Characters length ({data.ValidCharactersCount}) must be equal to Cols ({data.Cols}) * Rows ({data.Rows})";
 
 			return null;
 		}
@@ -90,8 +92,8 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 					var i = data.Orientation == Orientation.Horizontal
 						? (row * data.Cols) + col
 						: (col * data.Rows) + row;
-					var ch = data.Characters[i];
-					if (ch == ' ' || ch == '\r' || ch == '\n') continue;
+					var ch = data.ValidCharacters[i];
+					if (ch == IgnoreCharacter) continue;
 
 					GetCharacterBounds(
 						tex: data.Texture,

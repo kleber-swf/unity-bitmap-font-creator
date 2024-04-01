@@ -17,7 +17,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 		private Vector2 _mainScrollPos = Vector2.zero;
 		private int _selectedCharacterSetIndex = 0;
 
-		private static Vector2Int _guessCache;
+		private Vector2Int _guessCache;
 
 		[MenuItem(MenuItemPath)]
 		public static void ShowWindow()
@@ -109,11 +109,10 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 
 		private void DrawCharactersField()
 		{
-			var count = _data.Characters.Length;
 			GUILayout.BeginHorizontal();
 			GUILayout.Label(UI.Characters, Styles.HeaderLabel);
 			GUILayout.FlexibleSpace();
-			GUILayout.Label(count.ToString(), count == _data.Cols * _data.Rows ? Styles.CounterLabelRight : Styles.CounterLabelWrong);
+			GUILayout.Label(_data.ValidCharactersCount.ToString(), _data.ValidCharactersCount == _data.Cols * _data.Rows ? Styles.CounterLabelRight : Styles.CounterLabelWrong);
 			GUILayout.EndHorizontal();
 
 			_charactersScrollPos = GUILayout.BeginScrollView(_charactersScrollPos, false, false, GUIStyle.none, GUI.skin.verticalScrollbar, GUILayout.Height(100));
@@ -124,7 +123,6 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 				_selectedCharacterSetIndex = 0;
 
 			GUILayout.EndScrollView();
-
 		}
 
 		private void DrawCreateFontButton()
