@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+# [1.2.0]
+
+### Added
+
+-  Guess rows and cols based on the texture
+-  Showing error for Custom Character Properties when the given character is empty
+-  Monospaced font to characters (under testing)
+-  Character count
+
+### Changed
+
+-  Ignoring \n characters to make it easier to add them to the characters field
+
+---
+
 ## [1.1.1]
 
 ### Fixed
