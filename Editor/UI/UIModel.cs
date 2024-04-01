@@ -86,6 +86,13 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			contentOffset = new Vector2(-17, 0),
 		};
 
+		public static readonly GUIStyle CharactersField = new(EditorStyles.textArea)
+		{
+			font = Resources.Load<Font>("Fonts/monospaced"),
+			stretchHeight = true,
+			normal = new() { textColor = Color.white },
+		};
+
 		public static readonly GUIStyle CreateButton = new(GUI.skin.button)
 		{
 			padding = new(20, 20, 7, 8),

@@ -118,7 +118,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			_charactersScrollPos = GUILayout.BeginScrollView(_charactersScrollPos, false, false, GUIStyle.none, GUI.skin.verticalScrollbar, GUILayout.Height(100));
 
 			EditorGUI.BeginChangeCheck();
-			_data.Characters = GUILayout.TextArea(_data.Characters, EditorStyles.textArea, GUILayout.ExpandHeight(true));
+			_data.Characters = GUILayout.TextArea(_data.Characters, Styles.CharactersField);
 			if (EditorGUI.EndChangeCheck())
 				_selectedCharacterSetIndex = 0;
 
