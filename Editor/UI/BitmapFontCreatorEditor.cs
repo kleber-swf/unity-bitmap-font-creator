@@ -12,6 +12,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 		private ProfilesView _profilesView;
 		private PrefsView _prefsView;
 		private Settings _settings;
+		private string _error;
 
 		private Vector2 _charactersScrollPos = Vector2.zero;
 		private Vector2 _mainScrollPos = Vector2.zero;
@@ -89,6 +90,14 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			GUILayout.FlexibleSpace();
 
 			DrawBottomMenu();
+
+			if (!string.IsNullOrEmpty(_error)) ShowCurrentError();
+		}
+
+		private void ShowCurrentError()
+		{
+			Debug.LogError(_error);
+			_error = null;
 		}
 
 		private void DrawTextureField()
@@ -130,9 +139,8 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			GUILayout.BeginHorizontal();
 			GUILayout.FlexibleSpace();
 			GUI.color = Color.cyan;
-
 			if (GUILayout.Button(UI.CreateButton, Styles.CreateButton))
-				BitmapFontCreator.TryCreateFont(_data, _prefsView.Model.WarnOnReplaceFont);
+				BitmapFontCreator.TryCreateFont(_data, _prefsView.Model.WarnOnReplaceFont, out _error);
 
 			GUI.color = Color.white;
 			GUILayout.FlexibleSpace();

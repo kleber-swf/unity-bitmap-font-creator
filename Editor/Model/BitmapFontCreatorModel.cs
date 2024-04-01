@@ -74,11 +74,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 		}
 
 		public void OnBeforeSerialize() { }
-		public void OnAfterDeserialize()
-		{
-			Debug.Log("Deserializing");
-			UpdateChacters();
-		}
+		public void OnAfterDeserialize() { UpdateChacters(); }
 	}
 
 	internal class ExecutionData : BitmapFontCreatorData

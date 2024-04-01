@@ -9,14 +9,10 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 	{
 		private const char IgnoreCharacter = ' ';
 
-		public static void TryCreateFont(ExecutionData data, bool warnBeforeOverwrite)
+		public static bool TryCreateFont(ExecutionData data, bool warnBeforeOverwrite, out string error)
 		{
-			var error = CheckForErrors(data);
-			if (!string.IsNullOrEmpty(error))
-			{
-				Debug.LogError(error);
-				return;
-			}
+			error = CheckForErrors(data);
+			if (!string.IsNullOrEmpty(error)) return false;
 
 			var path = AssetDatabase.GetAssetPath(data.Texture);
 			var baseName = Path.GetFileNameWithoutExtension(path);
@@ -27,16 +23,18 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			if (warnBeforeOverwrite && !(AssetDatabase.GUIDFromAssetPath(materialPath) == null && AssetDatabase.GUIDFromAssetPath(fontPath) == null))
 			{
 				if (!EditorUtility.DisplayDialog("Warning", "Asset already exists. Overwrite? (It will keep the references)", "Yes", "No"))
-					return;
+					return false;
 			}
 
 			var material = CreateMaterial(baseName, data.Texture);
-			var font = CreateFontAsset(baseName, material, data);
+			var font = CreateFontAsset(baseName, material, data, out error);
+			if (!string.IsNullOrEmpty(error)) return false;
 
 			AssetDatabase.CreateAsset(material, materialPath);
 			CreateOrReplaceAsset(font, fontPath);
 
 			AssetDatabase.Refresh();
+			return true;
 		}
 
 		private static string CheckForErrors(ExecutionData data)
@@ -62,11 +60,20 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			};
 		}
 
-		private static Font CreateFontAsset(string baseName, Material material, ExecutionData data)
+		private static Font CreateFontAsset(string baseName, Material material, ExecutionData data, out string error)
 		{
+			error = null;
 			var map = new Dictionary<char, CharacterProps>();
-			foreach (var e in data.CustomCharacterProps)
+			for (var i = 0; i < data.CustomCharacterProps.Count; i++)
+			{
+				var e = data.CustomCharacterProps[i];
+				if (string.IsNullOrEmpty(e.Character))
+				{
+					error = $"Character for Custom Character Properties at position {i + 1} is empty";
+					return null;
+				}
 				map.Add(e.Character[0], e);
+			}
 
 			return new Font(baseName)
 			{
