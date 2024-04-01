@@ -27,6 +27,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 		public static readonly GUIContent Orientation = new("Orientation", "Order to look up for characters in the texture");
 		public static readonly GUIContent Cols = new("Cols", "Number of columns in the texture");
 		public static readonly GUIContent Rows = new("Rows", "Number of rows in the texture");
+		public static readonly GUIContent GuessButton = new("Guess", "Guess Rows and Cols");
 		public static readonly GUIContent AlphaThreshold = new("Alpha Threshold", "Alpha threshold to identify characters bounds");
 		public static readonly GUIContent Monospaced = new("Monospaced", "Whether the result font should be monospaced");
 		public static readonly GUIContent CharacterSet = new("Character Set", "Predefined character set to use");

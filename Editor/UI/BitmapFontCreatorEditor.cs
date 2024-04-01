@@ -17,10 +17,12 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 		private Vector2 _mainScrollPos = Vector2.zero;
 		private int _selectedCharacterSetIndex = 0;
 
+		private static Vector2Int _guessCache;
+
 		[MenuItem(MenuItemPath)]
 		public static void ShowWindow()
 		{
-			var size = new Vector2(300, 550);
+			var size = new Vector2(300, 580);
 			var window = GetWindowWithRect<BitmapFontCreatorEditor>(
 				new Rect((Screen.width - size.x) * 0.5f, (Screen.height - size.y) * 0.5f, size.x, size.y),
 				false,
@@ -52,11 +54,18 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			_mainScrollPos = GUILayout.BeginScrollView(_mainScrollPos, false, false, GUIStyle.none, GUI.skin.verticalScrollbar, GUILayout.ExpandHeight(true));
 			GUILayout.BeginVertical();
 
-			_data.Texture = EditorGUILayout.ObjectField(UI.Texture, _data.Texture, typeof(Texture2D), false) as Texture2D;
-			_data.Orientation = (Orientation)EditorGUILayout.EnumPopup(UI.Orientation, _data.Orientation);
+			DrawTextureField();
 
 			_data.Cols = EditorGUILayout.IntField(UI.Cols, _data.Cols);
 			_data.Rows = EditorGUILayout.IntField(UI.Rows, _data.Rows);
+
+			GUILayout.BeginHorizontal();
+			GUILayout.Space(EditorGUIUtility.labelWidth);
+			if (GUILayout.Button(UI.GuessButton)) GuessRowsAndCols();
+			GUILayout.EndHorizontal();
+
+			EditorGUILayout.Space();
+			_data.Orientation = (Orientation)EditorGUILayout.EnumPopup(UI.Orientation, _data.Orientation);
 			_data.AlphaThreshold = EditorGUILayout.Slider(UI.AlphaThreshold, _data.AlphaThreshold, 0f, 1f);
 			_data.Monospaced = EditorGUILayout.Toggle(UI.Monospaced, _data.Monospaced);
 
@@ -80,6 +89,14 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			GUILayout.FlexibleSpace();
 
 			DrawBottomMenu();
+		}
+
+		private void DrawTextureField()
+		{
+			EditorGUI.BeginChangeCheck();
+			_data.Texture = EditorGUILayout.ObjectField(UI.Texture, _data.Texture, typeof(Texture2D), false) as Texture2D;
+			if (EditorGUI.EndChangeCheck())
+				_guessCache = Vector2Int.zero;
 		}
 
 		private void DrawCharacterSetDropDown()
@@ -139,6 +156,22 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 		{
 			var profile = (BitmapFontCreatorData)_settings.Profiles.Selected ?? ExecutionData.Default;
 			profile.CopyTo(_data);
+		}
+
+		private void GuessRowsAndCols()
+		{
+			if (_data.Texture == null)
+			{
+				Debug.LogWarning("Texture cannot be null");
+				return;
+			}
+
+			_guessCache = _guessCache.x == 0 || _guessCache.y == 0
+				? BitmapFontCreator.GuessRowsAndCols(_data.Texture)
+				: _guessCache;
+
+			_data.Cols = _guessCache.y;
+			_data.Rows = _guessCache.x;
 		}
 	}
 }

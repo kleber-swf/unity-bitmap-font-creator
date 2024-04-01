@@ -83,7 +83,6 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			int xMin, xMax, advance;
 			int largestAdvance = 0;
 
-			// horizontal
 			for (var row = 0; row < data.Rows; row++)
 			{
 				for (var col = 0; col < data.Cols; col++)
@@ -173,6 +172,68 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 				EditorUtility.CopySerialized(asset, existingAsset);
 				AssetDatabase.SaveAssets();
 			}
+		}
+
+		public static Vector2Int GuessRowsAndCols(Texture2D tex)
+		{
+			var rows = 0;
+			var cols = 0;
+
+			uint state = 0;   // 0 = looking for not transparent, 1 = looking for transparent
+			bool foundNonTransparentPixel;
+
+			for (var x = 0; x < tex.width; x++)
+			{
+				foundNonTransparentPixel = false;
+				for (var y = 0; y < tex.height; y++)
+				{
+					if (tex.GetPixel(x, y).a == 0) continue;
+					foundNonTransparentPixel = true;
+					break;
+				}
+
+				if (state == 0)
+				{
+					if (foundNonTransparentPixel)
+					{
+						state = 1;
+						cols++;
+					}
+				}
+				else
+				{
+					if (!foundNonTransparentPixel)
+						state = 0;
+				}
+			}
+
+			state = 0;
+			for (var y = 0; y < tex.height; y++)
+			{
+				foundNonTransparentPixel = false;
+				for (var x = 0; x < tex.width; x++)
+				{
+					if (tex.GetPixel(x, y).a == 0) continue;
+					foundNonTransparentPixel = true;
+					break;
+				}
+
+				if (state == 0)
+				{
+					if (foundNonTransparentPixel)
+					{
+						state = 1;
+						rows++;
+					}
+				}
+				else
+				{
+					if (!foundNonTransparentPixel)
+						state = 0;
+				}
+			}
+
+			return new(rows, cols);
 		}
 	}
 }
