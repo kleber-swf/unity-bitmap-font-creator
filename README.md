@@ -2,7 +2,7 @@
 
 A simple tool to create bitmap fonts from a texture sprite sheet to be used with Text component.
 
-![Screenshot](./Documentation/screenshot-01.png)
+![Main window](./Documentation/screenshot-01.png)
 
 ## How to use it
 
@@ -38,8 +38,11 @@ Preferences are saved in the editor using _EditorPrefs_.
 -  **Warn before replacing settings**. Warn before replacing settings when selecting a profile.
 -  **Warn before replacing profile**. Warn before replacing an existing profile.
 
-## Buttons
+## Actions
 
+-  **Preview**. Preview the texture with current rows and cols. ![Preview Window](./Documentation/screenshot-02.png)
+   -  **Background**. Background color of the preview.
+   -  **Grid**. Grid color of the preview.
 -  **Guess**. Guess the number of rows and columns of the texture based on transparency gaps.
 -  **Create**. Creates the font using the given settings.
 -  **Rollback**. Rollback settings to the selected profile or default if none is selected.
@@ -54,10 +57,9 @@ All [settings](#settings) except for the _Texture_ and the _Character Set_ can b
 
 You can manage profiles by opening the _Profiles_ menu at the bottom left corner of the popup. Select, create, edit or delete profiles like you do with layout profiles in Unity.
 
-## Limitations
-
-This tool makes the most of the work to create a bitmap font to be used with Text components but it has some limitations:
+## Known Issues
 
 -  **It works only with font sprite sheets not sprite atlases**. It means that the distance between characters in the texture are the same and there is a fixed value of rows and columns. In other words, it has to be a grid of characters. They can't be sparsed.
 -  **It can't set the line specing property**. For some reason, Unity doesn't allow us to edit the _line spacing_ field by code. You need to set it manually after running the tool.
 -  **The resultant font works only with Legacy Text Component**. It doens't work with TextMeshPro texts.
+-  **Alignment is jenky**. To make it more usable, it was decided to align the glyphs by the center of the texture, which makes it not really work with top and bottom alignments. A workaround for this is to set the Text component to align by its geometry. It works but makes the monospaced fonts jigle when changing the text.
