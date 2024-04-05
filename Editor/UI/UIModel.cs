@@ -49,6 +49,8 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 		public static readonly GUIContent WarnOnReplaceProfile = new("Warn before replacing profile", "Warn before replacing an existing profile");
 
 		public static readonly GUIContent NoContent = new("Invalid texture", "There is no texture selected or the number of rows or columns are set to zero");
+		public static readonly GUIContent BackgroundColor = new("Background", "Background color of the preview");
+		public static readonly GUIContent GridColor = new("Grid", "Grid color of the preview");
 	}
 
 	internal static class Styles
@@ -137,6 +139,11 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			stretchWidth = true,
 			stretchHeight = true,
 			alignment = TextAnchor.MiddleCenter,
+		};
+
+		public static readonly GUIStyle Toolbar = new("TimeAreaToolbar")
+		{
+			fixedHeight = 24,
 		};
 	}
 }

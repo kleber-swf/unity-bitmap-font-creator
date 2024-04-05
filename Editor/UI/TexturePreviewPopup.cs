@@ -3,45 +3,60 @@ using UnityEditor;
 
 namespace dev.klebersilva.tools.bitmapfontcreator
 {
-	public class TexturePreviewPopup : EditorWindow
+	internal class TexturePreviewPopup : EditorWindow
 	{
 		private static readonly Vector2Int _texturePadding = new(20, 20);
 
-		private Texture2D _texture;
-		private int _rows;
-		private int _cols;
-		private bool _hasContent;
+		private ExecutionData _data;
+		private PrefsModel _prefs;
 
 		private Vector2 _scrollPos = Vector2.zero;
 
-		public static TexturePreviewPopup Open(Texture2D texture, int rows, int cols)
+		public static TexturePreviewPopup Open(ExecutionData data, PrefsModel prefs)
 		{
-			var window = GetWindow<TexturePreviewPopup>();
-			window.DoOpen(texture, rows, cols);
+			var window = GetWindow<TexturePreviewPopup>(true, "Font Texture Preview", true);
+			window.DoOpen(data, prefs);
 			return window;
 		}
 
-		private void DoOpen(Texture2D texture, int rows, int cols)
+		private void DoOpen(ExecutionData data, PrefsModel prefs)
 		{
 			minSize = new Vector2(400, 300);
 			maxSize = new Vector2(1920, 1920);
-			_texture = texture;
-			_rows = rows;
-			_cols = cols;
-			_hasContent = _texture != null && _rows > 0 && _cols > 0;
-			ShowModal();
+			_data = data;
+			_prefs = prefs;
+			ShowUtility();
 		}
 
 		private void OnGUI()
 		{
-			if (_hasContent) DrawTexture();
-			else DrawNoContent();
+			if (_data.Texture != null && _data.Rows > 0 && _data.Cols > 0) DrawContent();
+			else GUILayout.Label(UI.NoContent, Styles.CenterLabel);
 		}
 
-		private void DrawTexture()
+		private void DrawContent()
 		{
-			var tw = _texture.width;
-			var th = _texture.height;
+			DrawTopBar();
+			DrawTexture(GUILayoutUtility.GetLastRect().yMax);
+		}
+
+		private void DrawTopBar()
+		{
+			EditorGUIUtility.fieldWidth = 60;
+			GUILayout.BeginHorizontal(Styles.Toolbar);
+			GUILayout.FlexibleSpace();
+			EditorGUIUtility.labelWidth = 80;
+			_prefs.BackgroundColor = EditorGUILayout.ColorField(UI.BackgroundColor, _prefs.BackgroundColor);
+			GUILayout.Space(10);
+			EditorGUIUtility.labelWidth = 35;
+			_prefs.GridColor = EditorGUILayout.ColorField(UI.GridColor, _prefs.GridColor);
+			GUILayout.EndHorizontal();
+		}
+
+		private void DrawTexture(float y)
+		{
+			var tw = _data.Texture.width;
+			var th = _data.Texture.height;
 
 			var aw = position.width - _texturePadding.x * 2;
 			var ah = position.height - _texturePadding.y * 2;
@@ -50,45 +65,45 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 
 			var textureRect = new Rect(
 				_texturePadding.x,
-				_texturePadding.y,
+				_texturePadding.y + y,
 				tw * ratio,
 				th * ratio
 			);
 
-			var scrollRect = new Rect(0, 0, position.width, position.height);
-			var scrollContentRect = new Rect(0, 0, textureRect.width + _texturePadding.x * 2, textureRect.height + _texturePadding.y * 2);
+			var scrollRect = new Rect(0, y, position.width, position.height);
+			var scrollContentRect = new Rect(0, y, textureRect.width + _texturePadding.x * 2, textureRect.height + _texturePadding.y * 2 + y);
 
 			_scrollPos = GUI.BeginScrollView(scrollRect, _scrollPos, scrollContentRect);
-			GUI.DrawTexture(textureRect, _texture, ScaleMode.ScaleToFit, false);
+			EditorGUI.DrawRect(textureRect, _prefs.BackgroundColor);
+			GUI.DrawTexture(textureRect, _data.Texture, ScaleMode.ScaleToFit, true);
 			DrawGrid(textureRect);
 			GUI.EndScrollView();
 		}
 
-		private void DrawNoContent()
-		{
-			GUILayout.Label(UI.NoContent, Styles.CenterLabel);
-		}
-
 		private void DrawGrid(Rect rect)
 		{
-
-			var cellSize = new Vector2(rect.width / _cols, rect.height / _rows);
+			var cellSize = new Vector2(rect.width / _data.Cols, rect.height / _data.Rows);
 
 			var r = rect;
 			r.height = 1;
-			for (var i = 0; i < _rows + 1; i++)
+			for (var i = 0; i < _data.Rows + 1; i++)
 			{
 				r.y = rect.y + i * cellSize.y;
-				EditorGUI.DrawRect(r, Color.cyan);
+				EditorGUI.DrawRect(r, _prefs.GridColor);
 			}
 
 			r = rect;
 			r.width = 1;
-			for (var i = 0; i < _cols + 1; i++)
+			for (var i = 0; i < _data.Cols + 1; i++)
 			{
 				r.x = rect.x + i * cellSize.x;
-				EditorGUI.DrawRect(r, Color.cyan);
+				EditorGUI.DrawRect(r, _prefs.GridColor);
 			}
+		}
+
+		private void OnDisable()
+		{
+			if (_prefs != null) PrefsModel.Save(_prefs);
 		}
 	}
 }
