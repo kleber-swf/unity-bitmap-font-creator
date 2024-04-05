@@ -28,6 +28,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 		public static readonly GUIContent Cols = new("Cols", "Number of columns in the texture");
 		public static readonly GUIContent Rows = new("Rows", "Number of rows in the texture");
 		public static readonly GUIContent GuessButton = new("Guess", "Guess Rows and Cols");
+		public static readonly GUIContent PreviewButton = new("Preview", "Preview the texture with current rows and cols");
 		public static readonly GUIContent AlphaThreshold = new("Alpha Threshold", "Alpha threshold to identify characters bounds");
 		public static readonly GUIContent Monospaced = new("Monospaced", "Whether the result font should be monospaced");
 		public static readonly GUIContent CharacterSet = new("Character Set", "Predefined character set to use");
@@ -46,6 +47,8 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 		public static readonly GUIContent WarnOnReplaceFont = new("Warn before replacing font files", "Warn before replacing an existing font. This will replace the old font keeping the references");
 		public static readonly GUIContent WarnOnReplaceSettings = new("Warn before replacing settings", "Warn before replacing settings when selecting a profile");
 		public static readonly GUIContent WarnOnReplaceProfile = new("Warn before replacing profile", "Warn before replacing an existing profile");
+
+		public static readonly GUIContent NoContent = new("Invalid texture", "There is no texture selected or the number of rows or columns are set to zero");
 	}
 
 	internal static class Styles
@@ -127,6 +130,13 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 		public static readonly GUIStyle PreferencesButton = new("PaneOptions")
 		{
 			margin = new(0, 0, 3, 0),
+		};
+
+		public static readonly GUIStyle CenterLabel = new(GUI.skin.label)
+		{
+			stretchWidth = true,
+			stretchHeight = true,
+			alignment = TextAnchor.MiddleCenter,
 		};
 	}
 }

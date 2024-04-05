@@ -63,6 +63,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			GUILayout.BeginHorizontal();
 			GUILayout.FlexibleSpace();
 			if (GUILayout.Button(UI.GuessButton)) GuessRowsAndCols();
+			var showPreview = DrawPreviewButton();
 			GUILayout.EndHorizontal();
 
 			EditorGUILayout.Space();
@@ -92,6 +93,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			DrawBottomMenu();
 
 			if (!string.IsNullOrEmpty(_error)) ShowCurrentError();
+			if (showPreview) TexturePreviewPopup.Open(_data.Texture, _data.Rows, _data.Cols);
 		}
 
 		private void ShowCurrentError()
@@ -106,6 +108,14 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			_data.Texture = EditorGUILayout.ObjectField(UI.Texture, _data.Texture, typeof(Texture2D), false) as Texture2D;
 			if (EditorGUI.EndChangeCheck())
 				_guessCache = Vector2Int.zero;
+		}
+
+		private bool DrawPreviewButton()
+		{
+			GUI.enabled = _data.Texture != null && _data.Rows > 0 && _data.Cols > 0;
+			var value = GUILayout.Button(UI.PreviewButton);
+			GUI.enabled = true;
+			return value;
 		}
 
 		private void DrawCharacterSetDropDown()
