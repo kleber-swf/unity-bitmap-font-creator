@@ -53,11 +53,23 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 
 		private static Material CreateMaterial(string baseName, Texture2D texture)
 		{
-			return new Material(Shader.Find("Standard"))
+			var material = new Material(Shader.Find("Standard"))
 			{
 				name = baseName,
-				mainTexture = texture
+				mainTexture = texture,
 			};
+
+			// TextMesh support
+			material.SetOverrideTag("RenderType", "Transparent");
+			material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
+			material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+			material.SetInt("_ZWrite", 0);
+			material.DisableKeyword("_ALPHATEST_ON");
+			material.EnableKeyword("_ALPHABLEND_ON");
+			material.DisableKeyword("_ALPHAPREMULTIPLY_ON");
+			material.renderQueue = (int)UnityEngine.Rendering.RenderQueue.Transparent;
+
+			return material;
 		}
 
 		private static Font CreateFontAsset(string baseName, Material material, ExecutionData data, out string error)
