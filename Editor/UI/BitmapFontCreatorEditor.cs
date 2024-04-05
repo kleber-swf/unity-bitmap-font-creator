@@ -12,6 +12,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 		private ProfilesView _profilesView;
 		private PrefsView _prefsView;
 		private Settings _settings;
+		private PrefsModel _prefs;
 		private string _error;
 
 		private Vector2 _charactersScrollPos = Vector2.zero;
@@ -38,12 +39,12 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 		private void Setup()
 		{
 			_settings = Settings.Load();
-			var prefs = PrefsModel.Load();
+			_prefs = PrefsModel.Load();
 			_settings.Profiles.Selected?.CopyTo(_data);
 
 			_customCharPropsList = new CharacterPropsList(_data.CustomCharacterProps);
-			_profilesView = new ProfilesView(_data, _settings.Profiles, prefs);
-			_prefsView = new PrefsView(prefs);
+			_profilesView = new ProfilesView(_data, _settings.Profiles, _prefs);
+			_prefsView = new PrefsView(_prefs);
 		}
 
 		private void OnGUI()
@@ -63,6 +64,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			GUILayout.BeginHorizontal();
 			GUILayout.FlexibleSpace();
 			if (GUILayout.Button(UI.GuessButton)) GuessRowsAndCols();
+			var showPreview = DrawPreviewButton();
 			GUILayout.EndHorizontal();
 
 			EditorGUILayout.Space();
@@ -92,6 +94,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			DrawBottomMenu();
 
 			if (!string.IsNullOrEmpty(_error)) ShowCurrentError();
+			if (showPreview) TexturePreviewPopup.Open(_data, _prefs);
 		}
 
 		private void ShowCurrentError()
@@ -106,6 +109,14 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			_data.Texture = EditorGUILayout.ObjectField(UI.Texture, _data.Texture, typeof(Texture2D), false) as Texture2D;
 			if (EditorGUI.EndChangeCheck())
 				_guessCache = Vector2Int.zero;
+		}
+
+		private bool DrawPreviewButton()
+		{
+			GUI.enabled = _data.Texture != null && _data.Rows > 0 && _data.Cols > 0;
+			var value = GUILayout.Button(UI.PreviewButton);
+			GUI.enabled = true;
+			return value;
 		}
 
 		private void DrawCharacterSetDropDown()
