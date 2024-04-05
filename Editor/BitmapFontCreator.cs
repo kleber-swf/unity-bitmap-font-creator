@@ -131,7 +131,6 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 					w = xMax - xMin;
 
 					advance = w + data.DefaultCharacterSpacing;
-					if (map.TryGetValue(ch, out var props)) advance = xMax + props.Spacing;
 					if (advance > advMax) advMax = advance;
 
 					var info = new CharacterInfo
@@ -146,6 +145,16 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 						bearing = -xMin,
 						advance = advance,
 					};
+
+					if (map.TryGetValue(ch, out var props))
+					{
+						info.minX += props.Padding.x;
+						info.maxX += props.Padding.x;
+						info.advance += props.Padding.x + props.Spacing;
+						info.minY -= props.Padding.y;
+						info.maxY -= props.Padding.y;
+					}
+
 					characters.Add(info);
 
 #if BITMAP_FONT_CREATOR_DEBUG
@@ -155,18 +164,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			}
 
 			if (data.Monospaced)
-			{
-				for (var i = 0; i < characters.Count; i++)
-				{
-					var c = characters[i];
-					var minX = c.minX + Mathf.FloorToInt((advMax - c.advance) * 0.5f);
-					c.minX = 0;
-					c.maxX = cellSize.x;
-					c.bearing = minX;
-					c.advance = advMax;
-					characters[i] = c;
-				}
-			}
+				SetFontAsMonospaced(characters, cellSize.x, advMax);
 
 			return characters.ToArray();
 		}
@@ -192,6 +190,20 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 					// if (y < yMin) yMin = y;
 					// if (y > yMax) yMax = y;
 				}
+			}
+		}
+
+		private static void SetFontAsMonospaced(List<CharacterInfo> characters, int cellWidth, int advMax)
+		{
+			for (var i = 0; i < characters.Count; i++)
+			{
+				var c = characters[i];
+				var minX = c.minX + Mathf.FloorToInt((advMax - c.advance) * 0.5f);
+				c.minX = 0;
+				c.maxX = cellWidth;
+				c.bearing = minX;
+				c.advance = advMax;
+				characters[i] = c;
 			}
 		}
 

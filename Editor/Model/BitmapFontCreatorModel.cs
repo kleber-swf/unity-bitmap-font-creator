@@ -14,7 +14,18 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 	internal class CharacterProps
 	{
 		public string Character = "";
+		public Vector2Int Padding = Vector2Int.zero;
 		public int Spacing = 0;
+
+		public CharacterProps Clone()
+		{
+			return new CharacterProps
+			{
+				Character = Character,
+				Padding = Padding,
+				Spacing = Spacing,
+			};
+		}
 	}
 
 	[Serializable]
@@ -61,7 +72,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			else dest.CustomCharacterProps = new List<CharacterProps>();
 
 			foreach (var e in CustomCharacterProps)
-				dest.CustomCharacterProps.Add(new CharacterProps() { Character = e.Character, Spacing = e.Spacing });
+				dest.CustomCharacterProps.Add(e.Clone());
 
 			UpdateChacters();
 		}
