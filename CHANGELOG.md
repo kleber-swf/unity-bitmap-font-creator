@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 -  Settings were not being saved
 -  Properly getting bearing values for characters
+-  Save profile window position
 
 ## [1.2.1]
 
