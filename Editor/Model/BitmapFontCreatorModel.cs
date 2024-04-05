@@ -79,7 +79,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 
 	internal class ExecutionData : BitmapFontCreatorData
 	{
-		public Texture2D Texture;
+		[NonSerialized] public Texture2D Texture;
 
 		public static ExecutionData Default => new()
 		{
