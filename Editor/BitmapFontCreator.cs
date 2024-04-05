@@ -84,8 +84,8 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 
 		private static CharacterInfo[] CreateCharacters(ExecutionData data, Dictionary<char, CharacterProps> map)
 		{
-			var texSize = new Vector2(data.Texture.width, data.Texture.height);
-			var cellSize = new Vector2(texSize.x / data.Cols, texSize.y / data.Rows);
+			var texSize = new Vector2Int(data.Texture.width, data.Texture.height);
+			var cellSize = new Vector2Int(Mathf.FloorToInt(texSize.x / data.Cols), Mathf.FloorToInt(texSize.y / data.Rows));
 			var cellUVSize = new Vector2(1f / data.Cols, 1f / data.Rows);
 
 			var characters = new List<CharacterInfo>();
@@ -105,17 +105,22 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 					GetCharacterBounds(
 						tex: data.Texture,
 						alphaThreshold: data.AlphaThreshold,
-						x0: col * (int)cellSize.x,
-						y0: (data.Rows - row) * (int)cellSize.y,
-						width: (int)cellSize.x,
-						height: (int)cellSize.y,
+						x0: col * cellSize.x,
+						y0: (data.Rows - row) * cellSize.y,
+						width: cellSize.x,
+						height: cellSize.y,
 						xMin: out xMin,
 						xMax: out xMax
 					);
 
 					advance = xMax - xMin + data.DefaultCharacterSpacing;
 					if (advance > largestAdvance) largestAdvance = advance;
-					if (map.TryGetValue(ch, out var props)) advance = xMax - xMin + props.Spacing;
+					if (map.TryGetValue(ch, out var props)) advance = xMax + props.Spacing;
+
+#if BITMAP_FONT_CREATOR_DEBUG
+					static string _(float x) => $"<color=yellow>{x}</color>";
+					Debug.Log($"<b>{ch}</b> xMin: {_(xMin)} xMax: {_(xMax)} advance: {_(advance)}");
+#endif
 
 					var info = new CharacterInfo
 					{
@@ -126,7 +131,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 						minY = Mathf.RoundToInt(cellSize.y * 0.5f),
 						maxX = Mathf.RoundToInt(cellSize.x),
 						maxY = Mathf.RoundToInt(-cellSize.y * 0.5f),
-						bearing = xMin,
+						bearing = -xMin,
 						advance = advance,
 					};
 					characters.Add(info);
