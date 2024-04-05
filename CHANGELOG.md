@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 -  Support to TextMesh
 
+### Changed
+
+-  Monospaced now centralizes the glyph
+
 ### Fixed
 
 -  Settings were not being saved

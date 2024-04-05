@@ -101,8 +101,11 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			var cellUVSize = new Vector2(1f / data.Cols, 1f / data.Rows);
 
 			var characters = new List<CharacterInfo>();
-			int xMin, xMax, advance;
-			int largestAdvance = 0;
+			int xMin, xMax, advance, w, advMax = 0;
+
+#if BITMAP_FONT_CREATOR_DEBUG
+			static string _(float x) => $"<color=yellow>{x}</color>";
+#endif
 
 			for (var row = 0; row < data.Rows; row++)
 			{
@@ -125,14 +128,11 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 						xMax: out xMax
 					);
 
-					advance = xMax - xMin + data.DefaultCharacterSpacing;
-					if (advance > largestAdvance) largestAdvance = advance;
-					if (map.TryGetValue(ch, out var props)) advance = xMax + props.Spacing;
+					w = xMax - xMin;
 
-#if BITMAP_FONT_CREATOR_DEBUG
-					static string _(float x) => $"<color=yellow>{x}</color>";
-					Debug.Log($"<b>{ch}</b> xMin: {_(xMin)} xMax: {_(xMax)} advance: {_(advance)}");
-#endif
+					advance = w + data.DefaultCharacterSpacing;
+					if (map.TryGetValue(ch, out var props)) advance = xMax + props.Spacing;
+					if (advance > advMax) advMax = advance;
 
 					var info = new CharacterInfo
 					{
@@ -140,13 +140,17 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 						uvTopLeft = new Vector2(cellUVSize.x * col, cellUVSize.y * (data.Rows - row - 1)),
 						uvBottomRight = new Vector2(cellUVSize.x * (col + 1), cellUVSize.y * (data.Rows - row)),
 						minX = 0,
-						minY = Mathf.RoundToInt(cellSize.y * 0.5f),
 						maxX = Mathf.RoundToInt(cellSize.x),
+						minY = Mathf.RoundToInt(cellSize.y * 0.5f),
 						maxY = Mathf.RoundToInt(-cellSize.y * 0.5f),
 						bearing = -xMin,
 						advance = advance,
 					};
 					characters.Add(info);
+
+#if BITMAP_FONT_CREATOR_DEBUG
+					Debug.Log($"<b>{ch}</b> xMin: {_(xMin)} xMax: {_(xMax)} advance: {_(advance)}");
+#endif
 				}
 			}
 
@@ -155,8 +159,11 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 				for (var i = 0; i < characters.Count; i++)
 				{
 					var c = characters[i];
-					if (map.ContainsKey((char)c.index)) continue;
-					c.advance = largestAdvance;
+					var minX = c.minX + Mathf.FloorToInt((advMax - c.advance) * 0.5f);
+					c.minX = 0;
+					c.maxX = cellSize.x;
+					c.bearing = minX;
+					c.advance = advMax;
 					characters[i] = c;
 				}
 			}
@@ -190,13 +197,14 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 
 		private static void CreateOrReplaceAsset<T>(T asset, string path) where T : Object
 		{
-			T existingAsset = AssetDatabase.LoadAssetAtPath<T>(path);
-			if (existingAsset == null)
+			T dest = AssetDatabase.LoadAssetAtPath<T>(path);
+			if (dest == null)
 				AssetDatabase.CreateAsset(asset, path);
 			else
 			{
-				EditorUtility.CopySerialized(asset, existingAsset);
-				AssetDatabase.SaveAssets();
+				EditorUtility.CopySerialized(asset, dest);
+				EditorUtility.SetDirty(dest);
+				AssetDatabase.SaveAssetIfDirty(dest);
 			}
 		}
 
