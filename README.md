@@ -25,7 +25,10 @@ Settings can be saved to [profiles](#profiles) and retrieved to be used later.
 -  **Character Set**: Predefined character set to use. This is not saved to the profile.
 -  **Characters**: Characters used in the font in order they appear in the texture. Use the space character to represent blank spaces in the texture. You can break lines as much as you need to make it easier to add the character according to the texture.
 -  **Default Character Spacing**: Default spacing between characters.
--  **Custom Character Properties**: Custom properties for each characters, if any. For now the only custom property is the spacing.
+-  **Custom Character Properties**: Custom properties for each characters, if any.
+   -  **Char**: Character to apply the properties.
+   -  **Spacing**: Horizontal spacing after the character (advance). Ignored if font is monospaced.
+   -  **Padding**: Custom horizontal and vertical padding to add before the character.
 
 ## Preferences
 
