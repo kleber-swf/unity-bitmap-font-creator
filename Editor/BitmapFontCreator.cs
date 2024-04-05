@@ -59,15 +59,15 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 				mainTexture = texture,
 			};
 
-			// TextMesh support
-			material.SetOverrideTag("RenderType", "Transparent");
-			material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
-			material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
-			material.SetInt("_ZWrite", 0);
-			material.DisableKeyword("_ALPHATEST_ON");
-			material.EnableKeyword("_ALPHABLEND_ON");
+			// TextMesh support from https://github.com/Unity-Technologies/UnityCsReference/blob/e3365924358684e2c5d99ce1de1068bea5483981/Editor/Mono/Inspector/StandardShaderGUI.cs#L369
+			material.SetOverrideTag("RenderType", "TransparentCutout");
+			material.SetFloat("_SrcBlend", (float)UnityEngine.Rendering.BlendMode.One);
+			material.SetFloat("_DstBlend", (float)UnityEngine.Rendering.BlendMode.Zero);
+			material.SetFloat("_ZWrite", 1.0f);
+			material.EnableKeyword("_ALPHATEST_ON");
+			material.DisableKeyword("_ALPHABLEND_ON");
 			material.DisableKeyword("_ALPHAPREMULTIPLY_ON");
-			material.renderQueue = (int)UnityEngine.Rendering.RenderQueue.Transparent;
+			// material.renderQueue = (int)UnityEngine.Rendering.RenderQueue.AlphaTest;
 
 			return material;
 		}
