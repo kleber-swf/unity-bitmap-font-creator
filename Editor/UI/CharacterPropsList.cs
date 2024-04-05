@@ -42,7 +42,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			var w = rect.width;
 
 			rect.width = widths[0] * w;
-			var text = EditorGUI.TextField(rect, item.Character);
+			var text = EditorGUI.TextField(rect, item.Character, Styles.CustomCharacterField);
 			if (GUI.changed) item.Character = text.Length > 1 ? text[1..] : text;
 
 			rect.x += rect.width + spacing;

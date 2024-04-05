@@ -51,6 +51,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 #if BITMAP_FONT_CREATOR_DEBUG
 			if (_customCharPropsList == null) Setup();
 #endif
+			EditorGUIUtility.labelWidth = 120;
 			_mainScrollPos = GUILayout.BeginScrollView(_mainScrollPos, false, false, GUIStyle.none, GUI.skin.verticalScrollbar, GUILayout.ExpandHeight(true));
 			GUILayout.BeginVertical();
 
@@ -60,7 +61,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			_data.Rows = EditorGUILayout.IntField(UI.Rows, _data.Rows);
 
 			GUILayout.BeginHorizontal();
-			GUILayout.Space(EditorGUIUtility.labelWidth);
+			GUILayout.FlexibleSpace();
 			if (GUILayout.Button(UI.GuessButton)) GuessRowsAndCols();
 			GUILayout.EndHorizontal();
 

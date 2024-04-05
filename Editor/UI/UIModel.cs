@@ -34,7 +34,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 		public static readonly GUIContent Characters = new("Characters", "Characters used in the font in order they appear in the texture. Use the space character to represent blank spaces in the texture");
 		public static readonly GUIContent DefaultCharacterSpacing = new("Character Spacing", "Default spacing between characters");
 		public static readonly GUIContent CustomCharacterProperties = new("Custom Character Properties", "Custom properties for each characters, if any");
-		public static readonly GUIContent CustomCharacter = new("Character", "Character to apply the properties");
+		public static readonly GUIContent CustomCharacter = new("Char", "Character to apply the properties");
 		public static readonly GUIContent CustomSpacing = new("Spacing", "Horizontal spacing after the character (advance). Ignored if font is monospaced");
 		public static readonly GUIContent CustomPadding = new("Padding", "Custom horizontal and vertical padding to add before the character");
 
@@ -50,6 +50,8 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 
 	internal static class Styles
 	{
+		public static readonly Font MonospacedFont = Resources.Load<Font>("Fonts/monospaced");
+
 		public static readonly GUIStyle HeaderLabel = new(EditorStyles.label)
 		{
 			margin = new(EditorStyles.label.margin.left, EditorStyles.label.margin.right, 5, 5),
@@ -92,9 +94,14 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 
 		public static readonly GUIStyle CharactersField = new(EditorStyles.textArea)
 		{
-			font = Resources.Load<Font>("Fonts/monospaced"),
+			font = MonospacedFont,
 			stretchHeight = true,
 			normal = new() { textColor = Color.white },
+		};
+
+		public static readonly GUIStyle CustomCharacterField = new(EditorStyles.textField)
+		{
+			font = MonospacedFont,
 		};
 
 		public static readonly GUIStyle CreateButton = new(GUI.skin.button)
