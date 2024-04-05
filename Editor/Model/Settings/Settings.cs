@@ -42,6 +42,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 
 		public void OnAfterDeserialize()
 		{
+			Profiles.Parent = this;
 			Profiles.UpdateCache();
 		}
 

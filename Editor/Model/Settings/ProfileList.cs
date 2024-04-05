@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor;
 using UnityEngine;
 
 namespace dev.klebersilva.tools.bitmapfontcreator
@@ -10,13 +11,18 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 	{
 		[SerializeField] private int _selectedIndex = -1;
 		[SerializeField] private List<Profile> _profiles = new();
-
 		private string[] _names = new string[0];
+
+		[NonSerialized] public Settings Parent;
 
 		public int SelectedIndex
 		{
 			get => _selectedIndex;
-			set => _selectedIndex = value;
+			set
+			{
+				_selectedIndex = value;
+				UpdateAsset();
+			}
 		}
 
 		public Profile Selected
@@ -30,18 +36,10 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 
 		public string[] Names => _names;
 
-		public void UpdateCache()
-		{
-			var lastSelected = _selectedIndex < 0 ? null : _profiles[_selectedIndex].Name;
-			_profiles.Sort((a, b) => a.Name.CompareTo(b.Name));
-			_names = _profiles.Select(e => e.Name).ToArray();
-			if (!string.IsNullOrEmpty(lastSelected)) _selectedIndex = Array.IndexOf(_names, lastSelected);
-		}
-
 		public void Add(Profile data)
 		{
 			_profiles.Add(data);
-			_selectedIndex = _profiles.Count - 1;
+			SelectedIndex = _profiles.Count - 1;
 			UpdateCache();
 		}
 
@@ -49,7 +47,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 		{
 			if (index < 0 || index >= _profiles.Count) return false;
 			_profiles.RemoveAt(index);
-			_selectedIndex = -1;
+			SelectedIndex = -1;
 			UpdateCache();
 			return true;
 		}
@@ -60,7 +58,25 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			if (index < 0 || index >= _profiles.Count)
 				Add(data);
 			else
+			{
 				data.CopyTo(_profiles[index]);
+				UpdateAsset();
+			}
+		}
+
+		public void UpdateCache()
+		{
+			var lastSelected = _selectedIndex < 0 ? null : _profiles[_selectedIndex].Name;
+			_profiles.Sort((a, b) => a.Name.CompareTo(b.Name));
+			_names = _profiles.Select(e => e.Name).ToArray();
+			if (!string.IsNullOrEmpty(lastSelected)) _selectedIndex = Array.IndexOf(_names, lastSelected);
+		}
+
+		private void UpdateAsset()
+		{
+			if (!Parent) return;
+			EditorUtility.SetDirty(Parent);
+			AssetDatabase.SaveAssetIfDirty(Parent);
 		}
 	}
 }
