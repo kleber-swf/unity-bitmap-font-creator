@@ -10,9 +10,16 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 		private string _text = "";
 		public event Action<string> OnSave;
 
-		public void Open(string title, string text)
+		public static SaveDialog Open(string title, string text)
 		{
-			titleContent = new GUIContent(title ?? "Save");
+			var window = GetWindowWithRect<SaveDialog>(
+				new Rect(Screen.width * 0.5f, Screen.height * 0.5f, 300, 60), false, title ?? "Save");
+			window.DoOpen(text);
+			return window;
+		}
+
+		private void DoOpen(string text)
+		{
 			_text = text ?? "";
 			minSize = maxSize = new Vector2(300, 60);
 			ShowModalUtility();
@@ -31,7 +38,10 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 		private void RequestSaveAndClose()
 		{
 			Close();
-			OnSave?.Invoke(_text);
+			if (OnSave == null) return;
+			OnSave.Invoke(_text);
+			foreach (var handler in OnSave.GetInvocationList())
+				OnSave -= (Action<string>)handler;
 		}
 	}
 }

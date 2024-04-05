@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using UnityEditor;
-using UnityEngine;
 
 namespace dev.klebersilva.tools.bitmapfontcreator
 {
@@ -78,10 +77,8 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 
 		private void ShowSaveDialog()
 		{
-			var window = EditorWindow.GetWindowWithRect<SaveDialog>(
-				new Rect(Screen.width * 0.3f, Screen.height * 0.3f, 300, 60));
+			var window = SaveDialog.Open("Save Profile", _profiles.Selected?.Name ?? "Profile");
 			window.OnSave += TrySaveOrAddProfile;
-			window.Open("Save Profile", _profiles.Selected?.Name ?? "Profile");
 		}
 
 		private void TrySaveOrAddProfile(string profileName)
