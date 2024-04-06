@@ -104,7 +104,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			AlphaThreshold = 0f,
 			DefaultCharacterSpacing = 10,
 			Monospaced = false,
-			LineSpacing = 0.1f,
+			LineSpacing = 0f,
 			CustomCharacterProps = new List<CharacterProps>(),
 			ValidCharacters = string.Empty,
 			ValidCharactersCount = 0
