@@ -53,21 +53,11 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 
 		private static Material CreateMaterial(string baseName, Texture2D texture)
 		{
-			var material = new Material(Shader.Find("Standard"))
+			var material = new Material(Shader.Find("Unlit/Transparent"))
 			{
 				name = baseName,
 				mainTexture = texture,
 			};
-
-			// TextMesh support: https://github.com/Unity-Technologies/UnityCsReference/blob/e3365924358684e2c5d99ce1de1068bea5483981/Editor/Mono/Inspector/StandardShaderGUI.cs#L369
-			material.SetOverrideTag("RenderType", "TransparentCutout");
-			material.SetFloat("_SrcBlend", (float)UnityEngine.Rendering.BlendMode.One);
-			material.SetFloat("_DstBlend", (float)UnityEngine.Rendering.BlendMode.Zero);
-			material.SetFloat("_ZWrite", 1.0f);
-			material.EnableKeyword("_ALPHATEST_ON");
-			material.DisableKeyword("_ALPHABLEND_ON");
-			material.DisableKeyword("_ALPHAPREMULTIPLY_ON");
-			material.SetFloat("_Mode", 1f);
 
 			return material;
 		}
