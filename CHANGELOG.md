@@ -5,6 +5,33 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0]
+
+### Added
+
+-  Texture preview window
+-  Line spacing property
+-  Guess line spacing button
+-  Support to ascent and descent font properties
+-  Ascent and descent properties inside texture preview
+-  Custom character padding
+-  Support to TextMesh
+
+### Changed
+
+-  Menu access moved to Window / Text / Bitmap Font Creator
+-  Monospaced now centralizes the glyph
+-  Material is now generated with Unlit/Transparent shader
+
+### Fixed
+
+-  Alignment madness
+-  Settings were not being saved
+-  Properly getting bearing values for characters
+-  Save profile window position
+
+---
+
 ## [1.2.1]
 
 ### Fixed
@@ -70,6 +97,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Initial version
 
+[1.3.0]: https://github.com/kleber-swf/unity-bitmap-font-creator/releases/tag/1.3.0
 [1.2.1]: https://github.com/kleber-swf/unity-bitmap-font-creator/releases/tag/1.2.1
 [1.2.0]: https://github.com/kleber-swf/unity-bitmap-font-creator/releases/tag/1.2.0
 [1.1.1]: https://github.com/kleber-swf/unity-bitmap-font-creator/releases/tag/1.1.1

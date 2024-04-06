@@ -1,4 +1,3 @@
-using System;
 using UnityEditor;
 using UnityEngine;
 
@@ -8,14 +7,21 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 	{
 		private const string TextFieldId = "_tf";
 		private string _text = "";
-		public event Action<string> OnSave;
+		private bool _save = false;
 
-		public void Open(string title, string text)
+		public static string Open(string title, string text)
 		{
-			titleContent = new GUIContent(title ?? "Save");
-			_text = text ?? "";
+			var window = GetWindowWithRect<SaveDialog>(
+				new Rect(Screen.width * 0.5f, Screen.height * 0.5f, 300, 60), false, title ?? "Save");
+			return window.DoOpen(text);
+		}
+
+		private string DoOpen(string text)
+		{
+			_text = text ?? string.Empty;
 			minSize = maxSize = new Vector2(300, 60);
 			ShowModalUtility();
+			return _save ? _text : null;
 		}
 
 		private void OnGUI()
@@ -30,8 +36,8 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 
 		private void RequestSaveAndClose()
 		{
+			_save = true;
 			Close();
-			OnSave?.Invoke(_text);
 		}
 	}
 }

@@ -14,7 +14,18 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 	internal class CharacterProps
 	{
 		public string Character = "";
+		public Vector2Int Padding = Vector2Int.zero;
 		public int Spacing = 0;
+
+		public CharacterProps Clone()
+		{
+			return new CharacterProps
+			{
+				Character = Character,
+				Padding = Padding,
+				Spacing = Spacing,
+			};
+		}
 	}
 
 	[Serializable]
@@ -28,6 +39,9 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 		public int Rows;
 		public float AlphaThreshold;
 		public bool Monospaced;
+		public float Ascent;
+		public float Descent;
+		public float LineSpacing;
 		public int DefaultCharacterSpacing;
 		public List<CharacterProps> CustomCharacterProps;
 
@@ -54,14 +68,17 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			dest.Cols = Cols;
 			dest.Rows = Rows;
 			dest.AlphaThreshold = AlphaThreshold;
+			dest.LineSpacing = LineSpacing;
 			dest.Monospaced = Monospaced;
+			dest.Ascent = Ascent;
+			dest.Descent = Descent;
 			dest.DefaultCharacterSpacing = DefaultCharacterSpacing;
 
 			if (dest.CustomCharacterProps != null) dest.CustomCharacterProps.Clear();
 			else dest.CustomCharacterProps = new List<CharacterProps>();
 
 			foreach (var e in CustomCharacterProps)
-				dest.CustomCharacterProps.Add(new CharacterProps() { Character = e.Character, Spacing = e.Spacing });
+				dest.CustomCharacterProps.Add(e.Clone());
 
 			UpdateChacters();
 		}
@@ -79,7 +96,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 
 	internal class ExecutionData : BitmapFontCreatorData
 	{
-		public Texture2D Texture;
+		[NonSerialized] public Texture2D Texture;
 
 		public static ExecutionData Default => new()
 		{
@@ -91,6 +108,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			AlphaThreshold = 0f,
 			DefaultCharacterSpacing = 10,
 			Monospaced = false,
+			LineSpacing = 0f,
 			CustomCharacterProps = new List<CharacterProps>(),
 			ValidCharacters = string.Empty,
 			ValidCharactersCount = 0

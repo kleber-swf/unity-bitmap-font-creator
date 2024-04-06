@@ -53,11 +53,13 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 
 		private static Material CreateMaterial(string baseName, Texture2D texture)
 		{
-			return new Material(Shader.Find("Standard"))
+			var material = new Material(Shader.Find("Unlit/Transparent"))
 			{
 				name = baseName,
-				mainTexture = texture
+				mainTexture = texture,
 			};
+
+			return material;
 		}
 
 		private static Font CreateFontAsset(string baseName, Material material, ExecutionData data, out string error)
@@ -75,23 +77,35 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 				map.Add(e.Character[0], e);
 			}
 
-			return new Font(baseName)
+			var font = new Font(baseName)
 			{
 				material = material,
-				characterInfo = CreateCharacters(data, map),
+				characterInfo = CreateCharacters(data, map, data.Descent),
 			};
+
+			var so = new SerializedObject(font);
+			so.FindProperty("m_LineSpacing").floatValue = data.LineSpacing;
+			so.FindProperty("m_Ascent").floatValue = data.Ascent + data.Descent;
+			so.FindProperty("m_Descent").floatValue = data.Descent;
+			so.ApplyModifiedProperties();
+
+			return font;
 		}
 
-		private static CharacterInfo[] CreateCharacters(ExecutionData data, Dictionary<char, CharacterProps> map)
+		private static CharacterInfo[] CreateCharacters(ExecutionData data, Dictionary<char, CharacterProps> map, float descent)
 		{
-			var texSize = new Vector2(data.Texture.width, data.Texture.height);
-			var cellSize = new Vector2(texSize.x / data.Cols, texSize.y / data.Rows);
+			var texSize = new Vector2Int(data.Texture.width, data.Texture.height);
+			var cellSize = new Vector2Int(Mathf.FloorToInt(texSize.x / data.Cols), Mathf.FloorToInt(texSize.y / data.Rows));
 			var cellUVSize = new Vector2(1f / data.Cols, 1f / data.Rows);
+			var ratio = new Vector2(1f / texSize.x, 1f / texSize.y);
 
 			var characters = new List<CharacterInfo>();
-			int xMin, xMax, advance;
-			int largestAdvance = 0;
+			int xMin, xMax, yMin, yMax, advance, advMax = 0;
 
+#if BITMAP_FONT_CREATOR_DEV
+			static string _(float x) => $"<color=yellow>{x}</color>";
+#endif
+			var baseline = (int)(cellSize.y - descent);
 			for (var row = 0; row < data.Rows; row++)
 			{
 				for (var col = 0; col < data.Cols; col++)
@@ -105,55 +119,70 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 					GetCharacterBounds(
 						tex: data.Texture,
 						alphaThreshold: data.AlphaThreshold,
-						x0: col * (int)cellSize.x,
-						y0: (data.Rows - row) * (int)cellSize.y,
-						width: (int)cellSize.x,
-						height: (int)cellSize.y,
+						x0: col * cellSize.x,
+						y0: (data.Rows - row) * cellSize.y,
+						width: cellSize.x,
+						height: cellSize.y,
 						xMin: out xMin,
-						xMax: out xMax
+						xMax: out xMax,
+						yMin: out yMin,
+						yMax: out yMax
 					);
 
 					advance = xMax - xMin + data.DefaultCharacterSpacing;
-					if (advance > largestAdvance) largestAdvance = advance;
-					if (map.TryGetValue(ch, out var props)) advance = xMax - xMin + props.Spacing;
+					if (advance > advMax) advMax = advance;
+
+					var y = Mathf.RoundToInt(-yMin + descent - (yMax - baseline));
 
 					var info = new CharacterInfo
 					{
 						index = ch,
-						uvTopLeft = new Vector2(cellUVSize.x * col, cellUVSize.y * (data.Rows - row - 1)),
-						uvBottomRight = new Vector2(cellUVSize.x * (col + 1), cellUVSize.y * (data.Rows - row)),
-						minX = 0,
-						minY = Mathf.RoundToInt(cellSize.y * 0.5f),
-						maxX = Mathf.RoundToInt(cellSize.x),
-						maxY = Mathf.RoundToInt(-cellSize.y * 0.5f),
-						bearing = xMin,
+						uvTopLeft = new Vector2(
+							cellUVSize.x * col + (xMin * ratio.x),
+							cellUVSize.y * (data.Rows - row) - (yMin * ratio.y)
+						),
+						uvBottomRight = new Vector2(
+							cellUVSize.x * (col + 1) - ((cellSize.x - xMax) * ratio.x),
+							cellUVSize.y * (data.Rows - row - 1) + ((cellSize.y - yMax) * ratio.y)
+						),
+						minX = xMin,
+						maxX = xMax,
+						minY = yMin + y,
+						maxY = yMax + y,
+						bearing = 0,
 						advance = advance,
 					};
+
+					if (map.TryGetValue(ch, out var props))
+					{
+						info.minX += props.Padding.x;
+						info.maxX += props.Padding.x;
+						info.advance += props.Padding.x + props.Spacing;
+						info.minY -= props.Padding.y;
+						info.maxY -= props.Padding.y;
+					}
+
 					characters.Add(info);
+
+#if BITMAP_FONT_CREATOR_DEV
+					Debug.Log($"<b>{ch}</b> {_(info.glyphWidth)} {_(info.glyphHeight)} yMin: {_(yMin)} yMax: {_(yMax)}");
+#endif
 				}
 			}
 
 			if (data.Monospaced)
-			{
-				for (var i = 0; i < characters.Count; i++)
-				{
-					var c = characters[i];
-					if (map.ContainsKey((char)c.index)) continue;
-					c.advance = largestAdvance;
-					characters[i] = c;
-				}
-			}
+				SetFontAsMonospaced(characters, advMax);
 
 			return characters.ToArray();
 		}
 
 		private static void GetCharacterBounds(Texture2D tex, float alphaThreshold, int x0, int y0,
-			int width, int height, out int xMin, out int xMax)
+			int width, int height, out int xMin, out int xMax, out int yMin, out int yMax)
 		{
 			xMin = width;
 			xMax = 0;
-			// yMin = height;
-			// yMax = 0;
+			yMin = height;
+			yMax = 0;
 
 			int xx, yy;
 			for (var y = 0; y < height; y++)
@@ -165,21 +194,35 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 					if (tex.GetPixel(xx, yy).a <= alphaThreshold) continue;
 					if (x < xMin) xMin = x;
 					if (x > xMax) xMax = x;
-					// if (y < yMin) yMin = y;
-					// if (y > yMax) yMax = y;
+					if (y < yMin) yMin = y;
+					if (y > yMax) yMax = y;
 				}
+			}
+		}
+
+		private static void SetFontAsMonospaced(List<CharacterInfo> characters, int advMax)
+		{
+			for (var i = 0; i < characters.Count; i++)
+			{
+				var c = characters[i];
+				var x = c.minX + Mathf.FloorToInt((advMax - c.advance) * 0.5f);
+				c.minX += x;
+				c.maxX += x;
+				c.advance = advMax;
+				characters[i] = c;
 			}
 		}
 
 		private static void CreateOrReplaceAsset<T>(T asset, string path) where T : Object
 		{
-			T existingAsset = AssetDatabase.LoadAssetAtPath<T>(path);
-			if (existingAsset == null)
+			T dest = AssetDatabase.LoadAssetAtPath<T>(path);
+			if (dest == null)
 				AssetDatabase.CreateAsset(asset, path);
 			else
 			{
-				EditorUtility.CopySerialized(asset, existingAsset);
-				AssetDatabase.SaveAssets();
+				EditorUtility.CopySerialized(asset, dest);
+				EditorUtility.SetDirty(dest);
+				AssetDatabase.SaveAssetIfDirty(dest);
 			}
 		}
 
@@ -243,6 +286,11 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			}
 
 			return new(rows, cols);
+		}
+
+		public static int GuessLineSpacing(Texture2D texture, int rows)
+		{
+			return Mathf.RoundToInt(texture.height / rows);
 		}
 	}
 }

@@ -23,17 +23,30 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 
 	internal static class UI
 	{
+		public static readonly Font MonospacedFont = Resources.Load<Font>("Fonts/monospaced");
+		public static readonly Texture2D GridDarkTexture = Resources.Load<Texture2D>("Textures/grid-dark");
+		public static readonly Texture2D GridLightTexture = Resources.Load<Texture2D>("Textures/grid-light");
+
 		public static readonly GUIContent Texture = new("Font Texture", "Texture used for the font");
 		public static readonly GUIContent Orientation = new("Orientation", "Order to look up for characters in the texture");
 		public static readonly GUIContent Cols = new("Cols", "Number of columns in the texture");
 		public static readonly GUIContent Rows = new("Rows", "Number of rows in the texture");
-		public static readonly GUIContent GuessButton = new("Guess", "Guess Rows and Cols");
+		public static readonly GUIContent GuessRowsAndColsButton = new("Guess", "Guess the number of rows and columns of the texture based on transparency gaps");
+		public static readonly GUIContent GuessLineSpacingButton = new("Guess", "Guess Line Spacing based on the texture and the number of rows");
+		public static readonly GUIContent PreviewButton = new("Preview", "Preview the texture with current rows and cols");
 		public static readonly GUIContent AlphaThreshold = new("Alpha Threshold", "Alpha threshold to identify characters bounds");
 		public static readonly GUIContent Monospaced = new("Monospaced", "Whether the result font should be monospaced");
+		public static readonly GUIContent Ascent = new("Ascent", "Font ascent. It's the part of the glyphs that should be above the baseline");
+		public static readonly GUIContent Descent = new("Descent", "Font descent. It's the part of the glyphs that should be below the baseline");
+		public static readonly GUIContent LineSpacing = new("Line Spacing", "Vertical spacing between lines");
 		public static readonly GUIContent CharacterSet = new("Character Set", "Predefined character set to use");
 		public static readonly GUIContent Characters = new("Characters", "Characters used in the font in order they appear in the texture. Use the space character to represent blank spaces in the texture");
 		public static readonly GUIContent DefaultCharacterSpacing = new("Character Spacing", "Default spacing between characters");
 		public static readonly GUIContent CustomCharacterProperties = new("Custom Character Properties", "Custom properties for each characters, if any");
+		public static readonly GUIContent CustomCharacter = new("Char", "Character to apply the properties");
+		public static readonly GUIContent CustomSpacing = new("Spacing", "Horizontal spacing after the character (advance). Ignored if font is monospaced");
+		public static readonly GUIContent CustomPadding = new("Padding", "Custom horizontal and vertical padding to add before the character");
+
 		public static readonly GUIContent CreateButton = new("Create", "Create font files");
 
 		public static readonly GUIContent RollbackButton = new("Rollback", "Rollback settings to the selected profile or default");
@@ -42,6 +55,14 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 		public static readonly GUIContent WarnOnReplaceFont = new("Warn before replacing font files", "Warn before replacing an existing font. This will replace the old font keeping the references");
 		public static readonly GUIContent WarnOnReplaceSettings = new("Warn before replacing settings", "Warn before replacing settings when selecting a profile");
 		public static readonly GUIContent WarnOnReplaceProfile = new("Warn before replacing profile", "Warn before replacing an existing profile");
+
+		public static readonly GUIContent NoContent = new("Invalid texture", "There is no texture selected or the number of rows or columns are set to zero");
+		public static readonly GUIContent GridColorLabel = new("Grid", "Color for the grid lines showing rows and columns");
+		public static readonly GUIContent HeightColorLabel = new("Height", "Color for de glyph hight line (ascent + descent)");
+		public static readonly GUIContent BaselineColorLabel = new("Baseline", "Color for the baseline (descent)");
+
+		public static readonly GUIContent DarkTextureIcon = new() { image = GridDarkTexture, };
+		public static readonly GUIContent LightTextureIcon = new() { image = GridLightTexture };
 	}
 
 	internal static class Styles
@@ -88,9 +109,14 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 
 		public static readonly GUIStyle CharactersField = new(EditorStyles.textArea)
 		{
-			font = Resources.Load<Font>("Fonts/monospaced"),
+			font = UI.MonospacedFont,
 			stretchHeight = true,
 			normal = new() { textColor = Color.white },
+		};
+
+		public static readonly GUIStyle CustomCharacterField = new(EditorStyles.textField)
+		{
+			font = UI.MonospacedFont,
 		};
 
 		public static readonly GUIStyle CreateButton = new(GUI.skin.button)
@@ -107,15 +133,55 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 		};
 
 		public static readonly GUIStyle ProfilesButton = new("ToolbarPopupLeft");
+		public static readonly GUIStyle RollbackButton = new("TE toolbarbutton") { padding = new(10, 6, 0, 0), };
+		public static readonly GUIStyle PreferencesButton = new("PaneOptions") { margin = new(0, 0, 3, 0), };
 
-		public static readonly GUIStyle RollbackButton = new("TE toolbarbutton")
+		public static readonly GUIStyle CenterLabel = new(GUI.skin.label)
 		{
-			padding = new(10, 6, 0, 0),
+			stretchWidth = true,
+			stretchHeight = true,
+			alignment = TextAnchor.MiddleCenter,
 		};
 
-		public static readonly GUIStyle PreferencesButton = new("PaneOptions")
+		public static readonly GUIStyle Toolbar = new("TimeAreaToolbar") { fixedHeight = 24, };
+		public static readonly GUIStyle MiniButton = new(EditorStyles.miniButton) { fixedWidth = 66, };
+
+
+		public static readonly GUIStyle BackgroundTextureIcon = new("HelpBox")
 		{
-			margin = new(0, 0, 3, 0),
+			padding = new(2, 2, 2, 2),
+			imagePosition = ImagePosition.ImageOnly,
+			fixedWidth = 20,
+			fixedHeight = 20,
 		};
+	}
+
+	internal static class UIUtils
+	{
+		public static float FloatFieldMin(GUIContent label, float value, float min)
+		{
+			EditorGUI.BeginChangeCheck();
+			value = EditorGUILayout.FloatField(label, value);
+			if (EditorGUI.EndChangeCheck() && value < min) value = min;
+			return value;
+		}
+
+		public static int IntFieldMin(GUIContent label, int value, int min)
+		{
+			EditorGUI.BeginChangeCheck();
+			value = EditorGUILayout.IntField(label, value);
+			if (EditorGUI.EndChangeCheck() && value < min) value = min;
+			return value;
+		}
+
+		public static bool CenteredButton(GUIContent label, GUIStyle style = null)
+		{
+			GUILayout.BeginHorizontal();
+			GUILayout.FlexibleSpace();
+			var value = GUILayout.Button(label, style ?? GUI.skin.button);
+			GUILayout.FlexibleSpace();
+			GUILayout.EndHorizontal();
+			return value;
+		}
 	}
 }

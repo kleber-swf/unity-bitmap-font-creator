@@ -77,13 +77,13 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 
 		private void ShowSaveDialog()
 		{
-			var window = EditorWindow.GetWindow<SaveDialog>();
-			window.OnSave += TrySaveOrAddProfile;
-			window.Open("Save Profile", _profiles.Selected?.Name ?? "Profile");
+			var profileName = SaveDialog.Open("Save Profile", _profiles.Selected?.Name ?? "Profile");
+			TrySaveOrAddProfile(profileName);
 		}
 
 		private void TrySaveOrAddProfile(string profileName)
 		{
+			if (string.IsNullOrEmpty(profileName)) return;
 			var index = Array.IndexOf(_profiles.Names, profileName);
 			if (index < 0)
 			{
