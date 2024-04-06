@@ -24,7 +24,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 		[MenuItem(MenuItemPath)]
 		public static void ShowWindow()
 		{
-			var size = new Vector2(300, 580);
+			var size = new Vector2(310, 620);
 			var window = GetWindowWithRect<BitmapFontCreatorEditor>(
 				new Rect((Screen.width - size.x) * 0.5f, (Screen.height - size.y) * 0.5f, size.x, size.y),
 				false,
@@ -71,6 +71,10 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			_data.Orientation = (Orientation)EditorGUILayout.EnumPopup(UI.Orientation, _data.Orientation);
 			_data.AlphaThreshold = EditorGUILayout.Slider(UI.AlphaThreshold, _data.AlphaThreshold, 0f, 1f);
 			_data.Monospaced = EditorGUILayout.Toggle(UI.Monospaced, _data.Monospaced);
+
+			EditorGUI.BeginChangeCheck();
+			_data.LineSpacing = EditorGUILayout.FloatField(UI.LineSpacing, _data.LineSpacing);
+			if (EditorGUI.EndChangeCheck()) _data.LineSpacing = Mathf.Max(0.1f, _data.LineSpacing);
 
 			EditorGUILayout.Space();
 			DrawCharacterSetDropDown();
