@@ -5,7 +5,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 {
 	public class BitmapFontCreatorEditor : EditorWindow
 	{
-		public const string MenuItemPath = "Window/Bitmap Font Creator";
+		public const string MenuItemPath = "Window/Text/Bitmap Font Creator";
 
 		private readonly ExecutionData _data = ExecutionData.Default;
 		private CharacterPropsList _customCharPropsList;
@@ -24,7 +24,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 		[MenuItem(MenuItemPath)]
 		public static void ShowWindow()
 		{
-			var size = new Vector2(310, 620);
+			var size = new Vector2(310, 640);
 			var window = GetWindowWithRect<BitmapFontCreatorEditor>(
 				new Rect((Screen.width - size.x) * 0.5f, (Screen.height - size.y) * 0.5f, size.x, size.y),
 				false,
@@ -49,22 +49,18 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 
 		private void OnGUI()
 		{
-#if BITMAP_FONT_CREATOR_DEBUG
+#if BITMAP_FONT_CREATOR_DEV
 			if (_customCharPropsList == null) Setup();
 #endif
+
 			EditorGUIUtility.labelWidth = 120;
 			_mainScrollPos = GUILayout.BeginScrollView(_mainScrollPos, false, false, GUIStyle.none, GUI.skin.verticalScrollbar, GUILayout.ExpandHeight(true));
 			GUILayout.BeginVertical();
 
 			DrawTextureField();
 
-			EditorGUI.BeginChangeCheck();
-			_data.Cols = EditorGUILayout.IntField(UI.Cols, _data.Cols);
-			if (EditorGUI.EndChangeCheck()) _data.Cols = Mathf.Max(1, _data.Cols);
-
-			EditorGUI.BeginChangeCheck();
-			_data.Rows = EditorGUILayout.IntField(UI.Rows, _data.Rows);
-			if (EditorGUI.EndChangeCheck()) _data.Rows = Mathf.Max(1, _data.Rows);
+			_data.Cols = UIUtils.IntFieldMin(UI.Cols, _data.Cols, 1);
+			_data.Rows = UIUtils.IntFieldMin(UI.Rows, _data.Rows, 1);
 
 			GUILayout.BeginHorizontal();
 			GUILayout.FlexibleSpace();
@@ -75,7 +71,11 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			EditorGUILayout.Space();
 			_data.Orientation = (Orientation)EditorGUILayout.EnumPopup(UI.Orientation, _data.Orientation);
 			_data.AlphaThreshold = EditorGUILayout.Slider(UI.AlphaThreshold, _data.AlphaThreshold, 0f, 1f);
+
+			EditorGUILayout.Space();
 			_data.Monospaced = EditorGUILayout.Toggle(UI.Monospaced, _data.Monospaced);
+			_data.Ascent = UIUtils.FloatFieldMin(UI.Ascent, _data.Ascent, 0f);
+			_data.Descent = UIUtils.FloatFieldMin(UI.Descent, _data.Descent, 0f);
 
 			GUILayout.BeginHorizontal();
 			_data.LineSpacing = EditorGUILayout.FloatField(UI.LineSpacing, _data.LineSpacing);
@@ -156,15 +156,10 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 
 		private void DrawCreateFontButton()
 		{
-			GUILayout.BeginHorizontal();
-			GUILayout.FlexibleSpace();
 			GUI.color = Color.cyan;
-			if (GUILayout.Button(UI.CreateButton, Styles.CreateButton))
+			if (UIUtils.CenteredButton(UI.CreateButton, Styles.CreateButton))
 				BitmapFontCreator.TryCreateFont(_data, _prefsView.Model.WarnOnReplaceFont, out _error);
-
 			GUI.color = Color.white;
-			GUILayout.FlexibleSpace();
-			GUILayout.EndHorizontal();
 		}
 
 		private void DrawBottomMenu()

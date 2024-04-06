@@ -12,15 +12,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 -  Texture preview window
 -  Line spacing property
 -  Guess line spacing button
+-  Support to ascent and descent font properties
+-  Ascent and descent properties inside texture preview
 -  Custom character padding
 -  Support to TextMesh
 
 ### Changed
 
+-  Menu access moved to Window / Text / Bitmap Font Creator
 -  Monospaced now centralizes the glyph
+-  Material is now generated with Unlit/Transparent shader
 
 ### Fixed
 
+-  Alignment madness
 -  Settings were not being saved
 -  Properly getting bearing values for characters
 -  Save profile window position

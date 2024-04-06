@@ -10,8 +10,10 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 		public bool WarnOnReplaceFont = true;
 		public bool WarnOnReplaceSettings = true;
 		public bool WarnOnReplaceProfile = true;
-		public Color BackgroundColor = new(0.1764706f, 0.238087f, 0.3960784f);
-		public Color GridColor = new(0.1066661f, 0.1220122f, 0.1603774f, 1f);
+		public int TextureBackground = 0;
+		public Color GridColor = new(0.6509434f, 0.6509434f, 0.6509434f, 1f);
+		public Color BaselineColor = new(1f, 0.4692699f, 0f, 0.65f);
+		public Color HeightColor = new(0f, 0.8527439f, 1f, 0.5f);
 
 		public static PrefsModel Load()
 		{
