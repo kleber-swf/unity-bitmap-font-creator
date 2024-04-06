@@ -100,7 +100,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			var ratio = new Vector2(1f / texSize.x, 1f / texSize.y);
 
 			var characters = new List<CharacterInfo>();
-			int xMin, xMax, yMin, yMax, advance, w, advMax = 0;
+			int xMin, xMax, yMin, yMax, advance, advMax = 0;
 
 #if BITMAP_FONT_CREATOR_DEBUG
 			static string _(float x) => $"<color=yellow>{x}</color>";
@@ -129,14 +129,10 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 						yMax: out yMax
 					);
 
-					w = xMax - xMin;
-
-					advance = w + data.DefaultCharacterSpacing;
+					advance = xMax - xMin + data.DefaultCharacterSpacing;
 					if (advance > advMax) advMax = advance;
 
-					// var y = Mathf.RoundToInt(-ascent + descent + (yMax - yMin));
 					var y = Mathf.RoundToInt(-yMin + descent - (yMax - baseline));
-
 
 					var info = new CharacterInfo
 					{
@@ -151,8 +147,8 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 						),
 						minX = xMin,
 						maxX = xMax,
-						minY = yMin + y,//0
-						maxY = yMax + y,//cellSize.y,
+						minY = yMin + y,
+						maxY = yMax + y,
 						bearing = 0,
 						advance = advance,
 					};
@@ -175,7 +171,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			}
 
 			if (data.Monospaced)
-				SetFontAsMonospaced(characters, cellSize.x, advMax);
+				SetFontAsMonospaced(characters, advMax);
 
 			return characters.ToArray();
 		}
@@ -204,15 +200,14 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			}
 		}
 
-		private static void SetFontAsMonospaced(List<CharacterInfo> characters, int cellWidth, int advMax)
+		private static void SetFontAsMonospaced(List<CharacterInfo> characters, int advMax)
 		{
 			for (var i = 0; i < characters.Count; i++)
 			{
 				var c = characters[i];
-				var minX = c.minX + Mathf.FloorToInt((advMax - c.advance) * 0.5f);
-				c.minX = 0;
-				c.maxX = cellWidth;
-				c.bearing = minX;
+				var x = c.minX + Mathf.FloorToInt((advMax - c.advance) * 0.5f);
+				c.minX += x;
+				c.maxX += x;
 				c.advance = advMax;
 				characters[i] = c;
 			}
