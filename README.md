@@ -10,8 +10,6 @@ Select a texture, change the [settings](#settings) accondingly and hit _Create_.
 
 Make sure your texture has the _Read/Write_ enabled inside its properties.
 
-Because of some [limitation](#limitations), it'll not set the _Line Spacing_ field. If you need support to multi-line text, set it on the generated Font Settings file.
-
 ## Settings
 
 Settings can be saved to [profiles](#profiles) and retrieved to be used later.
@@ -22,6 +20,8 @@ Settings can be saved to [profiles](#profiles) and retrieved to be used later.
 -  **Orientation**: Order to look up for characters in the texture. Values: horizontal, vertical.
 -  **Alpha Threshold**: Alpha threshold to identify characters bounds.
 -  **Monospaced**: Whether the result font should be monospaced.
+-  **Ascent**: Font ascent. It's the part of the glyphs that should be above the baseline.
+-  **Descent**: Font descent. It's the part of the glyphs that should be below the baseline.
 -  **Line Spacing**: Vertical spacing between lines.
 -  **Character Set**: Predefined character set to use. This is not saved to the profile.
 -  **Characters**: Characters used in the font in order they appear in the texture. Use the space character to represent blank spaces in the texture. You can break lines as much as you need to make it easier to add the character according to the texture.
@@ -41,13 +41,21 @@ Preferences are saved in the editor using _EditorPrefs_.
 
 ## Actions
 
--  **Preview**: Preview the texture with current rows and cols. ![Preview Window](./Documentation/screenshot-02.png)
-   -  **Background**: Background color of the preview.
-   -  **Grid**: Grid color of the preview.
+-  **Preview**: Preview the texture with current rows, columns, ascent and descent properties. ![Preview Window](./Documentation/screenshot-02.png)
+   -  **Grid**: Color for the grid lines showing rows and columns.
+   -  **Height**: Color for de glyph hight line (ascent + descent).
+   -  **Baseline**: Color for the baseline (descent).
+   -  **Background**: Choose between dark and light background patterns.
 -  **Guess (Rows and Cols)**: Guess the number of rows and columns of the texture based on transparency gaps.
 -  **Guess (Line Spacing)**: Guess Line Spacing based on the texture and the number of rows.
 -  **Create**: Creates the font using the given settings.
 -  **Rollback**: Rollback settings to the selected profile or default if none is selected.
+
+## Measures
+
+The plugin uses a simplified version of font measures. Here is a scheme of how they are used:
+
+![Measures](./Documentation/measures.png)
 
 ## Profiles
 
@@ -63,4 +71,3 @@ You can manage profiles by opening the _Profiles_ menu at the bottom left corner
 
 -  **It works only with font sprite sheets not sprite atlases**: It means that the distance between characters in the texture are the same and there is a fixed value of rows and columns. In other words, it has to be a grid of characters. They can't be sparsed.
 -  **The resultant font works only with Legacy Text Component**: It doens't work with TextMeshPro texts.
--  **Alignment is jenky**: To make it more usable, it was decided to align the glyphs by the center of the texture, which makes it not really work with top and bottom alignments. A workaround for this is to set the Text component to align by its geometry. It works but makes the monospaced fonts jigle when changing the text.

@@ -51,8 +51,8 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			_prefs.GridColor = EditorGUILayout.ColorField(GUIContent.none, _prefs.GridColor, false, true, false, GUILayout.Width(24));
 
 			GUILayout.Space(5);
-			GUILayout.Label(UI.AscentColorLabel);
-			_prefs.AscentColor = EditorGUILayout.ColorField(GUIContent.none, _prefs.AscentColor, false, true, false, GUILayout.Width(24));
+			GUILayout.Label(UI.HeightColorLabel);
+			_prefs.HeightColor = EditorGUILayout.ColorField(GUIContent.none, _prefs.HeightColor, false, true, false, GUILayout.Width(24));
 
 			GUILayout.Space(5);
 			GUILayout.Label(UI.BaselineColorLabel);
@@ -113,7 +113,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 				EditorGUI.DrawRect(r, _prefs.BaselineColor);
 
 				r.y -= ascent * ratio;
-				EditorGUI.DrawRect(r, _prefs.AscentColor);
+				EditorGUI.DrawRect(r, _prefs.HeightColor);
 			}
 
 			r = rect;

@@ -58,8 +58,8 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 
 		public static readonly GUIContent NoContent = new("Invalid texture", "There is no texture selected or the number of rows or columns are set to zero");
 		public static readonly GUIContent GridColorLabel = new("Grid", "Color for the grid lines showing rows and columns");
-		public static readonly GUIContent AscentColorLabel = new("Ascent", "Color for de ascent line");
-		public static readonly GUIContent BaselineColorLabel = new("Baseline", "Color for the baseline (influenced by the descent property)");
+		public static readonly GUIContent HeightColorLabel = new("Height", "Color for de glyph hight line (ascent + descent)");
+		public static readonly GUIContent BaselineColorLabel = new("Baseline", "Color for the baseline (descent)");
 
 		public static readonly GUIContent DarkTextureIcon = new() { image = GridDarkTexture, };
 		public static readonly GUIContent LightTextureIcon = new() { image = GridLightTexture };
