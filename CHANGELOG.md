@@ -19,11 +19,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+-  Menu access moved to Window / Text / Bitmap Font Creator
 -  Monospaced now centralizes the glyph
 -  Material is now generated with Unlit/Transparent shader
 
 ### Fixed
 
+-  Alignment madness
 -  Settings were not being saved
 -  Properly getting bearing values for characters
 -  Save profile window position
