@@ -102,7 +102,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			var characters = new List<CharacterInfo>();
 			int xMin, xMax, yMin, yMax, advance, advMax = 0;
 
-#if BITMAP_FONT_CREATOR_DEBUG
+#if BITMAP_FONT_CREATOR_DEV
 			static string _(float x) => $"<color=yellow>{x}</color>";
 #endif
 			var baseline = (int)(cellSize.y - descent);
@@ -164,7 +164,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 
 					characters.Add(info);
 
-#if BITMAP_FONT_CREATOR_DEBUG
+#if BITMAP_FONT_CREATOR_DEV
 					Debug.Log($"<b>{ch}</b> {_(info.glyphWidth)} {_(info.glyphHeight)} yMin: {_(yMin)} yMax: {_(yMax)}");
 #endif
 				}

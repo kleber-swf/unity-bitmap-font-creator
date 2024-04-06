@@ -6,6 +6,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 	internal class TexturePreviewPopup : EditorWindow
 	{
 		private static readonly Vector2Int _texturePadding = new(20, 20);
+		private static readonly Vector2 _gridTexSize = new(48f, 48f);
 
 		private ExecutionData _data;
 		private PrefsModel _prefs;
@@ -42,14 +43,28 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 
 		private void DrawTopBar()
 		{
-			EditorGUIUtility.fieldWidth = 60;
 			GUILayout.BeginHorizontal(Styles.Toolbar);
 			GUILayout.FlexibleSpace();
-			EditorGUIUtility.labelWidth = 80;
-			_prefs.BackgroundColor = EditorGUILayout.ColorField(UI.BackgroundColor, _prefs.BackgroundColor);
+
+			GUILayout.Space(5);
+			GUILayout.Label(UI.GridColorLabel);
+			_prefs.GridColor = EditorGUILayout.ColorField(GUIContent.none, _prefs.GridColor, false, true, false, GUILayout.Width(24));
+
+			GUILayout.Space(5);
+			GUILayout.Label(UI.AscentColorLabel);
+			_prefs.AscentColor = EditorGUILayout.ColorField(GUIContent.none, _prefs.AscentColor, false, true, false, GUILayout.Width(24));
+
+			GUILayout.Space(5);
+			GUILayout.Label(UI.BaselineColorLabel);
+			_prefs.BaselineColor = EditorGUILayout.ColorField(GUIContent.none, _prefs.BaselineColor, false, true, false, GUILayout.Width(24));
+
 			GUILayout.Space(10);
-			EditorGUIUtility.labelWidth = 35;
-			_prefs.GridColor = EditorGUILayout.ColorField(UI.GridColor, _prefs.GridColor);
+			var selection = GUILayout.Toggle(
+				_prefs.TextureBackground == 0,
+				_prefs.TextureBackground == 0 ? UI.DarkTextureIcon : UI.LightTextureIcon,
+				Styles.BackgroundTextureIcon);
+			_prefs.TextureBackground = selection ? 0 : 1;
+
 			GUILayout.EndHorizontal();
 		}
 
@@ -63,8 +78,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 
 			var ratio = tw > th ? aw / tw : ah / th;
 
-			var textureRect = new Rect(
-				_texturePadding.x,
+			var textureRect = new Rect(_texturePadding.x,
 				_texturePadding.y + y,
 				tw * ratio,
 				th * ratio
@@ -74,22 +88,32 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			var scrollContentRect = new Rect(0, y, textureRect.width + _texturePadding.x * 2, textureRect.height + _texturePadding.y * 2 + y);
 
 			_scrollPos = GUI.BeginScrollView(scrollRect, _scrollPos, scrollContentRect);
-			EditorGUI.DrawRect(textureRect, _prefs.BackgroundColor);
+			GUI.DrawTextureWithTexCoords(textureRect,
+				_prefs.TextureBackground == 0 ? UI.GridDarkTexture : UI.GridLightTexture,
+				new Rect(0, 0, tw / _gridTexSize.x, th / _gridTexSize.y), true);
 			GUI.DrawTexture(textureRect, _data.Texture, ScaleMode.ScaleToFit, true);
-			DrawGrid(textureRect);
+			DrawGrid(textureRect, _data.Ascent, _data.Descent, ratio);
 			GUI.EndScrollView();
 		}
 
-		private void DrawGrid(Rect rect)
+		private void DrawGrid(Rect rect, float ascent, float descent, float ratio)
 		{
 			var cellSize = new Vector2(rect.width / _data.Cols, rect.height / _data.Rows);
 
 			var r = rect;
-			r.height = 1;
 			for (var i = 0; i < _data.Rows + 1; i++)
 			{
 				r.y = rect.y + i * cellSize.y;
+				r.height = 1;
 				EditorGUI.DrawRect(r, _prefs.GridColor);
+				if (i == 0) continue;
+
+				r.height = 1;
+				r.y -= descent * ratio;
+				EditorGUI.DrawRect(r, _prefs.BaselineColor);
+
+				r.y -= ascent * ratio;
+				EditorGUI.DrawRect(r, _prefs.AscentColor);
 			}
 
 			r = rect;

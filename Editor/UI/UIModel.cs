@@ -23,6 +23,10 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 
 	internal static class UI
 	{
+		public static readonly Font MonospacedFont = Resources.Load<Font>("Fonts/monospaced");
+		public static readonly Texture2D GridDarkTexture = Resources.Load<Texture2D>("Textures/grid-dark");
+		public static readonly Texture2D GridLightTexture = Resources.Load<Texture2D>("Textures/grid-light");
+
 		public static readonly GUIContent Texture = new("Font Texture", "Texture used for the font");
 		public static readonly GUIContent Orientation = new("Orientation", "Order to look up for characters in the texture");
 		public static readonly GUIContent Cols = new("Cols", "Number of columns in the texture");
@@ -53,14 +57,16 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 		public static readonly GUIContent WarnOnReplaceProfile = new("Warn before replacing profile", "Warn before replacing an existing profile");
 
 		public static readonly GUIContent NoContent = new("Invalid texture", "There is no texture selected or the number of rows or columns are set to zero");
-		public static readonly GUIContent BackgroundColor = new("Background", "Background color of the preview");
-		public static readonly GUIContent GridColor = new("Grid", "Grid color of the preview");
+		public static readonly GUIContent GridColorLabel = new("Grid", "Color for the grid lines showing rows and columns");
+		public static readonly GUIContent AscentColorLabel = new("Ascent", "Color for de ascent line");
+		public static readonly GUIContent BaselineColorLabel = new("Baseline", "Color for the baseline (influenced by the descent property)");
+
+		public static readonly GUIContent DarkTextureIcon = new() { image = GridDarkTexture, };
+		public static readonly GUIContent LightTextureIcon = new() { image = GridLightTexture };
 	}
 
 	internal static class Styles
 	{
-		public static readonly Font MonospacedFont = Resources.Load<Font>("Fonts/monospaced");
-
 		public static readonly GUIStyle HeaderLabel = new(EditorStyles.label)
 		{
 			margin = new(EditorStyles.label.margin.left, EditorStyles.label.margin.right, 5, 5),
@@ -103,14 +109,14 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 
 		public static readonly GUIStyle CharactersField = new(EditorStyles.textArea)
 		{
-			font = MonospacedFont,
+			font = UI.MonospacedFont,
 			stretchHeight = true,
 			normal = new() { textColor = Color.white },
 		};
 
 		public static readonly GUIStyle CustomCharacterField = new(EditorStyles.textField)
 		{
-			font = MonospacedFont,
+			font = UI.MonospacedFont,
 		};
 
 		public static readonly GUIStyle CreateButton = new(GUI.skin.button)
@@ -127,16 +133,8 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 		};
 
 		public static readonly GUIStyle ProfilesButton = new("ToolbarPopupLeft");
-
-		public static readonly GUIStyle RollbackButton = new("TE toolbarbutton")
-		{
-			padding = new(10, 6, 0, 0),
-		};
-
-		public static readonly GUIStyle PreferencesButton = new("PaneOptions")
-		{
-			margin = new(0, 0, 3, 0),
-		};
+		public static readonly GUIStyle RollbackButton = new("TE toolbarbutton") { padding = new(10, 6, 0, 0), };
+		public static readonly GUIStyle PreferencesButton = new("PaneOptions") { margin = new(0, 0, 3, 0), };
 
 		public static readonly GUIStyle CenterLabel = new(GUI.skin.label)
 		{
@@ -145,14 +143,16 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			alignment = TextAnchor.MiddleCenter,
 		};
 
-		public static readonly GUIStyle Toolbar = new("TimeAreaToolbar")
-		{
-			fixedHeight = 24,
-		};
+		public static readonly GUIStyle Toolbar = new("TimeAreaToolbar") { fixedHeight = 24, };
+		public static readonly GUIStyle MiniButton = new(EditorStyles.miniButton) { fixedWidth = 66, };
 
-		public static readonly GUIStyle MiniButton = new(EditorStyles.miniButton)
+
+		public static readonly GUIStyle BackgroundTextureIcon = new("HelpBox")
 		{
-			fixedWidth = 66,
+			padding = new(2, 2, 2, 2),
+			imagePosition = ImagePosition.ImageOnly,
+			fixedWidth = 20,
+			fixedHeight = 20,
 		};
 	}
 

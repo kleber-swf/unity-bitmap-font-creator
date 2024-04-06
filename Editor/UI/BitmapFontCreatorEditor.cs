@@ -49,9 +49,10 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 
 		private void OnGUI()
 		{
-#if BITMAP_FONT_CREATOR_DEBUG
+#if BITMAP_FONT_CREATOR_DEV
 			if (_customCharPropsList == null) Setup();
 #endif
+
 			EditorGUIUtility.labelWidth = 120;
 			_mainScrollPos = GUILayout.BeginScrollView(_mainScrollPos, false, false, GUIStyle.none, GUI.skin.verticalScrollbar, GUILayout.ExpandHeight(true));
 			GUILayout.BeginVertical();
