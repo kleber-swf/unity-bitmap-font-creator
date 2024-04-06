@@ -87,11 +87,17 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 				map.Add(e.Character[0], e);
 			}
 
-			return new Font(baseName)
+			var font = new Font(baseName)
 			{
 				material = material,
 				characterInfo = CreateCharacters(data, map),
 			};
+
+			var so = new SerializedObject(font);
+			so.FindProperty("m_LineSpacing").floatValue = data.LineSpacing;
+			so.ApplyModifiedProperties();
+
+			return font;
 		}
 
 		private static CharacterInfo[] CreateCharacters(ExecutionData data, Dictionary<char, CharacterProps> map)
@@ -280,6 +286,11 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			}
 
 			return new(rows, cols);
+		}
+
+		public static int GuessLineSpacing(Texture2D texture, int rows)
+		{
+			return Mathf.RoundToInt(texture.height / rows);
 		}
 	}
 }

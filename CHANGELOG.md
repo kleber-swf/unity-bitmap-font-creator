@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 -  Texture preview window
+-  Line spacing property
+-  Guess line spacing button
 -  Custom character padding
 -  Support to TextMesh
 
@@ -22,6 +24,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 -  Settings were not being saved
 -  Properly getting bearing values for characters
 -  Save profile window position
+
+---
 
 ## [1.2.1]
 

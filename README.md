@@ -22,6 +22,7 @@ Settings can be saved to [profiles](#profiles) and retrieved to be used later.
 -  **Orientation**: Order to look up for characters in the texture. Values: horizontal, vertical.
 -  **Alpha Threshold**: Alpha threshold to identify characters bounds.
 -  **Monospaced**: Whether the result font should be monospaced.
+-  **Line Spacing**: Vertical spacing between lines.
 -  **Character Set**: Predefined character set to use. This is not saved to the profile.
 -  **Characters**: Characters used in the font in order they appear in the texture. Use the space character to represent blank spaces in the texture. You can break lines as much as you need to make it easier to add the character according to the texture.
 -  **Default Character Spacing**: Default spacing between characters.
@@ -34,18 +35,19 @@ Settings can be saved to [profiles](#profiles) and retrieved to be used later.
 
 Preferences are saved in the editor using _EditorPrefs_.
 
--  **Warn before overwrite**. Warn before overwriting an existing font. This will replace the old font keeping the references.
--  **Warn before replacing settings**. Warn before replacing settings when selecting a profile.
--  **Warn before replacing profile**. Warn before replacing an existing profile.
+-  **Warn before overwrite**: Warn before overwriting an existing font. This will replace the old font keeping the references.
+-  **Warn before replacing settings**: Warn before replacing settings when selecting a profile.
+-  **Warn before replacing profile**: Warn before replacing an existing profile.
 
 ## Actions
 
--  **Preview**. Preview the texture with current rows and cols. ![Preview Window](./Documentation/screenshot-02.png)
-   -  **Background**. Background color of the preview.
-   -  **Grid**. Grid color of the preview.
--  **Guess**. Guess the number of rows and columns of the texture based on transparency gaps.
--  **Create**. Creates the font using the given settings.
--  **Rollback**. Rollback settings to the selected profile or default if none is selected.
+-  **Preview**: Preview the texture with current rows and cols. ![Preview Window](./Documentation/screenshot-02.png)
+   -  **Background**: Background color of the preview.
+   -  **Grid**: Grid color of the preview.
+-  **Guess (Rows and Cols)**: Guess the number of rows and columns of the texture based on transparency gaps.
+-  **Guess (Line Spacing)**: Guess Line Spacing based on the texture and the number of rows.
+-  **Create**: Creates the font using the given settings.
+-  **Rollback**: Rollback settings to the selected profile or default if none is selected.
 
 ## Profiles
 
@@ -59,7 +61,6 @@ You can manage profiles by opening the _Profiles_ menu at the bottom left corner
 
 ## Known Issues
 
--  **It works only with font sprite sheets not sprite atlases**. It means that the distance between characters in the texture are the same and there is a fixed value of rows and columns. In other words, it has to be a grid of characters. They can't be sparsed.
--  **It can't set the line specing property**. For some reason, Unity doesn't allow us to edit the _line spacing_ field by code. You need to set it manually after running the tool.
--  **The resultant font works only with Legacy Text Component**. It doens't work with TextMeshPro texts.
--  **Alignment is jenky**. To make it more usable, it was decided to align the glyphs by the center of the texture, which makes it not really work with top and bottom alignments. A workaround for this is to set the Text component to align by its geometry. It works but makes the monospaced fonts jigle when changing the text.
+-  **It works only with font sprite sheets not sprite atlases**: It means that the distance between characters in the texture are the same and there is a fixed value of rows and columns. In other words, it has to be a grid of characters. They can't be sparsed.
+-  **The resultant font works only with Legacy Text Component**: It doens't work with TextMeshPro texts.
+-  **Alignment is jenky**: To make it more usable, it was decided to align the glyphs by the center of the texture, which makes it not really work with top and bottom alignments. A workaround for this is to set the Text component to align by its geometry. It works but makes the monospaced fonts jigle when changing the text.

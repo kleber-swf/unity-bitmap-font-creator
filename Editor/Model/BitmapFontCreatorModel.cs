@@ -39,6 +39,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 		public int Rows;
 		public float AlphaThreshold;
 		public bool Monospaced;
+		public float LineSpacing;
 		public int DefaultCharacterSpacing;
 		public List<CharacterProps> CustomCharacterProps;
 
@@ -65,6 +66,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			dest.Cols = Cols;
 			dest.Rows = Rows;
 			dest.AlphaThreshold = AlphaThreshold;
+			dest.LineSpacing = LineSpacing;
 			dest.Monospaced = Monospaced;
 			dest.DefaultCharacterSpacing = DefaultCharacterSpacing;
 
@@ -102,6 +104,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			AlphaThreshold = 0f,
 			DefaultCharacterSpacing = 10,
 			Monospaced = false,
+			LineSpacing = 0f,
 			CustomCharacterProps = new List<CharacterProps>(),
 			ValidCharacters = string.Empty,
 			ValidCharactersCount = 0

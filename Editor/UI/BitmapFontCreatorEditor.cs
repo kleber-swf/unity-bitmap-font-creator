@@ -19,12 +19,12 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 		private Vector2 _mainScrollPos = Vector2.zero;
 		private int _selectedCharacterSetIndex = 0;
 
-		private Vector2Int _guessCache;
+		private Vector2Int _guessRowsColsCache;
 
 		[MenuItem(MenuItemPath)]
 		public static void ShowWindow()
 		{
-			var size = new Vector2(300, 580);
+			var size = new Vector2(310, 620);
 			var window = GetWindowWithRect<BitmapFontCreatorEditor>(
 				new Rect((Screen.width - size.x) * 0.5f, (Screen.height - size.y) * 0.5f, size.x, size.y),
 				false,
@@ -58,12 +58,17 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 
 			DrawTextureField();
 
+			EditorGUI.BeginChangeCheck();
 			_data.Cols = EditorGUILayout.IntField(UI.Cols, _data.Cols);
+			if (EditorGUI.EndChangeCheck()) _data.Cols = Mathf.Max(1, _data.Cols);
+
+			EditorGUI.BeginChangeCheck();
 			_data.Rows = EditorGUILayout.IntField(UI.Rows, _data.Rows);
+			if (EditorGUI.EndChangeCheck()) _data.Rows = Mathf.Max(1, _data.Rows);
 
 			GUILayout.BeginHorizontal();
 			GUILayout.FlexibleSpace();
-			if (GUILayout.Button(UI.GuessButton)) GuessRowsAndCols();
+			if (GUILayout.Button(UI.GuessRowsAndColsButton, Styles.MiniButton)) GuessRowsAndCols();
 			var showPreview = DrawPreviewButton();
 			GUILayout.EndHorizontal();
 
@@ -71,6 +76,11 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			_data.Orientation = (Orientation)EditorGUILayout.EnumPopup(UI.Orientation, _data.Orientation);
 			_data.AlphaThreshold = EditorGUILayout.Slider(UI.AlphaThreshold, _data.AlphaThreshold, 0f, 1f);
 			_data.Monospaced = EditorGUILayout.Toggle(UI.Monospaced, _data.Monospaced);
+
+			GUILayout.BeginHorizontal();
+			_data.LineSpacing = EditorGUILayout.FloatField(UI.LineSpacing, _data.LineSpacing);
+			if (GUILayout.Button(UI.GuessLineSpacingButton, Styles.MiniButton)) GuessLineSpacing();
+			GUILayout.EndHorizontal();
 
 			EditorGUILayout.Space();
 			DrawCharacterSetDropDown();
@@ -107,14 +117,13 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 		{
 			EditorGUI.BeginChangeCheck();
 			_data.Texture = EditorGUILayout.ObjectField(UI.Texture, _data.Texture, typeof(Texture2D), false) as Texture2D;
-			if (EditorGUI.EndChangeCheck())
-				_guessCache = Vector2Int.zero;
+			if (EditorGUI.EndChangeCheck()) _guessRowsColsCache = Vector2Int.zero;
 		}
 
 		private bool DrawPreviewButton()
 		{
 			GUI.enabled = _data.Texture != null && _data.Rows > 0 && _data.Cols > 0;
-			var value = GUILayout.Button(UI.PreviewButton);
+			var value = GUILayout.Button(UI.PreviewButton, Styles.MiniButton);
 			GUI.enabled = true;
 			return value;
 		}
@@ -183,12 +192,28 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 				return;
 			}
 
-			_guessCache = _guessCache.x == 0 || _guessCache.y == 0
+			_guessRowsColsCache = _guessRowsColsCache.x == 0 || _guessRowsColsCache.y == 0
 				? BitmapFontCreator.GuessRowsAndCols(_data.Texture)
-				: _guessCache;
+				: _guessRowsColsCache;
 
-			_data.Cols = _guessCache.y;
-			_data.Rows = _guessCache.x;
+			_data.Cols = _guessRowsColsCache.y;
+			_data.Rows = _guessRowsColsCache.x;
+		}
+
+		private void GuessLineSpacing()
+		{
+			if (_data.Texture == null)
+			{
+				Debug.LogWarning("Texture cannot be null");
+				return;
+			}
+			if (_data.Cols <= 0 || _data.Rows <= 0)
+			{
+				Debug.LogWarning("Rows and Cols must be greater than 0");
+				return;
+			}
+
+			_data.LineSpacing = BitmapFontCreator.GuessLineSpacing(_data.Texture, _data.Rows);
 		}
 	}
 }
