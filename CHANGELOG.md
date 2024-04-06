@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 -  Texture preview window
 -  Line spacing property
 -  Guess line spacing button
+-  Support to ascent and descent font properties
 -  Custom character padding
 -  Support to TextMesh
 
