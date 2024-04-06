@@ -287,5 +287,10 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 
 			return new(rows, cols);
 		}
+
+		public static int GuessLineSpacing(Texture2D texture, int rows)
+		{
+			return Mathf.RoundToInt(texture.height / rows);
+		}
 	}
 }

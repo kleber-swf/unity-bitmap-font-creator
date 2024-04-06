@@ -27,7 +27,8 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 		public static readonly GUIContent Orientation = new("Orientation", "Order to look up for characters in the texture");
 		public static readonly GUIContent Cols = new("Cols", "Number of columns in the texture");
 		public static readonly GUIContent Rows = new("Rows", "Number of rows in the texture");
-		public static readonly GUIContent GuessButton = new("Guess", "Guess Rows and Cols");
+		public static readonly GUIContent GuessRowsAndColsButton = new("Guess", "Guess the number of rows and columns of the texture based on transparency gaps");
+		public static readonly GUIContent GuessLineSpacingButton = new("Guess", "Guess Line Spacing based on the texture and the number of rows");
 		public static readonly GUIContent PreviewButton = new("Preview", "Preview the texture with current rows and cols");
 		public static readonly GUIContent AlphaThreshold = new("Alpha Threshold", "Alpha threshold to identify characters bounds");
 		public static readonly GUIContent Monospaced = new("Monospaced", "Whether the result font should be monospaced");
@@ -145,6 +146,11 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 		public static readonly GUIStyle Toolbar = new("TimeAreaToolbar")
 		{
 			fixedHeight = 24,
+		};
+
+		public static readonly GUIStyle MiniButton = new(EditorStyles.miniButton)
+		{
+			fixedWidth = 66,
 		};
 	}
 }

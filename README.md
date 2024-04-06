@@ -44,7 +44,8 @@ Preferences are saved in the editor using _EditorPrefs_.
 -  **Preview**: Preview the texture with current rows and cols. ![Preview Window](./Documentation/screenshot-02.png)
    -  **Background**: Background color of the preview.
    -  **Grid**: Grid color of the preview.
--  **Guess**: Guess the number of rows and columns of the texture based on transparency gaps.
+-  **Guess (Rows and Cols)**: Guess the number of rows and columns of the texture based on transparency gaps.
+-  **Guess (Line Spacing)**: Guess Line Spacing based on the texture and the number of rows.
 -  **Create**: Creates the font using the given settings.
 -  **Rollback**: Rollback settings to the selected profile or default if none is selected.
 
