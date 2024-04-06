@@ -153,4 +153,33 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			fixedWidth = 66,
 		};
 	}
+
+	internal static class UIUtils
+	{
+		public static float FloatFieldMin(GUIContent label, float value, float min)
+		{
+			EditorGUI.BeginChangeCheck();
+			value = EditorGUILayout.FloatField(label, value);
+			if (EditorGUI.EndChangeCheck() && value < min) value = min;
+			return value;
+		}
+
+		public static int IntFieldMin(GUIContent label, int value, int min)
+		{
+			EditorGUI.BeginChangeCheck();
+			value = EditorGUILayout.IntField(label, value);
+			if (EditorGUI.EndChangeCheck() && value < min) value = min;
+			return value;
+		}
+
+		public static bool CenteredButton(GUIContent label, GUIStyle style = null)
+		{
+			GUILayout.BeginHorizontal();
+			GUILayout.FlexibleSpace();
+			var value = GUILayout.Button(label, style ?? GUI.skin.button);
+			GUILayout.FlexibleSpace();
+			GUILayout.EndHorizontal();
+			return value;
+		}
+	}
 }
