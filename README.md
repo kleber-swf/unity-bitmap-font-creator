@@ -2,6 +2,9 @@
 
 A simple tool to create bitmap fonts from a texture sprite sheet to be used with Text component.
 
+![Latest release](https://img.shields.io/github/v/release/kleber-swf/unity-bitmap-font-creator?include_prereleases&style=flat)
+![Minimum Unity supported](https://img.shields.io/badge/Unity-2018.3+-57b9d3.svg?style=flat&logo=unity&color=purple)
+
 ![Main window](./Documentation/screenshot-01.png)
 
 ## How to use it
