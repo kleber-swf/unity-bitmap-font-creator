@@ -55,7 +55,7 @@ Preferences are saved in the editor using _EditorPrefs_.
 
 The plugin uses a simplified version of font measures. Here is a scheme of how they are used:
 
-![Measures](./Documentation/measures.png)
+<img src='./Documentation/measures.png' height='auto' width='450px'>
 
 ## Profiles
 
