@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 -  Auto line spacing in place of guessing
+-  UI elements layout
 
 ### Fixed
 

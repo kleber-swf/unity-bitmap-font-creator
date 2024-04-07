@@ -46,17 +46,14 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			GUILayout.BeginHorizontal(Styles.Toolbar);
 			GUILayout.FlexibleSpace();
 
-			GUILayout.Space(5);
-			GUILayout.Label(UI.GridColorLabel);
 			_prefs.GridColor = EditorGUILayout.ColorField(GUIContent.none, _prefs.GridColor, false, true, false, GUILayout.Width(24));
+			GUILayout.Label(UI.GridColorLabel, Styles.ToolbarLabel);
 
-			GUILayout.Space(5);
-			GUILayout.Label(UI.HeightColorLabel);
 			_prefs.HeightColor = EditorGUILayout.ColorField(GUIContent.none, _prefs.HeightColor, false, true, false, GUILayout.Width(24));
+			GUILayout.Label(UI.HeightColorLabel, Styles.ToolbarLabel);
 
-			GUILayout.Space(5);
-			GUILayout.Label(UI.BaselineColorLabel);
 			_prefs.BaselineColor = EditorGUILayout.ColorField(GUIContent.none, _prefs.BaselineColor, false, true, false, GUILayout.Width(24));
+			GUILayout.Label(UI.BaselineColorLabel, Styles.ToolbarLabel);
 
 			GUILayout.Space(10);
 			var selection = GUILayout.Toggle(

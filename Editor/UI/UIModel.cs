@@ -27,7 +27,11 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 		public static readonly Texture2D GridDarkTexture = Resources.Load<Texture2D>("Textures/grid-dark");
 		public static readonly Texture2D GridLightTexture = Resources.Load<Texture2D>("Textures/grid-light");
 
-		public static readonly GUIContent Texture = new("Font Texture", "Texture used for the font");
+		public static readonly GUIContent TextureGroupTitle = new("Texture Properties");
+		public static readonly GUIContent FontGroupTitle = new("Font Properties");
+		public static readonly GUIContent CharactersGroupTitle = new("Characters");
+
+		public static readonly GUIContent TextureLabel = new("Texture", "Texture used for the font");
 		public static readonly GUIContent Orientation = new("Orientation", "Order to look up for characters in the texture");
 		public static readonly GUIContent Cols = new("Cols", "Number of columns in the texture");
 		public static readonly GUIContent Rows = new("Rows", "Number of rows in the texture");
@@ -72,6 +76,18 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 	{
 		public static readonly float AutoToggleWidth = 50f;
 
+		public static readonly GUIStyle GroupTitle = new(EditorStyles.foldoutHeader)
+		{
+			margin = new(0, 0, 2, 2),
+			padding = new(18, 5, 10, 10),
+		};
+
+		public static readonly GUIStyle Group = new("hostview")
+		{
+			margin = new(),
+			padding = new(18, 5, 5, 20),
+		};
+
 		public static readonly GUIStyle HeaderLabel = new(EditorStyles.label)
 		{
 			margin = new(EditorStyles.label.margin.left, EditorStyles.label.margin.right, 5, 5),
@@ -112,6 +128,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			contentOffset = new Vector2(-17, 0),
 		};
 
+
 		public static readonly GUIStyle CharactersField = new(EditorStyles.textArea)
 		{
 			font = UI.MonospacedFont,
@@ -151,6 +168,13 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 		public static readonly GUIStyle Toolbar = new("TimeAreaToolbar") { fixedHeight = 24, };
 		public static readonly GUIStyle MiniButton = new(EditorStyles.miniButton) { fixedWidth = 66, };
 
+		public static readonly GUIStyle ToolbarLabel = new(EditorStyles.label)
+		{
+			margin = new(0, 20, 0, 0),
+			padding = new(0, 3, 0, 0),
+			alignment = TextAnchor.MiddleLeft,
+			stretchHeight = true,
+		};
 
 		public static readonly GUIStyle BackgroundTextureIcon = new("HelpBox")
 		{

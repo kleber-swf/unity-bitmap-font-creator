@@ -13,18 +13,19 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 		private PrefsView _prefsView;
 		private Settings _settings;
 		private PrefsModel _prefs;
-		private string _error;
 
 		private Vector2 _charactersScrollPos = Vector2.zero;
 		private Vector2 _mainScrollPos = Vector2.zero;
 		private int _selectedCharacterSetIndex = 0;
+		private string _error = string.Empty;
+		private bool _showPreview = false;
 
 		private Vector2Int _guessRowsColsCache;
 
 		[MenuItem(MenuItemPath)]
 		public static void ShowWindow()
 		{
-			var size = new Vector2(310, 640);
+			var size = new Vector2(310, 800);
 			var window = GetWindowWithRect<BitmapFontCreatorEditor>(
 				new Rect((Screen.width - size.x) * 0.5f, (Screen.height - size.y) * 0.5f, size.x, size.y),
 				false,
@@ -47,6 +48,10 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			_prefsView = new PrefsView(_prefs);
 		}
 
+		private bool _textureGroupFoldout = true;
+		private bool _fontGroupFoldout = true;
+		private bool _charGroupFoldout = true;
+
 		private void OnGUI()
 		{
 #if BITMAP_FONT_CREATOR_DEV
@@ -57,42 +62,17 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			_mainScrollPos = GUILayout.BeginScrollView(_mainScrollPos, false, false, GUIStyle.none, GUI.skin.verticalScrollbar, GUILayout.ExpandHeight(true));
 			GUILayout.BeginVertical();
 
-			DrawTextureField();
+			_textureGroupFoldout = EditorGUILayout.BeginFoldoutHeaderGroup(_textureGroupFoldout, UI.TextureGroupTitle, Styles.GroupTitle);
+			if (_textureGroupFoldout) DrawTextureGroup();
+			EditorGUILayout.EndFoldoutHeaderGroup();
 
-			_data.Cols = UIUtils.IntFieldMin(UI.Cols, _data.Cols, 1);
-			_data.Rows = UIUtils.IntFieldMin(UI.Rows, _data.Rows, 1);
+			_fontGroupFoldout = EditorGUILayout.BeginFoldoutHeaderGroup(_fontGroupFoldout, UI.FontGroupTitle, Styles.GroupTitle);
+			if (_fontGroupFoldout) DrawFontInfoGroup();
+			EditorGUILayout.EndFoldoutHeaderGroup();
 
-			GUILayout.BeginHorizontal();
-			GUILayout.FlexibleSpace();
-			if (GUILayout.Button(UI.GuessRowsAndColsButton, Styles.MiniButton)) GuessRowsAndCols();
-			var showPreview = DrawPreviewButton();
-			GUILayout.EndHorizontal();
-
-			EditorGUILayout.Space();
-			_data.Orientation = (Orientation)EditorGUILayout.EnumPopup(UI.Orientation, _data.Orientation);
-			_data.AlphaThreshold = EditorGUILayout.Slider(UI.AlphaThreshold, _data.AlphaThreshold, 0f, 1f);
-
-			EditorGUILayout.Space();
-			_data.Monospaced = EditorGUILayout.Toggle(UI.Monospaced, _data.Monospaced);
-			_data.CaseInsentive = EditorGUILayout.Toggle(UI.CaseInsentive, _data.CaseInsentive);
-			_data.Ascent = UIUtils.FloatFieldMin(UI.Ascent, _data.Ascent, 0f);
-			_data.Descent = UIUtils.FloatFieldMin(UI.Descent, _data.Descent, 0f);
-
-			DrawFontSizeGroup();
-			DrawLineSpacingGroup();
-
-			EditorGUILayout.Space();
-			DrawCharacterSetDropDown();
-
-			EditorGUILayout.Space();
-			DrawCharactersField();
-
-			EditorGUILayout.Space();
-			_data.DefaultCharacterSpacing = EditorGUILayout.IntField(UI.DefaultCharacterSpacing, _data.DefaultCharacterSpacing);
-
-			EditorGUILayout.Space();
-			GUILayout.Label(UI.CustomCharacterProperties, Styles.HeaderLabel);
-			_customCharPropsList.DoLayoutList();
+			_charGroupFoldout = EditorGUILayout.BeginFoldoutHeaderGroup(_charGroupFoldout, UI.CharactersGroupTitle, Styles.GroupTitle);
+			if (_charGroupFoldout) DrawCharacterGroup();
+			EditorGUILayout.EndFoldoutHeaderGroup();
 
 			DrawCreateFontButton();
 
@@ -103,19 +83,36 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			DrawBottomMenu();
 
 			if (!string.IsNullOrEmpty(_error)) ShowCurrentError();
-			if (showPreview) TexturePreviewPopup.Open(_data, _prefs);
+			if (_showPreview) TexturePreviewPopup.Open(_data, _prefs);
 		}
 
-		private void ShowCurrentError()
+		#region Texture Group
+
+		private void DrawTextureGroup()
 		{
-			Debug.LogError(_error);
-			_error = null;
+			EditorGUILayout.BeginVertical(Styles.Group);
+
+			DrawTextureField();
+			_data.Cols = UIUtils.IntFieldMin(UI.Cols, _data.Cols, 1);
+			_data.Rows = UIUtils.IntFieldMin(UI.Rows, _data.Rows, 1);
+
+			GUILayout.BeginHorizontal();
+			GUILayout.FlexibleSpace();
+			if (GUILayout.Button(UI.GuessRowsAndColsButton, Styles.MiniButton)) GuessRowsAndCols();
+			_showPreview = DrawPreviewButton();
+			GUILayout.EndHorizontal();
+
+			EditorGUILayout.Space();
+			_data.Orientation = (Orientation)EditorGUILayout.EnumPopup(UI.Orientation, _data.Orientation);
+			_data.AlphaThreshold = EditorGUILayout.Slider(UI.AlphaThreshold, _data.AlphaThreshold, 0f, 1f);
+
+			EditorGUILayout.EndVertical();
 		}
 
 		private void DrawTextureField()
 		{
 			EditorGUI.BeginChangeCheck();
-			_data.Texture = EditorGUILayout.ObjectField(UI.Texture, _data.Texture, typeof(Texture2D), false) as Texture2D;
+			_data.Texture = EditorGUILayout.ObjectField(UI.TextureLabel, _data.Texture, typeof(Texture2D), false) as Texture2D;
 			if (EditorGUI.EndChangeCheck()) _guessRowsColsCache = Vector2Int.zero;
 		}
 
@@ -127,7 +124,27 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			return value;
 		}
 
-		private void DrawFontSizeGroup()
+		#endregion
+
+		#region Font Group
+
+		private void DrawFontInfoGroup()
+		{
+			EditorGUILayout.BeginVertical(Styles.Group);
+
+			_data.Monospaced = EditorGUILayout.Toggle(UI.Monospaced, _data.Monospaced);
+			_data.CaseInsentive = EditorGUILayout.Toggle(UI.CaseInsentive, _data.CaseInsentive);
+			_data.Ascent = UIUtils.FloatFieldMin(UI.Ascent, _data.Ascent, 0f);
+			_data.Descent = UIUtils.FloatFieldMin(UI.Descent, _data.Descent, 0f);
+			_data.DefaultCharacterSpacing = EditorGUILayout.IntField(UI.DefaultCharacterSpacing, _data.DefaultCharacterSpacing);
+
+			DrawFontSizeProperty();
+			DrawLineSpacingProperty();
+
+			EditorGUILayout.EndVertical();
+		}
+
+		private void DrawFontSizeProperty()
 		{
 			GUILayout.BeginHorizontal();
 			GUI.enabled = !_data.AutoFontSize;
@@ -138,7 +155,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			GUILayout.EndHorizontal();
 		}
 
-		private void DrawLineSpacingGroup()
+		private void DrawLineSpacingProperty()
 		{
 			GUILayout.BeginHorizontal();
 			GUI.enabled = !_data.AutoLineSpacing;
@@ -147,6 +164,26 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 
 			_data.AutoLineSpacing = EditorGUILayout.ToggleLeft(UI.AutoLineSpacing, _data.AutoLineSpacing, GUILayout.Width(Styles.AutoToggleWidth));
 			GUILayout.EndHorizontal();
+		}
+
+		#endregion
+
+		#region Character Group
+
+		private void DrawCharacterGroup()
+		{
+			EditorGUILayout.BeginVertical(Styles.Group);
+
+			DrawCharacterSetDropDown();
+
+			EditorGUILayout.Space();
+			DrawCharactersField();
+
+			EditorGUILayout.Space();
+			GUILayout.Label(UI.CustomCharacterProperties, Styles.HeaderLabel);
+			_customCharPropsList.DoLayoutList();
+
+			EditorGUILayout.EndVertical();
 		}
 
 		private void DrawCharacterSetDropDown()
@@ -175,6 +212,8 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			GUILayout.EndScrollView();
 		}
 
+		#endregion
+
 		private void DrawCreateFontButton()
 		{
 			GUI.color = Color.cyan;
@@ -192,6 +231,14 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			GUILayout.FlexibleSpace();
 			_prefsView.Draw();
 			GUILayout.EndHorizontal();
+		}
+
+		#region Actions
+
+		private void ShowCurrentError()
+		{
+			Debug.LogError(_error);
+			_error = null;
 		}
 
 		private void RollbackSettings()
@@ -216,20 +263,6 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			_data.Rows = _guessRowsColsCache.x;
 		}
 
-		private void GuessLineSpacing()
-		{
-			if (_data.Texture == null)
-			{
-				Debug.LogWarning("Texture cannot be null");
-				return;
-			}
-			if (_data.Cols <= 0 || _data.Rows <= 0)
-			{
-				Debug.LogWarning("Rows and Cols must be greater than 0");
-				return;
-			}
-
-			_data.LineSpacing = BitmapFontCreator.GuessLineSpacing(_data.Texture, _data.Rows);
-		}
+		#endregion
 	}
 }
