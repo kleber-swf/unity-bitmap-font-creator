@@ -38,6 +38,8 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 		public static readonly GUIContent Monospaced = new("Monospaced", "Whether the result font should be monospaced");
 		public static readonly GUIContent Ascent = new("Ascent", "Font ascent. It's the part of the glyphs that should be above the baseline");
 		public static readonly GUIContent Descent = new("Descent", "Font descent. It's the part of the glyphs that should be below the baseline");
+		public static readonly GUIContent FontSize = new("Font Size", "Base font size in pixels");
+		public static readonly GUIContent AutoFontSize = new("Auto", "Automatically calculate the font size based on ascent property or cell size");
 		public static readonly GUIContent LineSpacing = new("Line Spacing", "Vertical spacing between lines");
 		public static readonly GUIContent CharacterSet = new("Character Set", "Predefined character set to use");
 		public static readonly GUIContent Characters = new("Characters", "Characters used in the font in order they appear in the texture. Use the space character to represent blank spaces in the texture");

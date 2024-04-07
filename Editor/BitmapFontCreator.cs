@@ -7,6 +7,12 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 {
 	internal static class BitmapFontCreator
 	{
+		private struct FontMeasures
+		{
+			public float MaxCharHeight;
+			public Vector2Int cellSize;
+		}
+
 		private const char IgnoreCharacter = ' ';
 
 		public static bool TryCreateFont(ExecutionData data, bool warnBeforeOverwrite, out string error)
@@ -77,22 +83,33 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 				map.Add(e.Character[0], e);
 			}
 
+			var measures = new FontMeasures();
 			var font = new Font(baseName)
 			{
 				material = material,
-				characterInfo = CreateCharacters(data, map, data.Descent),
+				characterInfo = CreateCharacters(data, map, data.Descent, ref measures),
 			};
 
 			var so = new SerializedObject(font);
 			so.FindProperty("m_LineSpacing").floatValue = data.LineSpacing;
 			so.FindProperty("m_Ascent").floatValue = data.Ascent + data.Descent;
 			so.FindProperty("m_Descent").floatValue = data.Descent;
+			so.FindProperty("m_FontSize").floatValue = CalcFontSize(data, measures);
 			so.ApplyModifiedProperties();
 
 			return font;
 		}
 
-		private static CharacterInfo[] CreateCharacters(ExecutionData data, Dictionary<char, CharacterProps> map, float descent)
+		private static float CalcFontSize(ExecutionData data, FontMeasures measures)
+		{
+			if (!data.AutoFontSize) return data.FontSize;
+			if (data.Ascent > 0) return data.Ascent;
+			if (measures.MaxCharHeight > 0) return measures.MaxCharHeight;
+			return measures.cellSize.y;
+		}
+
+		private static CharacterInfo[] CreateCharacters(ExecutionData data, Dictionary<char, CharacterProps> map,
+			float descent, ref FontMeasures measures)
 		{
 			var texSize = new Vector2Int(data.Texture.width, data.Texture.height);
 			var cellSize = new Vector2Int(Mathf.FloorToInt(texSize.x / data.Cols), Mathf.FloorToInt(texSize.y / data.Rows));
@@ -100,12 +117,11 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			var ratio = new Vector2(1f / texSize.x, 1f / texSize.y);
 
 			var characters = new List<CharacterInfo>();
-			int xMin, xMax, yMin, yMax, advance, advMax = 0;
+			int xMin, xMax, yMin, yMax, advance, y, h, advMax = 0;
 
-#if BITMAP_FONT_CREATOR_DEV
-			static string _(float x) => $"<color=yellow>{x}</color>";
-#endif
 			var baseline = (int)(cellSize.y - descent);
+			measures.cellSize = cellSize;
+
 			for (var row = 0; row < data.Rows; row++)
 			{
 				for (var col = 0; col < data.Cols; col++)
@@ -132,7 +148,9 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 					advance = xMax - xMin + data.DefaultCharacterSpacing;
 					if (advance > advMax) advMax = advance;
 
-					var y = Mathf.RoundToInt(-yMin + descent - (yMax - baseline));
+					y = Mathf.RoundToInt(-yMin + descent - (yMax - baseline));
+					h = yMax - yMin;
+					if (h > measures.MaxCharHeight) measures.MaxCharHeight = h;
 
 					var info = new CharacterInfo
 					{
@@ -163,10 +181,6 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 					}
 
 					characters.Add(info);
-
-#if BITMAP_FONT_CREATOR_DEV
-					Debug.Log($"<b>{ch}</b> {_(info.glyphWidth)} {_(info.glyphHeight)} yMin: {_(yMin)} yMax: {_(yMax)}");
-#endif
 				}
 			}
 

@@ -25,6 +25,8 @@ Settings can be saved to [profiles](#profiles) and retrieved to be used later.
 -  **Monospaced**: Whether the result font should be monospaced.
 -  **Ascent**: Font ascent. It's the part of the glyphs that should be above the baseline.
 -  **Descent**: Font descent. It's the part of the glyphs that should be below the baseline.
+-  **Font Size**: Base font size in pixels
+   -  **Auto**: Automatically calculate the font size based on ascent property or cell size
 -  **Line Spacing**: Vertical spacing between lines.
 -  **Character Set**: Predefined character set to use. This is not saved to the profile.
 -  **Characters**: Characters used in the font in order they appear in the texture. Use the space character to represent blank spaces in the texture. You can break lines as much as you need to make it easier to add the character according to the texture.

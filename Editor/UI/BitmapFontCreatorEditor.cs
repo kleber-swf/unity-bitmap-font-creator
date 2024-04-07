@@ -77,6 +77,8 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			_data.Ascent = UIUtils.FloatFieldMin(UI.Ascent, _data.Ascent, 0f);
 			_data.Descent = UIUtils.FloatFieldMin(UI.Descent, _data.Descent, 0f);
 
+			DrawFontSizeGroup();
+
 			GUILayout.BeginHorizontal();
 			_data.LineSpacing = EditorGUILayout.FloatField(UI.LineSpacing, _data.LineSpacing);
 			if (GUILayout.Button(UI.GuessLineSpacingButton, Styles.MiniButton)) GuessLineSpacing();
@@ -126,6 +128,17 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			var value = GUILayout.Button(UI.PreviewButton, Styles.MiniButton);
 			GUI.enabled = true;
 			return value;
+		}
+
+		private void DrawFontSizeGroup()
+		{
+			GUILayout.BeginHorizontal();
+			GUI.enabled = !_data.AutoFontSize;
+			_data.FontSize = EditorGUILayout.FloatField(UI.FontSize, _data.FontSize);
+			GUI.enabled = true;
+
+			_data.AutoFontSize = EditorGUILayout.ToggleLeft(UI.AutoFontSize, _data.AutoFontSize, GUILayout.Width(50));
+			GUILayout.EndHorizontal();
 		}
 
 		private void DrawCharacterSetDropDown()
