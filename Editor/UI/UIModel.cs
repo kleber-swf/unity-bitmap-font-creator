@@ -35,6 +35,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 		public static readonly GUIContent PreviewButton = new("Preview", "Preview the texture with current rows and cols");
 		public static readonly GUIContent AlphaThreshold = new("Alpha Threshold", "Alpha threshold to identify characters bounds");
 		public static readonly GUIContent Monospaced = new("Monospaced", "Whether the result font should be monospaced");
+		public static readonly GUIContent CaseInsentive = new("Case Insentive", "Whether the characters for lowercase and uppercase are the same");
 		public static readonly GUIContent Ascent = new("Ascent", "Font ascent. It's the part of the glyphs that should be above the baseline");
 		public static readonly GUIContent Descent = new("Descent", "Font descent. It's the part of the glyphs that should be below the baseline");
 		public static readonly GUIContent FontSize = new("Font Size", "Base font size in pixels");

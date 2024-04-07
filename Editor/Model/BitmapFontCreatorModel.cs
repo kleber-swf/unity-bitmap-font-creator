@@ -39,6 +39,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 		public int Rows;
 		public float AlphaThreshold;
 		public bool Monospaced;
+		public bool CaseInsentive;
 		public float Ascent;
 		public float Descent;
 		public float FontSize;
@@ -74,6 +75,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			dest.LineSpacing = LineSpacing;
 			dest.AutoLineSpacing = AutoLineSpacing;
 			dest.Monospaced = Monospaced;
+			dest.CaseInsentive = CaseInsentive;
 			dest.FontSize = FontSize;
 			dest.AutoFontSize = AutoFontSize;
 			dest.Ascent = Ascent;

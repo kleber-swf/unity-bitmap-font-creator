@@ -23,6 +23,7 @@ Settings can be saved to [profiles](#profiles) and retrieved to be used later.
 -  **Orientation**: Order to look up for characters in the texture. Values: horizontal, vertical.
 -  **Alpha Threshold**: Alpha threshold to identify characters bounds.
 -  **Monospaced**: Whether the result font should be monospaced.
+-  **Case Insentive**: Whether the characters for lowercase and uppercase are the same.
 -  **Ascent**: Font ascent. It's the part of the glyphs that should be above the baseline.
 -  **Descent**: Font descent. It's the part of the glyphs that should be below the baseline.
 -  **Font Size**: Base font size in pixels

@@ -13,6 +13,19 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			public Vector2Int cellSize;
 		}
 
+		private struct GlyphInfo
+		{
+			public Vector2 uvTopLeft;
+			public Vector2 uvBottomRight;
+			public int xMin;
+			public int xMax;
+			public int yMin;
+			public int yMax;
+			public int advance;
+			public int y;
+			public int h;
+		}
+
 		private const char IgnoreCharacter = ' ';
 
 		public static bool TryCreateFont(ExecutionData data, bool warnBeforeOverwrite, out string error)
@@ -109,7 +122,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			var ratio = new Vector2(1f / texSize.x, 1f / texSize.y);
 
 			var characters = new List<CharacterInfo>();
-			int xMin, xMax, yMin, yMax, advance, y, h, advMax = 0, advMin = int.MaxValue;
+			int advMax = 0, advMin = int.MaxValue;
 
 			var baseline = (int)(cellSize.y - descent);
 			measures.cellSize = cellSize;
@@ -124,6 +137,8 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 					var ch = data.ValidCharacters[i];
 					if (ch == IgnoreCharacter) continue;
 
+					var g = new GlyphInfo();
+
 					GetCharacterBounds(
 						tex: data.Texture,
 						alphaThreshold: data.AlphaThreshold,
@@ -131,53 +146,39 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 						y0: (data.Rows - row) * cellSize.y,
 						width: cellSize.x,
 						height: cellSize.y,
-						xMin: out xMin,
-						xMax: out xMax,
-						yMin: out yMin,
-						yMax: out yMax
+						ref g
 					);
 
-					advance = xMax - xMin + data.DefaultCharacterSpacing;
-					if (advance > advMax) advMax = advance;
-					if (advance < advMin) advMin = advance;
+					g.advance = g.xMax - g.xMin + data.DefaultCharacterSpacing;
+					if (g.advance > advMax) advMax = g.advance;
+					if (g.advance < advMin) advMin = g.advance;
 
-					y = Mathf.RoundToInt(-yMin + descent - (yMax - baseline));
-					h = yMax - yMin;
-					if (h > measures.MaxCharHeight) measures.MaxCharHeight = h;
+					g.y = Mathf.RoundToInt(-g.yMin + descent - (g.yMax - baseline));
+					g.h = g.yMax - g.yMin;
+					if (g.h > measures.MaxCharHeight) measures.MaxCharHeight = g.h;
 
-					var info = new CharacterInfo
-					{
-						index = ch,
-						uvTopLeft = new Vector2(
-							cellUVSize.x * col + (xMin * ratio.x),
-							cellUVSize.y * (data.Rows - row) - (yMin * ratio.y)
-						),
-						uvBottomRight = new Vector2(
-							cellUVSize.x * (col + 1) - ((cellSize.x - xMax) * ratio.x),
-							cellUVSize.y * (data.Rows - row - 1) + ((cellSize.y - yMax) * ratio.y)
-						),
-						minX = xMin,
-						maxX = xMax,
-						minY = yMin + y,
-						maxY = yMax + y,
-						bearing = 0,
-						advance = advance,
-					};
+					g.uvTopLeft = new Vector2(
+							cellUVSize.x * col + (g.xMin * ratio.x),
+							cellUVSize.y * (data.Rows - row) - (g.yMin * ratio.y)
+						);
+					g.uvBottomRight = new Vector2(
+						cellUVSize.x * (col + 1) - ((cellSize.x - g.xMax) * ratio.x),
+						cellUVSize.y * (data.Rows - row - 1) + ((cellSize.y - g.yMax) * ratio.y)
+					);
 
-					if (map.TryGetValue(ch, out var props))
-					{
-						info.minX += props.Padding.x;
-						info.maxX += props.Padding.x;
-						info.advance += props.Padding.x + props.Spacing;
-						info.minY -= props.Padding.y;
-						info.maxY -= props.Padding.y;
-					}
+					var info = CreateCharacterInfo(ch, g, map);
+					characters.Add(info);
+
+					if (!data.CaseInsentive) continue;
+					var ch2 = char.ToUpper(ch);
+					if (ch2 != ch) characters.Add(CreateCharacterInfo(ch2, g, map));
+					ch2 = char.ToLower(ch2);
+					if (ch2 != ch) characters.Add(CreateCharacterInfo(ch2, g, map));
 
 #if BITMAP_FONT_CREATOR_DEV
 					static string _(float x) => $"<color=yellow>{x}</color>";
-					Debug.Log($"<b>{ch}</b> w: {_(info.glyphWidth)} h: {_(info.glyphHeight)} xMin: {_(xMin)} xMax: {_(xMax)}");
+					Debug.Log($"<b>{ch}</b> w: {_(info.glyphWidth)} h: {_(info.glyphHeight)} xMin: {_(g.xMin)} xMax: {_(g.xMax)}");
 #endif
-					characters.Add(info);
 				}
 			}
 
@@ -189,13 +190,39 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			return characters.ToArray();
 		}
 
-		private static void GetCharacterBounds(Texture2D tex, float alphaThreshold, int x0, int y0,
-			int width, int height, out int xMin, out int xMax, out int yMin, out int yMax)
+		private static CharacterInfo CreateCharacterInfo(char ch, GlyphInfo g, Dictionary<char, CharacterProps> map)
 		{
-			xMin = width;
-			xMax = 0;
-			yMin = height;
-			yMax = 0;
+			var info = new CharacterInfo
+			{
+				index = ch,
+				uvTopLeft = g.uvTopLeft,
+				uvBottomRight = g.uvBottomRight,
+				minX = g.xMin,
+				maxX = g.xMax,
+				minY = g.yMin + g.y,
+				maxY = g.yMax + g.y,
+				bearing = 0,
+				advance = g.advance,
+			};
+
+			if (map.TryGetValue(ch, out var props))
+			{
+				info.minX += props.Padding.x;
+				info.maxX += props.Padding.x;
+				info.advance += props.Padding.x + props.Spacing;
+				info.minY -= props.Padding.y;
+				info.maxY -= props.Padding.y;
+			}
+			return info;
+		}
+
+		private static void GetCharacterBounds(Texture2D tex, float alphaThreshold, int x0, int y0,
+			int width, int height, ref GlyphInfo info)
+		{
+			var xMin = width;
+			var xMax = 0;
+			var yMin = height;
+			var yMax = 0;
 
 			int xx, yy;
 			for (var y = 0; y < height; y++)
@@ -211,6 +238,10 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 					if (y + 1 > yMax) yMax = y + 1;
 				}
 			}
+			info.xMin = xMin;
+			info.xMax = xMax;
+			info.yMin = yMin;
+			info.yMax = yMax;
 		}
 
 		private static CharacterInfo CreateSpaceCharacter(int advance)

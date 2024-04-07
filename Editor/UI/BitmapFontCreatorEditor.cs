@@ -74,6 +74,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 
 			EditorGUILayout.Space();
 			_data.Monospaced = EditorGUILayout.Toggle(UI.Monospaced, _data.Monospaced);
+			_data.CaseInsentive = EditorGUILayout.Toggle(UI.CaseInsentive, _data.CaseInsentive);
 			_data.Ascent = UIUtils.FloatFieldMin(UI.Ascent, _data.Ascent, 0f);
 			_data.Descent = UIUtils.FloatFieldMin(UI.Descent, _data.Descent, 0f);
 
