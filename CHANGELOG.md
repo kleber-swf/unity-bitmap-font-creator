@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 -  Texture preview background for small textures
+-  Increased precision on character size generation
 
 ---
 

@@ -199,9 +199,9 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 					xx = x0 + x;
 					if (tex.GetPixel(xx, yy).a <= alphaThreshold) continue;
 					if (x < xMin) xMin = x;
-					if (x > xMax) xMax = x;
+					if (x + 1 > xMax) xMax = x + 1;
 					if (y < yMin) yMin = y;
-					if (y > yMax) yMax = y;
+					if (y + 1 > yMax) yMax = y + 1;
 				}
 			}
 		}
@@ -211,7 +211,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			for (var i = 0; i < characters.Count; i++)
 			{
 				var c = characters[i];
-				var x = c.minX + Mathf.FloorToInt((advMax - c.advance) * 0.5f);
+				var x = c.minX + Mathf.RoundToInt((advMax - c.advance) * 0.5f);
 				c.minX += x;
 				c.maxX += x;
 				c.advance = advMax;
