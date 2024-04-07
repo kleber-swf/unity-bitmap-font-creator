@@ -78,11 +78,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			_data.Descent = UIUtils.FloatFieldMin(UI.Descent, _data.Descent, 0f);
 
 			DrawFontSizeGroup();
-
-			GUILayout.BeginHorizontal();
-			_data.LineSpacing = EditorGUILayout.FloatField(UI.LineSpacing, _data.LineSpacing);
-			if (GUILayout.Button(UI.GuessLineSpacingButton, Styles.MiniButton)) GuessLineSpacing();
-			GUILayout.EndHorizontal();
+			DrawLineSpacingGroup();
 
 			EditorGUILayout.Space();
 			DrawCharacterSetDropDown();
@@ -137,7 +133,18 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			_data.FontSize = EditorGUILayout.FloatField(UI.FontSize, _data.FontSize);
 			GUI.enabled = true;
 
-			_data.AutoFontSize = EditorGUILayout.ToggleLeft(UI.AutoFontSize, _data.AutoFontSize, GUILayout.Width(50));
+			_data.AutoFontSize = EditorGUILayout.ToggleLeft(UI.AutoFontSize, _data.AutoFontSize, GUILayout.Width(Styles.AutoToggleWidth));
+			GUILayout.EndHorizontal();
+		}
+
+		private void DrawLineSpacingGroup()
+		{
+			GUILayout.BeginHorizontal();
+			GUI.enabled = !_data.AutoLineSpacing;
+			_data.LineSpacing = EditorGUILayout.FloatField(UI.LineSpacing, _data.LineSpacing);
+			GUI.enabled = true;
+
+			_data.AutoLineSpacing = EditorGUILayout.ToggleLeft(UI.AutoLineSpacing, _data.AutoLineSpacing, GUILayout.Width(Styles.AutoToggleWidth));
 			GUILayout.EndHorizontal();
 		}
 

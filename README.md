@@ -28,6 +28,7 @@ Settings can be saved to [profiles](#profiles) and retrieved to be used later.
 -  **Font Size**: Base font size in pixels
    -  **Auto**: Automatically calculate the font size based on ascent property or cell size
 -  **Line Spacing**: Vertical spacing between lines.
+   -  **Auto**: Automatically calculate the line spacing based on cell height
 -  **Character Set**: Predefined character set to use. This is not saved to the profile.
 -  **Characters**: Characters used in the font in order they appear in the texture. Use the space character to represent blank spaces in the texture. You can break lines as much as you need to make it easier to add the character according to the texture.
 -  **Default Character Spacing**: Default spacing between characters.
@@ -52,7 +53,6 @@ Preferences are saved in the editor using _EditorPrefs_.
    -  **Baseline**: Color for the baseline (descent).
    -  **Background**: Choose between dark and light background patterns.
 -  **Guess (Rows and Cols)**: Guess the number of rows and columns of the texture based on transparency gaps.
--  **Guess (Line Spacing)**: Guess Line Spacing based on the texture and the number of rows.
 -  **Create**: Creates the font using the given settings.
 -  **Rollback**: Rollback settings to the selected profile or default if none is selected.
 

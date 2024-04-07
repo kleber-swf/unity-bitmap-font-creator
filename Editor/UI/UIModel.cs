@@ -32,7 +32,6 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 		public static readonly GUIContent Cols = new("Cols", "Number of columns in the texture");
 		public static readonly GUIContent Rows = new("Rows", "Number of rows in the texture");
 		public static readonly GUIContent GuessRowsAndColsButton = new("Guess", "Guess the number of rows and columns of the texture based on transparency gaps");
-		public static readonly GUIContent GuessLineSpacingButton = new("Guess", "Guess Line Spacing based on the texture and the number of rows");
 		public static readonly GUIContent PreviewButton = new("Preview", "Preview the texture with current rows and cols");
 		public static readonly GUIContent AlphaThreshold = new("Alpha Threshold", "Alpha threshold to identify characters bounds");
 		public static readonly GUIContent Monospaced = new("Monospaced", "Whether the result font should be monospaced");
@@ -41,6 +40,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 		public static readonly GUIContent FontSize = new("Font Size", "Base font size in pixels");
 		public static readonly GUIContent AutoFontSize = new("Auto", "Automatically calculate the font size based on ascent property or cell size");
 		public static readonly GUIContent LineSpacing = new("Line Spacing", "Vertical spacing between lines");
+		public static readonly GUIContent AutoLineSpacing = new("Auto", "Automatically calculate the line spacing based on cell height");
 		public static readonly GUIContent CharacterSet = new("Character Set", "Predefined character set to use");
 		public static readonly GUIContent Characters = new("Characters", "Characters used in the font in order they appear in the texture. Use the space character to represent blank spaces in the texture");
 		public static readonly GUIContent DefaultCharacterSpacing = new("Character Spacing", "Default spacing between characters");
@@ -69,6 +69,8 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 
 	internal static class Styles
 	{
+		public static readonly float AutoToggleWidth = 50f;
+
 		public static readonly GUIStyle HeaderLabel = new(EditorStyles.label)
 		{
 			margin = new(EditorStyles.label.margin.left, EditorStyles.label.margin.right, 5, 5),

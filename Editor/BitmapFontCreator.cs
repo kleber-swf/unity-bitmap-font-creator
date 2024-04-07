@@ -91,21 +91,13 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			};
 
 			var so = new SerializedObject(font);
-			so.FindProperty("m_LineSpacing").floatValue = data.LineSpacing;
+			so.FindProperty("m_LineSpacing").floatValue = CalcLineSpacing(data, measures);
 			so.FindProperty("m_Ascent").floatValue = data.Ascent + data.Descent;
 			so.FindProperty("m_Descent").floatValue = data.Descent;
 			so.FindProperty("m_FontSize").floatValue = CalcFontSize(data, measures);
 			so.ApplyModifiedProperties();
 
 			return font;
-		}
-
-		private static float CalcFontSize(ExecutionData data, FontMeasures measures)
-		{
-			if (!data.AutoFontSize) return data.FontSize;
-			if (data.Ascent > 0) return data.Ascent;
-			if (measures.MaxCharHeight > 0) return measures.MaxCharHeight;
-			return measures.cellSize.y;
 		}
 
 		private static CharacterInfo[] CreateCharacters(ExecutionData data, Dictionary<char, CharacterProps> map,
@@ -238,6 +230,21 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 				EditorUtility.SetDirty(dest);
 				AssetDatabase.SaveAssetIfDirty(dest);
 			}
+		}
+
+		private static float CalcLineSpacing(ExecutionData data, FontMeasures measures)
+		{
+			if (!data.AutoLineSpacing) return data.LineSpacing;
+			if (measures.MaxCharHeight > 0) return measures.MaxCharHeight;
+			return measures.cellSize.y;
+		}
+
+		private static float CalcFontSize(ExecutionData data, FontMeasures measures)
+		{
+			if (!data.AutoFontSize) return data.FontSize;
+			if (data.Ascent > 0) return data.Ascent;
+			if (measures.MaxCharHeight > 0) return measures.MaxCharHeight;
+			return measures.cellSize.y;
 		}
 
 		public static Vector2Int GuessRowsAndCols(Texture2D tex)

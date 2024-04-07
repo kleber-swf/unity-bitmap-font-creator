@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 -  Font size configuration
 
+### Changed
+
+-  Auto line spacing in place of guessing
+
 ---
 
 ## [1.3.0]
