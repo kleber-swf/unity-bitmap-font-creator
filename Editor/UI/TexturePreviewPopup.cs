@@ -6,7 +6,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 	internal class TexturePreviewPopup : EditorWindow
 	{
 		private static readonly Vector2Int _texturePadding = new(20, 20);
-		private static readonly Vector2 _gridTexSize = new(48f, 48f);
+		private static readonly float _gridTexSize = 48f;
 
 		private ExecutionData _data;
 		private PrefsModel _prefs;
@@ -90,7 +90,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			_scrollPos = GUI.BeginScrollView(scrollRect, _scrollPos, scrollContentRect);
 			GUI.DrawTextureWithTexCoords(textureRect,
 				_prefs.TextureBackground == 0 ? UI.GridDarkTexture : UI.GridLightTexture,
-				new Rect(0, 0, tw / _gridTexSize.x, th / _gridTexSize.y), true);
+				new Rect(0, 0, textureRect.width / _gridTexSize, textureRect.height / _gridTexSize), true);
 			GUI.DrawTexture(textureRect, _data.Texture, ScaleMode.ScaleToFit, true);
 			DrawGrid(textureRect, _data.Ascent, _data.Descent, ratio);
 			GUI.EndScrollView();

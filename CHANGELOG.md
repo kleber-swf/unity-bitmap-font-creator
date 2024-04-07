@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 -  Auto line spacing in place of guessing
 
+### Fixed
+
+-  Texture preview background for small textures
+
 ---
 
 ## [1.3.0]
