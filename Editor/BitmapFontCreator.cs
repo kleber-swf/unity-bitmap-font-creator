@@ -143,7 +143,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 						tex: data.Texture,
 						alphaThreshold: data.AlphaThreshold,
 						x0: col * cellSize.x,
-						y0: (data.Rows - row) * cellSize.y,
+						y0: ((data.Rows - row) * cellSize.y) - 1,
 						width: cellSize.x,
 						height: cellSize.y,
 						ref g
@@ -177,7 +177,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 
 #if BITMAP_FONT_CREATOR_DEV
 					static string _(float x) => $"<color=yellow>{x}</color>";
-					Debug.Log($"<b>{ch}</b> w: {_(info.glyphWidth)} h: {_(info.glyphHeight)} xMin: {_(g.xMin)} xMax: {_(g.xMax)}");
+					Debug.Log($"<b>{ch}</b> w: {_(info.glyphWidth)} h: {_(info.glyphHeight)} yMin: {_(g.yMin)} yMax: {_(g.yMax)}");
 #endif
 				}
 			}
@@ -233,15 +233,15 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 					xx = x0 + x;
 					if (tex.GetPixel(xx, yy).a <= alphaThreshold) continue;
 					if (x < xMin) xMin = x;
-					if (x + 1 > xMax) xMax = x + 1;
+					if (x > xMax) xMax = x;
 					if (y < yMin) yMin = y;
-					if (y + 1 > yMax) yMax = y + 1;
+					if (y > yMax) yMax = y;
 				}
 			}
 			info.xMin = xMin;
-			info.xMax = xMax;
+			info.xMax = xMax + 1;
 			info.yMin = yMin;
-			info.yMax = yMax;
+			info.yMax = yMax + 1;
 		}
 
 		private static CharacterInfo CreateSpaceCharacter(int advance)
