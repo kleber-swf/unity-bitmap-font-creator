@@ -31,6 +31,7 @@ Settings can be saved to [profiles](#profiles) and retrieved to be used later.
    -  **Auto**: Automatically calculate the line spacing based on cell height
 -  **Character Set**: Predefined character set to use. This is not saved to the profile.
 -  **Characters**: Characters used in the font in order they appear in the texture. Use the space character to represent blank spaces in the texture. You can break lines as much as you need to make it easier to add the character according to the texture.
+   -  Note: the space character is generated based on the smallest character width found in the font texture
 -  **Default Character Spacing**: Default spacing between characters.
 -  **Custom Character Properties**: Custom properties for each characters, if any.
    -  **Char**: Character to apply the properties.
