@@ -203,6 +203,18 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			return value;
 		}
 
+		public static float FloatFieldWithAuto(GUIContent label, float value, GUIContent autoLabel, ref bool auto)
+		{
+			GUILayout.BeginHorizontal();
+			GUI.enabled = !auto;
+			value = EditorGUILayout.FloatField(label, value);
+			GUI.enabled = true;
+
+			auto = EditorGUILayout.ToggleLeft(autoLabel, auto, GUILayout.Width(Styles.AutoToggleWidth));
+			GUILayout.EndHorizontal();
+			return value;
+		}
+
 		public static bool CenteredButton(GUIContent label, GUIStyle style = null)
 		{
 			GUILayout.BeginHorizontal();

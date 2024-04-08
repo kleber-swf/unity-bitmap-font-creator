@@ -132,38 +132,13 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 		{
 			EditorGUILayout.BeginVertical(Styles.Group);
 
-			_data.Monospaced = EditorGUILayout.Toggle(UI.Monospaced, _data.Monospaced);
-			_data.CaseInsentive = EditorGUILayout.Toggle(UI.CaseInsentive, _data.CaseInsentive);
+			_data.FontSize = UIUtils.FloatFieldWithAuto(UI.FontSize, _data.FontSize, UI.AutoFontSize, ref _data.AutoFontSize);
+			_data.LineSpacing = UIUtils.FloatFieldWithAuto(UI.LineSpacing, _data.LineSpacing, UI.AutoLineSpacing, ref _data.AutoLineSpacing);
 			_data.Ascent = UIUtils.FloatFieldMin(UI.Ascent, _data.Ascent, 0f);
 			_data.Descent = UIUtils.FloatFieldMin(UI.Descent, _data.Descent, 0f);
-			_data.DefaultCharacterSpacing = EditorGUILayout.IntField(UI.DefaultCharacterSpacing, _data.DefaultCharacterSpacing);
-
-			DrawFontSizeProperty();
-			DrawLineSpacingProperty();
+			_data.Monospaced = EditorGUILayout.Toggle(UI.Monospaced, _data.Monospaced);
 
 			EditorGUILayout.EndVertical();
-		}
-
-		private void DrawFontSizeProperty()
-		{
-			GUILayout.BeginHorizontal();
-			GUI.enabled = !_data.AutoFontSize;
-			_data.FontSize = EditorGUILayout.FloatField(UI.FontSize, _data.FontSize);
-			GUI.enabled = true;
-
-			_data.AutoFontSize = EditorGUILayout.ToggleLeft(UI.AutoFontSize, _data.AutoFontSize, GUILayout.Width(Styles.AutoToggleWidth));
-			GUILayout.EndHorizontal();
-		}
-
-		private void DrawLineSpacingProperty()
-		{
-			GUILayout.BeginHorizontal();
-			GUI.enabled = !_data.AutoLineSpacing;
-			_data.LineSpacing = EditorGUILayout.FloatField(UI.LineSpacing, _data.LineSpacing);
-			GUI.enabled = true;
-
-			_data.AutoLineSpacing = EditorGUILayout.ToggleLeft(UI.AutoLineSpacing, _data.AutoLineSpacing, GUILayout.Width(Styles.AutoToggleWidth));
-			GUILayout.EndHorizontal();
 		}
 
 		#endregion
@@ -173,6 +148,9 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 		private void DrawCharacterGroup()
 		{
 			EditorGUILayout.BeginVertical(Styles.Group);
+
+			_data.CaseInsentive = EditorGUILayout.Toggle(UI.CaseInsentive, _data.CaseInsentive);
+			_data.DefaultCharacterSpacing = EditorGUILayout.IntField(UI.DefaultCharacterSpacing, _data.DefaultCharacterSpacing);
 
 			DrawCharacterSetDropDown();
 
