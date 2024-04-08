@@ -17,7 +17,8 @@ The plugin uses a simplified version of font metrics. Here is a scheme of how th
 
 ## Installation
 
-https://docs.unity3d.com/Manual/upm-ui-giturl.html
+-  Using Unity Package Manager menu: https://docs.unity3d.com/Manual/upm-ui-giturl.html
+-  Using OpenUPM: https://openupm.com/
 
 ## How to use the plugin
 
