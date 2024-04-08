@@ -1,36 +1,11 @@
 using System;
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 
 namespace dev.klebersilva.tools.bitmapfontcreator
 {
-	internal enum Orientation
-	{
-		Horizontal,
-		Vertical,
-	}
-
 	[Serializable]
-	internal class CharacterProps
-	{
-		public string Character = "";
-		public Vector2Int Padding = Vector2Int.zero;
-		public int Spacing = 0;
-
-		public CharacterProps Clone()
-		{
-			return new CharacterProps
-			{
-				Character = Character,
-				Padding = Padding,
-				Spacing = Spacing,
-			};
-		}
-	}
-
-	[Serializable]
-	internal class BitmapFontCreatorData : ISerializationCallbackReceiver
+	internal class BitmapFontCreatorModel : ISerializationCallbackReceiver
 	{
 		private const string IgnoreCharacter = "\n";
 
@@ -64,7 +39,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 		public string ValidCharacters { get; protected set; } = string.Empty;
 		public int ValidCharactersCount { get; protected set; } = 0;
 
-		public virtual void CopyTo(BitmapFontCreatorData dest)
+		public virtual void CopyTo(BitmapFontCreatorModel dest)
 		{
 			if (dest == null) return;
 
@@ -102,7 +77,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 		public void OnBeforeSerialize() { }
 		public void OnAfterDeserialize() { UpdateChacters(); }
 
-		public static BitmapFontCreatorData Default => new()
+		public static BitmapFontCreatorModel Default => new()
 		{
 			Characters = string.Empty,
 			Orientation = Orientation.Horizontal,
@@ -122,21 +97,5 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			ValidCharacters = string.Empty,
 			ValidCharactersCount = 0
 		};
-	}
-
-	[Serializable]
-	internal class ExecutionData : BitmapFontCreatorData
-	{
-		public Texture2D Texture;
-
-		public static new ExecutionData Default
-		{
-			get
-			{
-				var data = new ExecutionData { Texture = null };
-				BitmapFontCreatorData.Default.CopyTo(data);
-				return data;
-			}
-		}
 	}
 }

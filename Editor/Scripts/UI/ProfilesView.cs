@@ -10,14 +10,14 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 		private const string SaveProfileOption = "Save Profile";
 		private const string DeleteProfileOption = "Delete Profile";
 
-		private readonly BitmapFontCreatorData _editorData;
+		private readonly BitmapFontCreatorModel _editorData;
 		private readonly ProfileList _profiles;
 		private readonly PrefsModel _prefs;
 
 		private string[] _options;
 		private int _optionIndex = 0;
 
-		public ProfilesView(BitmapFontCreatorData editorData, ProfileList profiles, PrefsModel prefs)
+		public ProfilesView(BitmapFontCreatorModel editorData, ProfileList profiles, PrefsModel prefs)
 		{
 			_editorData = editorData;
 			_profiles = profiles;
