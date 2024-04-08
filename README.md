@@ -79,6 +79,7 @@ Preferences are accessed by clicking on the three dots at the bottom right corne
 -  **Guess (Rows and Cols)**: Guess the number of rows and columns of the texture based on transparency gaps.
 -  **Create**: Creates the font using the given settings.
 -  **Rollback**: Rollback settings to the selected profile or default if none is selected.
+-  **Default**: Reset settings to their default values.
 
 ## Profiles
 

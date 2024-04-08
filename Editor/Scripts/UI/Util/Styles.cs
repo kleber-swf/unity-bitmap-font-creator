@@ -90,7 +90,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 		};
 
 		public static readonly GUIStyle ProfilesButton = new("ToolbarPopupLeft");
-		public static readonly GUIStyle RollbackButton = new("TE toolbarbutton") { padding = new(10, 6, 0, 0), };
+		public static readonly GUIStyle ToolbarButton = new("TE toolbarbutton") { padding = new(10, 6, 0, 0), };
 		public static readonly GUIStyle PreferencesButton = new("PaneOptions") { margin = new(0, 0, 3, 0), };
 
 		public static readonly GUIStyle CenterLabel = new(GUI.skin.label)

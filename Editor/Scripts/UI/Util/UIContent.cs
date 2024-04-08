@@ -34,6 +34,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 		public static readonly GUIContent CreateButton = new("Create", "Create font files");
 
 		public static readonly GUIContent RollbackButton = new("Rollback", "Rollback settings to the selected profile or default");
+		public static readonly GUIContent DefaultButton = new("Default", "Reset settings to their default values");
 		public static readonly GUIContent PreferencesButton = new(string.Empty, "Preferences");
 		public static readonly GUIContent PreferencesLabel = new("Preferences");
 		public static readonly GUIContent WarnOnReplaceFont = new("Warn before replacing font files", "Warn before replacing an existing font. This will replace the old font keeping the references");

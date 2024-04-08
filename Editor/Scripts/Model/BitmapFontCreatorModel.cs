@@ -67,7 +67,6 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			UpdateChacters();
 		}
 
-		// TODO this should be called automatically when the field Characters changes
 		private void UpdateChacters()
 		{
 			ValidCharacters = _characters.Replace(IgnoreCharacter, string.Empty);

@@ -47,16 +47,12 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			if (!Application.isPlaying)
 				_settings.Profiles.Selected?.CopyTo(_data);
 
-			_customCharPropsList = new CharacterPropsList(_data.CustomCharacterProps);
-			_profilesView = new ProfilesView(_data, _settings.Profiles, _prefs);
-			_prefsView = new PrefsView(_prefs);
+			SetupBottomMenu(_data, _settings.Profiles, _prefs);
 		}
 
 		private void OnGUI()
 		{
-#if BITMAP_FONT_CREATOR_DEV
 			if (_customCharPropsList == null) Setup();
-#endif
 
 			EditorGUIUtility.labelWidth = 120;
 			_mainScrollPos = GUILayout.BeginScrollView(_mainScrollPos, false, false, GUIStyle.none, GUI.skin.verticalScrollbar, GUILayout.ExpandHeight(true));
