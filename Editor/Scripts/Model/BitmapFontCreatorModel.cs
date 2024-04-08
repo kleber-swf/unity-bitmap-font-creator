@@ -4,32 +4,8 @@ using UnityEngine;
 
 namespace dev.klebersilva.tools.bitmapfontcreator
 {
-	internal enum Orientation
-	{
-		Horizontal,
-		Vertical,
-	}
-
 	[Serializable]
-	internal class CharacterProps
-	{
-		public string Character = "";
-		public Vector2Int Padding = Vector2Int.zero;
-		public int Spacing = 0;
-
-		public CharacterProps Clone()
-		{
-			return new CharacterProps
-			{
-				Character = Character,
-				Padding = Padding,
-				Spacing = Spacing,
-			};
-		}
-	}
-
-	[Serializable]
-	internal class BitmapFontCreatorData : ISerializationCallbackReceiver
+	internal class BitmapFontCreatorModel : ISerializationCallbackReceiver
 	{
 		private const string IgnoreCharacter = "\n";
 
@@ -63,7 +39,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 		public string ValidCharacters { get; protected set; } = string.Empty;
 		public int ValidCharactersCount { get; protected set; } = 0;
 
-		public virtual void CopyTo(BitmapFontCreatorData dest)
+		public virtual void CopyTo(BitmapFontCreatorModel dest)
 		{
 			if (dest == null) return;
 
@@ -74,10 +50,10 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			dest.AlphaThreshold = AlphaThreshold;
 			dest.LineSpacing = LineSpacing;
 			dest.AutoLineSpacing = AutoLineSpacing;
-			dest.Monospaced = Monospaced;
-			dest.CaseInsentive = CaseInsentive;
 			dest.FontSize = FontSize;
 			dest.AutoFontSize = AutoFontSize;
+			dest.Monospaced = Monospaced;
+			dest.CaseInsentive = CaseInsentive;
 			dest.Ascent = Ascent;
 			dest.Descent = Descent;
 			dest.DefaultCharacterSpacing = DefaultCharacterSpacing;
@@ -91,7 +67,6 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			UpdateChacters();
 		}
 
-		// TODO this should be called automatically when the field Characters changes
 		private void UpdateChacters()
 		{
 			ValidCharacters = _characters.Replace(IgnoreCharacter, string.Empty);
@@ -100,23 +75,23 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 
 		public void OnBeforeSerialize() { }
 		public void OnAfterDeserialize() { UpdateChacters(); }
-	}
 
-	internal class ExecutionData : BitmapFontCreatorData
-	{
-		[NonSerialized] public Texture2D Texture;
-
-		public static ExecutionData Default => new()
+		public static BitmapFontCreatorModel Default => new()
 		{
-			Texture = null,
 			Characters = string.Empty,
 			Orientation = Orientation.Horizontal,
 			Cols = 1,
 			Rows = 1,
 			AlphaThreshold = 0f,
-			DefaultCharacterSpacing = 10,
-			Monospaced = false,
 			LineSpacing = 0f,
+			AutoLineSpacing = true,
+			FontSize = 0f,
+			AutoFontSize = true,
+			Monospaced = false,
+			CaseInsentive = false,
+			Ascent = 0f,
+			Descent = 0f,
+			DefaultCharacterSpacing = 0,
 			CustomCharacterProps = new List<CharacterProps>(),
 			ValidCharacters = string.Empty,
 			ValidCharactersCount = 0

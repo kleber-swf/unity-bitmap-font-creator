@@ -32,7 +32,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 		private void OnGUI()
 		{
 			if (_data.Texture != null && _data.Rows > 0 && _data.Cols > 0) DrawContent();
-			else GUILayout.Label(UI.NoContent, Styles.CenterLabel);
+			else GUILayout.Label(UIContent.NoContent, Styles.CenterLabel);
 		}
 
 		private void DrawContent()
@@ -47,18 +47,18 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			GUILayout.FlexibleSpace();
 
 			_prefs.GridColor = EditorGUILayout.ColorField(GUIContent.none, _prefs.GridColor, false, true, false, GUILayout.Width(24));
-			GUILayout.Label(UI.GridColorLabel, Styles.ToolbarLabel);
+			GUILayout.Label(UIContent.GridColorLabel, Styles.ToolbarLabel);
 
 			_prefs.HeightColor = EditorGUILayout.ColorField(GUIContent.none, _prefs.HeightColor, false, true, false, GUILayout.Width(24));
-			GUILayout.Label(UI.HeightColorLabel, Styles.ToolbarLabel);
+			GUILayout.Label(UIContent.HeightColorLabel, Styles.ToolbarLabel);
 
 			_prefs.BaselineColor = EditorGUILayout.ColorField(GUIContent.none, _prefs.BaselineColor, false, true, false, GUILayout.Width(24));
-			GUILayout.Label(UI.BaselineColorLabel, Styles.ToolbarLabel);
+			GUILayout.Label(UIContent.BaselineColorLabel, Styles.ToolbarLabel);
 
 			GUILayout.Space(10);
 			var selection = GUILayout.Toggle(
 				_prefs.TextureBackground == 0,
-				_prefs.TextureBackground == 0 ? UI.DarkTextureIcon : UI.LightTextureIcon,
+				_prefs.TextureBackground == 0 ? UIContent.DarkTextureIcon : UIContent.LightTextureIcon,
 				Styles.BackgroundTextureIcon);
 			_prefs.TextureBackground = selection ? 0 : 1;
 
@@ -86,7 +86,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 
 			_scrollPos = GUI.BeginScrollView(scrollRect, _scrollPos, scrollContentRect);
 			GUI.DrawTextureWithTexCoords(textureRect,
-				_prefs.TextureBackground == 0 ? UI.GridDarkTexture : UI.GridLightTexture,
+				_prefs.TextureBackground == 0 ? Styles.GridDarkTexture : Styles.GridLightTexture,
 				new Rect(0, 0, textureRect.width / _gridTexSize, textureRect.height / _gridTexSize), true);
 			GUI.DrawTexture(textureRect, _data.Texture, ScaleMode.ScaleToFit, true);
 			DrawGrid(textureRect, _data.Ascent, _data.Descent, ratio);

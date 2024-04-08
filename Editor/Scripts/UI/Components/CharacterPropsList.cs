@@ -24,15 +24,15 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			var w = rect.width - padding;
 
 			rect.width = widths[0] * w;
-			GUI.Label(rect, UI.CustomCharacter);
+			GUI.Label(rect, UIContent.CustomCharacter);
 
 			rect.x += rect.width + spacing;
 			rect.width = widths[1] * w;
-			GUI.Label(rect, UI.CustomSpacing);
+			GUI.Label(rect, UIContent.CustomSpacing);
 
 			rect.x += rect.width + spacing;
 			rect.width = widths[2] * w;
-			GUI.Label(rect, UI.CustomPadding);
+			GUI.Label(rect, UIContent.CustomPadding);
 		}
 
 		private void ListDrawElement(Rect rect, int index, bool isActive, bool isFocused)

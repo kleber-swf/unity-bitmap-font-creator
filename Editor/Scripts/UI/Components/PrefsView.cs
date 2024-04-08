@@ -13,7 +13,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 
 		public void Draw()
 		{
-			if (GUILayout.Button(UI.PreferencesButton, Styles.PreferencesButton)) PopupWindow.Show(_buttonRect, new PrefsPopup(_model));
+			if (GUILayout.Button(UIContent.PreferencesButton, Styles.PreferencesButton)) PopupWindow.Show(_buttonRect, new PrefsPopup(_model));
 			if (Event.current.type == EventType.Repaint) _buttonRect = GUILayoutUtility.GetLastRect();
 		}
 	}
@@ -36,18 +36,18 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 		public override void OnGUI(Rect rect)
 		{
 			rect.height = _headerHeight;
-			GUI.Label(rect, UI.PreferencesLabel, Styles.SectionLabel);
+			GUI.Label(rect, UIContent.PreferencesLabel, Styles.SectionLabel);
 
 			rect.x += _padding.left;
 			rect.y += _padding.top + rect.height;
 			rect.height = EditorGUIUtility.singleLineHeight;
-			_model.WarnOnReplaceFont = EditorGUI.ToggleLeft(rect, UI.WarnOnReplaceFont, _model.WarnOnReplaceFont);
+			_model.WarnOnReplaceFont = EditorGUI.ToggleLeft(rect, UIContent.WarnOnReplaceFont, _model.WarnOnReplaceFont);
 
 			rect.y += rect.height;
-			_model.WarnOnReplaceSettings = EditorGUI.ToggleLeft(rect, UI.WarnOnReplaceSettings, _model.WarnOnReplaceSettings);
+			_model.WarnOnReplaceSettings = EditorGUI.ToggleLeft(rect, UIContent.WarnOnReplaceSettings, _model.WarnOnReplaceSettings);
 
 			rect.y += rect.height;
-			_model.WarnOnReplaceProfile = EditorGUI.ToggleLeft(rect, UI.WarnOnReplaceProfile, _model.WarnOnReplaceProfile);
+			_model.WarnOnReplaceProfile = EditorGUI.ToggleLeft(rect, UIContent.WarnOnReplaceProfile, _model.WarnOnReplaceProfile);
 		}
 
 		public override void OnClose()
