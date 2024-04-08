@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 namespace dev.klebersilva.tools.bitmapfontcreator
@@ -74,10 +75,10 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			dest.AlphaThreshold = AlphaThreshold;
 			dest.LineSpacing = LineSpacing;
 			dest.AutoLineSpacing = AutoLineSpacing;
-			dest.Monospaced = Monospaced;
-			dest.CaseInsentive = CaseInsentive;
 			dest.FontSize = FontSize;
 			dest.AutoFontSize = AutoFontSize;
+			dest.Monospaced = Monospaced;
+			dest.CaseInsentive = CaseInsentive;
 			dest.Ascent = Ascent;
 			dest.Descent = Descent;
 			dest.DefaultCharacterSpacing = DefaultCharacterSpacing;
@@ -100,26 +101,42 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 
 		public void OnBeforeSerialize() { }
 		public void OnAfterDeserialize() { UpdateChacters(); }
-	}
 
-	internal class ExecutionData : BitmapFontCreatorData
-	{
-		[NonSerialized] public Texture2D Texture;
-
-		public static ExecutionData Default => new()
+		public static BitmapFontCreatorData Default => new()
 		{
-			Texture = null,
 			Characters = string.Empty,
 			Orientation = Orientation.Horizontal,
 			Cols = 1,
 			Rows = 1,
 			AlphaThreshold = 0f,
-			DefaultCharacterSpacing = 10,
-			Monospaced = false,
 			LineSpacing = 0f,
+			AutoLineSpacing = true,
+			FontSize = 0f,
+			AutoFontSize = true,
+			Monospaced = false,
+			CaseInsentive = false,
+			Ascent = 0f,
+			Descent = 0f,
+			DefaultCharacterSpacing = 0,
 			CustomCharacterProps = new List<CharacterProps>(),
 			ValidCharacters = string.Empty,
 			ValidCharactersCount = 0
 		};
+	}
+
+	[Serializable]
+	internal class ExecutionData : BitmapFontCreatorData
+	{
+		public Texture2D Texture;
+
+		public static new ExecutionData Default
+		{
+			get
+			{
+				var data = new ExecutionData { Texture = null };
+				BitmapFontCreatorData.Default.CopyTo(data);
+				return data;
+			}
+		}
 	}
 }

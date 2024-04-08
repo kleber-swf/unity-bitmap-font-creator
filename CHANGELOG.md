@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 -  Monospaced fonts now respects custom character properties
+-  Keeping changes at runtime
 
 ---
 

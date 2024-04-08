@@ -7,7 +7,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 	{
 		public const string MenuItemPath = "Window/Text/Bitmap Font Creator";
 
-		private readonly ExecutionData _data = ExecutionData.Default;
+		private ExecutionData _data;
 		private CharacterPropsList _customCharPropsList;
 		private ProfilesView _profilesView;
 		private PrefsView _prefsView;
@@ -19,7 +19,9 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 		private int _selectedCharacterSetIndex = 0;
 		private string _error = string.Empty;
 		private bool _showPreview = false;
-
+		private bool _textureGroupFoldout = true;
+		private bool _fontGroupFoldout = true;
+		private bool _charGroupFoldout = true;
 		private Vector2Int _guessRowsColsCache;
 
 		[MenuItem(MenuItemPath)]
@@ -39,18 +41,17 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 
 		private void Setup()
 		{
+			_data = RuntimeData.Load().Data;
 			_settings = Settings.Load();
 			_prefs = PrefsModel.Load();
-			_settings.Profiles.Selected?.CopyTo(_data);
+
+			if (!Application.isPlaying)
+				_settings.Profiles.Selected?.CopyTo(_data);
 
 			_customCharPropsList = new CharacterPropsList(_data.CustomCharacterProps);
 			_profilesView = new ProfilesView(_data, _settings.Profiles, _prefs);
 			_prefsView = new PrefsView(_prefs);
 		}
-
-		private bool _textureGroupFoldout = true;
-		private bool _fontGroupFoldout = true;
-		private bool _charGroupFoldout = true;
 
 		private void OnGUI()
 		{
