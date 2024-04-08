@@ -85,24 +85,14 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 
 		private static Font CreateFontAsset(string baseName, Material material, ExecutionData data, out string error)
 		{
-			error = null;
-			var map = new Dictionary<char, CharacterProps>();
-			for (var i = 0; i < data.CustomCharacterProps.Count; i++)
-			{
-				var e = data.CustomCharacterProps[i];
-				if (string.IsNullOrEmpty(e.Character))
-				{
-					error = $"Character for Custom Character Properties at position {i + 1} is empty";
-					return null;
-				}
-				map.Add(e.Character[0], e);
-			}
+			var custom = GetCustomPropsAsMap(data.CustomCharacterProps, out error);
+			if (!string.IsNullOrEmpty(error)) return null;
 
 			var metrics = new FontMetrics();
 			var font = new Font(baseName)
 			{
 				material = material,
-				characterInfo = CreateCharacters(data, map, data.Descent, ref metrics),
+				characterInfo = CreateCharacters(data, custom, data.Descent, ref metrics),
 			};
 
 			var so = new SerializedObject(font);
@@ -115,8 +105,27 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			return font;
 		}
 
-		private static CharacterInfo[] CreateCharacters(ExecutionData data, Dictionary<char, CharacterProps> map,
-			float descent, ref FontMetrics metrics)
+		private static Dictionary<char, CharacterProps> GetCustomPropsAsMap(List<CharacterProps> props, out string error)
+		{
+			error = null;
+			var map = new Dictionary<char, CharacterProps>();
+
+			for (var i = 0; i < props.Count; i++)
+			{
+				var e = props[i];
+				if (string.IsNullOrEmpty(e.Character))
+				{
+					error = $"Character for Custom Character Properties at position {i + 1} is empty";
+					return null;
+				}
+				map.Add(e.Character[0], e);
+			}
+
+			return map;
+		}
+
+		private static CharacterInfo[] CreateCharacters(ExecutionData data, Dictionary<char, CharacterProps> custom,
+		 float descent, ref FontMetrics metrics)
 		{
 			var texSize = new Vector2Int(data.Texture.width, data.Texture.height);
 			var cellSize = new Vector2Int(Mathf.FloorToInt(texSize.x / data.Cols), Mathf.FloorToInt(texSize.y / data.Rows));
@@ -164,14 +173,14 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 					gi.uvBottom = cellUVSize.x * (col + 1) - ((cellSize.x - gi.xMax) * ratio.x);
 					gi.uvRight = cellUVSize.y * (data.Rows - row - 1) + ((cellSize.y - gi.yMax) * ratio.y);
 
-					var info = CreateCharacterInfo(ch, gi, map);
+					var info = CreateCharacterInfo(ch, gi, custom);
 					characters.Add(info);
 
 					if (!data.CaseInsentive) continue;
 					var ch2 = char.ToUpper(ch);
-					if (ch2 != ch) characters.Add(CreateCharacterInfo(ch2, gi, map));
+					if (ch2 != ch) characters.Add(CreateCharacterInfo(ch2, gi, custom));
 					ch2 = char.ToLower(ch2);
-					if (ch2 != ch) characters.Add(CreateCharacterInfo(ch2, gi, map));
+					if (ch2 != ch) characters.Add(CreateCharacterInfo(ch2, gi, custom));
 
 #if BITMAP_FONT_CREATOR_DEV
 					static string _(float x) => $"<color=yellow>{x}</color>";
@@ -183,12 +192,12 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			characters.Add(CreateSpaceCharacter(advanceMin));
 
 			if (data.Monospaced)
-				SetFontAsMonospaced(characters, advanceMax);
+				SetFontAsMonospaced(characters, advanceMax, custom);
 
 			return characters.ToArray();
 		}
 
-		private static CharacterInfo CreateCharacterInfo(char ch, GlyphInfo g, Dictionary<char, CharacterProps> map)
+		private static CharacterInfo CreateCharacterInfo(char ch, GlyphInfo g, Dictionary<char, CharacterProps> custom)
 		{
 			var info = new CharacterInfo
 			{
@@ -203,7 +212,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 				advance = g.advance,
 			};
 
-			if (map.TryGetValue(ch, out var props))
+			if (custom.TryGetValue(ch, out var props))
 			{
 				info.minX += props.Padding.x;
 				info.maxX += props.Padding.x;
@@ -256,10 +265,11 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			};
 		}
 
-		private static void SetFontAsMonospaced(List<CharacterInfo> characters, int advMax)
+		private static void SetFontAsMonospaced(List<CharacterInfo> characters, int advMax, Dictionary<char, CharacterProps> custom)
 		{
 			for (var i = 0; i < characters.Count; i++)
 			{
+				if (custom.ContainsKey((char)characters[i].index)) continue;
 				var c = characters[i];
 				var x = c.minX + Mathf.RoundToInt((advMax - c.advance) * 0.5f);
 				c.minX += x;
