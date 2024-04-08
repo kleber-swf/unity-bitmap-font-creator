@@ -27,18 +27,25 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 		public static readonly Texture2D GridDarkTexture = Resources.Load<Texture2D>("Textures/grid-dark");
 		public static readonly Texture2D GridLightTexture = Resources.Load<Texture2D>("Textures/grid-light");
 
-		public static readonly GUIContent Texture = new("Font Texture", "Texture used for the font");
+		public static readonly GUIContent TextureGroupTitle = new("Texture Properties");
+		public static readonly GUIContent FontGroupTitle = new("Font Properties");
+		public static readonly GUIContent CharactersGroupTitle = new("Characters");
+
+		public static readonly GUIContent TextureLabel = new("Texture", "Texture used for the font");
 		public static readonly GUIContent Orientation = new("Orientation", "Order to look up for characters in the texture");
 		public static readonly GUIContent Cols = new("Cols", "Number of columns in the texture");
 		public static readonly GUIContent Rows = new("Rows", "Number of rows in the texture");
 		public static readonly GUIContent GuessRowsAndColsButton = new("Guess", "Guess the number of rows and columns of the texture based on transparency gaps");
-		public static readonly GUIContent GuessLineSpacingButton = new("Guess", "Guess Line Spacing based on the texture and the number of rows");
 		public static readonly GUIContent PreviewButton = new("Preview", "Preview the texture with current rows and cols");
 		public static readonly GUIContent AlphaThreshold = new("Alpha Threshold", "Alpha threshold to identify characters bounds");
 		public static readonly GUIContent Monospaced = new("Monospaced", "Whether the result font should be monospaced");
+		public static readonly GUIContent CaseInsentive = new("Case Insentive", "Whether the characters for lowercase and uppercase are the same");
 		public static readonly GUIContent Ascent = new("Ascent", "Font ascent. It's the part of the glyphs that should be above the baseline");
 		public static readonly GUIContent Descent = new("Descent", "Font descent. It's the part of the glyphs that should be below the baseline");
+		public static readonly GUIContent FontSize = new("Font Size", "Base font size in pixels");
+		public static readonly GUIContent AutoFontSize = new("Auto", "Automatically calculate the font size based on ascent property or cell size");
 		public static readonly GUIContent LineSpacing = new("Line Spacing", "Vertical spacing between lines");
+		public static readonly GUIContent AutoLineSpacing = new("Auto", "Automatically calculate the line spacing based on cell height");
 		public static readonly GUIContent CharacterSet = new("Character Set", "Predefined character set to use");
 		public static readonly GUIContent Characters = new("Characters", "Characters used in the font in order they appear in the texture. Use the space character to represent blank spaces in the texture");
 		public static readonly GUIContent DefaultCharacterSpacing = new("Character Spacing", "Default spacing between characters");
@@ -67,6 +74,20 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 
 	internal static class Styles
 	{
+		public static readonly float AutoToggleWidth = 50f;
+
+		public static readonly GUIStyle GroupTitle = new(EditorStyles.foldoutHeader)
+		{
+			margin = new(0, 0, 2, 2),
+			padding = new(18, 5, 10, 10),
+		};
+
+		public static readonly GUIStyle Group = new("hostview")
+		{
+			margin = new(),
+			padding = new(18, 5, 5, 20),
+		};
+
 		public static readonly GUIStyle HeaderLabel = new(EditorStyles.label)
 		{
 			margin = new(EditorStyles.label.margin.left, EditorStyles.label.margin.right, 5, 5),
@@ -107,6 +128,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			contentOffset = new Vector2(-17, 0),
 		};
 
+
 		public static readonly GUIStyle CharactersField = new(EditorStyles.textArea)
 		{
 			font = UI.MonospacedFont,
@@ -146,6 +168,13 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 		public static readonly GUIStyle Toolbar = new("TimeAreaToolbar") { fixedHeight = 24, };
 		public static readonly GUIStyle MiniButton = new(EditorStyles.miniButton) { fixedWidth = 66, };
 
+		public static readonly GUIStyle ToolbarLabel = new(EditorStyles.label)
+		{
+			margin = new(0, 20, 0, 0),
+			padding = new(0, 3, 0, 0),
+			alignment = TextAnchor.MiddleLeft,
+			stretchHeight = true,
+		};
 
 		public static readonly GUIStyle BackgroundTextureIcon = new("HelpBox")
 		{
@@ -171,6 +200,18 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			EditorGUI.BeginChangeCheck();
 			value = EditorGUILayout.IntField(label, value);
 			if (EditorGUI.EndChangeCheck() && value < min) value = min;
+			return value;
+		}
+
+		public static float FloatFieldWithAuto(GUIContent label, float value, GUIContent autoLabel, ref bool auto)
+		{
+			GUILayout.BeginHorizontal();
+			GUI.enabled = !auto;
+			value = EditorGUILayout.FloatField(label, value);
+			GUI.enabled = true;
+
+			auto = EditorGUILayout.ToggleLeft(autoLabel, auto, GUILayout.Width(Styles.AutoToggleWidth));
+			GUILayout.EndHorizontal();
 			return value;
 		}
 

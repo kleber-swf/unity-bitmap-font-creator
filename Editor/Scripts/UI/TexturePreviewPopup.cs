@@ -6,7 +6,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 	internal class TexturePreviewPopup : EditorWindow
 	{
 		private static readonly Vector2Int _texturePadding = new(20, 20);
-		private static readonly Vector2 _gridTexSize = new(48f, 48f);
+		private static readonly float _gridTexSize = 48f;
 
 		private ExecutionData _data;
 		private PrefsModel _prefs;
@@ -46,17 +46,14 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			GUILayout.BeginHorizontal(Styles.Toolbar);
 			GUILayout.FlexibleSpace();
 
-			GUILayout.Space(5);
-			GUILayout.Label(UI.GridColorLabel);
 			_prefs.GridColor = EditorGUILayout.ColorField(GUIContent.none, _prefs.GridColor, false, true, false, GUILayout.Width(24));
+			GUILayout.Label(UI.GridColorLabel, Styles.ToolbarLabel);
 
-			GUILayout.Space(5);
-			GUILayout.Label(UI.HeightColorLabel);
 			_prefs.HeightColor = EditorGUILayout.ColorField(GUIContent.none, _prefs.HeightColor, false, true, false, GUILayout.Width(24));
+			GUILayout.Label(UI.HeightColorLabel, Styles.ToolbarLabel);
 
-			GUILayout.Space(5);
-			GUILayout.Label(UI.BaselineColorLabel);
 			_prefs.BaselineColor = EditorGUILayout.ColorField(GUIContent.none, _prefs.BaselineColor, false, true, false, GUILayout.Width(24));
+			GUILayout.Label(UI.BaselineColorLabel, Styles.ToolbarLabel);
 
 			GUILayout.Space(10);
 			var selection = GUILayout.Toggle(
@@ -90,7 +87,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			_scrollPos = GUI.BeginScrollView(scrollRect, _scrollPos, scrollContentRect);
 			GUI.DrawTextureWithTexCoords(textureRect,
 				_prefs.TextureBackground == 0 ? UI.GridDarkTexture : UI.GridLightTexture,
-				new Rect(0, 0, tw / _gridTexSize.x, th / _gridTexSize.y), true);
+				new Rect(0, 0, textureRect.width / _gridTexSize, textureRect.height / _gridTexSize), true);
 			GUI.DrawTexture(textureRect, _data.Texture, ScaleMode.ScaleToFit, true);
 			DrawGrid(textureRect, _data.Ascent, _data.Descent, ratio);
 			GUI.EndScrollView();

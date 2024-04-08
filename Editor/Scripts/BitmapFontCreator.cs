@@ -7,6 +7,27 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 {
 	internal static class BitmapFontCreator
 	{
+		private struct FontMetrics
+		{
+			public float MaxCharHeight;
+			public Vector2Int cellSize;
+		}
+
+		private struct GlyphInfo
+		{
+			public float uvTop;
+			public float uvLeft;
+			public float uvBottom;
+			public float uvRight;
+			public int xMin;
+			public int xMax;
+			public int yMin;
+			public int yMax;
+			public int advance;
+			public int y;
+			public int h;
+		}
+
 		private const char IgnoreCharacter = ' ';
 
 		public static bool TryCreateFont(ExecutionData data, bool warnBeforeOverwrite, out string error)
@@ -77,22 +98,25 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 				map.Add(e.Character[0], e);
 			}
 
+			var metrics = new FontMetrics();
 			var font = new Font(baseName)
 			{
 				material = material,
-				characterInfo = CreateCharacters(data, map, data.Descent),
+				characterInfo = CreateCharacters(data, map, data.Descent, ref metrics),
 			};
 
 			var so = new SerializedObject(font);
-			so.FindProperty("m_LineSpacing").floatValue = data.LineSpacing;
+			so.FindProperty("m_LineSpacing").floatValue = CalcLineSpacing(data, metrics);
 			so.FindProperty("m_Ascent").floatValue = data.Ascent + data.Descent;
 			so.FindProperty("m_Descent").floatValue = data.Descent;
+			so.FindProperty("m_FontSize").floatValue = CalcFontSize(data, metrics);
 			so.ApplyModifiedProperties();
 
 			return font;
 		}
 
-		private static CharacterInfo[] CreateCharacters(ExecutionData data, Dictionary<char, CharacterProps> map, float descent)
+		private static CharacterInfo[] CreateCharacters(ExecutionData data, Dictionary<char, CharacterProps> map,
+			float descent, ref FontMetrics metrics)
 		{
 			var texSize = new Vector2Int(data.Texture.width, data.Texture.height);
 			var cellSize = new Vector2Int(Mathf.FloorToInt(texSize.x / data.Cols), Mathf.FloorToInt(texSize.y / data.Rows));
@@ -100,12 +124,11 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			var ratio = new Vector2(1f / texSize.x, 1f / texSize.y);
 
 			var characters = new List<CharacterInfo>();
-			int xMin, xMax, yMin, yMax, advance, advMax = 0;
+			int advanceMax = 0, advanceMin = int.MaxValue;
 
-#if BITMAP_FONT_CREATOR_DEV
-			static string _(float x) => $"<color=yellow>{x}</color>";
-#endif
 			var baseline = (int)(cellSize.y - descent);
+			metrics.cellSize = cellSize;
+
 			for (var row = 0; row < data.Rows; row++)
 			{
 				for (var col = 0; col < data.Cols; col++)
@@ -116,73 +139,88 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 					var ch = data.ValidCharacters[i];
 					if (ch == IgnoreCharacter) continue;
 
+					var gi = new GlyphInfo();
+
 					GetCharacterBounds(
 						tex: data.Texture,
 						alphaThreshold: data.AlphaThreshold,
 						x0: col * cellSize.x,
-						y0: (data.Rows - row) * cellSize.y,
+						y0: ((data.Rows - row) * cellSize.y) - 1,
 						width: cellSize.x,
 						height: cellSize.y,
-						xMin: out xMin,
-						xMax: out xMax,
-						yMin: out yMin,
-						yMax: out yMax
+						ref gi
 					);
 
-					advance = xMax - xMin + data.DefaultCharacterSpacing;
-					if (advance > advMax) advMax = advance;
+					gi.advance = gi.xMax - gi.xMin + data.DefaultCharacterSpacing;
+					if (gi.advance > advanceMax) advanceMax = gi.advance;
+					if (gi.advance < advanceMin) advanceMin = gi.advance;
 
-					var y = Mathf.RoundToInt(-yMin + descent - (yMax - baseline));
+					gi.y = Mathf.RoundToInt(-gi.yMin + descent - (gi.yMax - baseline));
+					gi.h = gi.yMax - gi.yMin;
+					if (gi.h > metrics.MaxCharHeight) metrics.MaxCharHeight = gi.h;
 
-					var info = new CharacterInfo
-					{
-						index = ch,
-						uvTopLeft = new Vector2(
-							cellUVSize.x * col + (xMin * ratio.x),
-							cellUVSize.y * (data.Rows - row) - (yMin * ratio.y)
-						),
-						uvBottomRight = new Vector2(
-							cellUVSize.x * (col + 1) - ((cellSize.x - xMax) * ratio.x),
-							cellUVSize.y * (data.Rows - row - 1) + ((cellSize.y - yMax) * ratio.y)
-						),
-						minX = xMin,
-						maxX = xMax,
-						minY = yMin + y,
-						maxY = yMax + y,
-						bearing = 0,
-						advance = advance,
-					};
+					gi.uvTop = cellUVSize.x * col + (gi.xMin * ratio.x);
+					gi.uvLeft = cellUVSize.y * (data.Rows - row) - (gi.yMin * ratio.y);
+					gi.uvBottom = cellUVSize.x * (col + 1) - ((cellSize.x - gi.xMax) * ratio.x);
+					gi.uvRight = cellUVSize.y * (data.Rows - row - 1) + ((cellSize.y - gi.yMax) * ratio.y);
 
-					if (map.TryGetValue(ch, out var props))
-					{
-						info.minX += props.Padding.x;
-						info.maxX += props.Padding.x;
-						info.advance += props.Padding.x + props.Spacing;
-						info.minY -= props.Padding.y;
-						info.maxY -= props.Padding.y;
-					}
-
+					var info = CreateCharacterInfo(ch, gi, map);
 					characters.Add(info);
 
+					if (!data.CaseInsentive) continue;
+					var ch2 = char.ToUpper(ch);
+					if (ch2 != ch) characters.Add(CreateCharacterInfo(ch2, gi, map));
+					ch2 = char.ToLower(ch2);
+					if (ch2 != ch) characters.Add(CreateCharacterInfo(ch2, gi, map));
+
 #if BITMAP_FONT_CREATOR_DEV
-					Debug.Log($"<b>{ch}</b> {_(info.glyphWidth)} {_(info.glyphHeight)} yMin: {_(yMin)} yMax: {_(yMax)}");
+					static string _(float x) => $"<color=yellow>{x}</color>";
+					Debug.Log($"<b>{ch}</b> w: {_(info.glyphWidth)} h: {_(info.glyphHeight)} yMin: {_(gi.yMin)} yMax: {_(gi.yMax)}");
 #endif
 				}
 			}
 
+			characters.Add(CreateSpaceCharacter(advanceMin));
+
 			if (data.Monospaced)
-				SetFontAsMonospaced(characters, advMax);
+				SetFontAsMonospaced(characters, advanceMax);
 
 			return characters.ToArray();
 		}
 
-		private static void GetCharacterBounds(Texture2D tex, float alphaThreshold, int x0, int y0,
-			int width, int height, out int xMin, out int xMax, out int yMin, out int yMax)
+		private static CharacterInfo CreateCharacterInfo(char ch, GlyphInfo g, Dictionary<char, CharacterProps> map)
 		{
-			xMin = width;
-			xMax = 0;
-			yMin = height;
-			yMax = 0;
+			var info = new CharacterInfo
+			{
+				index = ch,
+				uvTopLeft = new(g.uvTop, g.uvLeft),
+				uvBottomRight = new(g.uvBottom, g.uvRight),
+				minX = g.xMin,
+				maxX = g.xMax,
+				minY = g.yMin + g.y,
+				maxY = g.yMax + g.y,
+				bearing = 0,
+				advance = g.advance,
+			};
+
+			if (map.TryGetValue(ch, out var props))
+			{
+				info.minX += props.Padding.x;
+				info.maxX += props.Padding.x;
+				info.advance += props.Padding.x + props.Spacing;
+				info.minY -= props.Padding.y;
+				info.maxY -= props.Padding.y;
+			}
+			return info;
+		}
+
+		private static void GetCharacterBounds(Texture2D tex, float alphaThreshold, int x0, int y0,
+			int width, int height, ref GlyphInfo info)
+		{
+			var xMin = width;
+			var xMax = 0;
+			var yMin = height;
+			var yMax = 0;
 
 			int xx, yy;
 			for (var y = 0; y < height; y++)
@@ -198,6 +236,24 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 					if (y > yMax) yMax = y;
 				}
 			}
+			info.xMin = xMin;
+			info.xMax = xMax + 1;
+			info.yMin = yMin;
+			info.yMax = yMax + 1;
+		}
+
+		private static CharacterInfo CreateSpaceCharacter(int advance)
+		{
+			return new CharacterInfo
+			{
+				index = ' ',
+				minX = 0,
+				maxX = 0,
+				minY = 0,
+				maxY = 0,
+				bearing = 0,
+				advance = advance
+			};
 		}
 
 		private static void SetFontAsMonospaced(List<CharacterInfo> characters, int advMax)
@@ -205,7 +261,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			for (var i = 0; i < characters.Count; i++)
 			{
 				var c = characters[i];
-				var x = c.minX + Mathf.FloorToInt((advMax - c.advance) * 0.5f);
+				var x = c.minX + Mathf.RoundToInt((advMax - c.advance) * 0.5f);
 				c.minX += x;
 				c.maxX += x;
 				c.advance = advMax;
@@ -224,6 +280,21 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 				EditorUtility.SetDirty(dest);
 				AssetDatabase.SaveAssetIfDirty(dest);
 			}
+		}
+
+		private static float CalcLineSpacing(ExecutionData data, FontMetrics metrics)
+		{
+			if (!data.AutoLineSpacing) return data.LineSpacing;
+			if (metrics.MaxCharHeight > 0) return metrics.MaxCharHeight;
+			return metrics.cellSize.y;
+		}
+
+		private static float CalcFontSize(ExecutionData data, FontMetrics metrics)
+		{
+			if (!data.AutoFontSize) return data.FontSize;
+			if (data.Ascent > 0) return data.Ascent;
+			if (metrics.MaxCharHeight > 0) return metrics.MaxCharHeight;
+			return metrics.cellSize.y;
 		}
 
 		public static Vector2Int GuessRowsAndCols(Texture2D tex)
