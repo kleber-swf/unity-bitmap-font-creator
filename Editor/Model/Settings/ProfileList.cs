@@ -60,7 +60,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			else
 			{
 				data.CopyTo(_profiles[index]);
-				UpdateAsset();
+				SelectedIndex = index;
 			}
 		}
 

@@ -90,14 +90,15 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 				// profile doesn't exist. Creating one and selecting it
 				_profiles.Add(new Profile(profileName, _editorData));
 				UpdateOptions();
-				_optionIndex = _profiles.SelectedIndex + 1;
-				return;
 			}
-
-			// profile does exit. Ask if it should be replaced
-			if (_prefs.WarnOnReplaceProfile && !EditorUtility.DisplayDialog("Profile Exists", "Profile already exists. Overwrite?", "Yes", "No"))
-				return;
-			_profiles.Update(_profiles.SelectedIndex, new Profile(profileName, _editorData));
+			else
+			{
+				// profile does exit. Ask if it should be replaced
+				if (_prefs.WarnOnReplaceProfile && !EditorUtility.DisplayDialog("Profile Exists", "Profile already exists. Overwrite?", "Yes", "No"))
+					return;
+				_profiles.Update(index, new Profile(profileName, _editorData));
+			}
+			_optionIndex = _profiles.SelectedIndex + 1;
 		}
 
 		private void DeleteSelectedProfile()

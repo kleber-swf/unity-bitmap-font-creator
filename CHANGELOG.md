@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 -  Texture preview background for small textures
 -  Increased precision on character size generation
+-  Saving a profile with the name of another was not selecting it
 
 ---
 
