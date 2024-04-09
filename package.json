@@ -1,6 +1,6 @@
 {
 	"name": "dev.klebersilva.tools.bitmapfontcreator",
-	"version": "1.5.0",
+	"version": "1.5.1",
 	"description": "Create bitmap fonts from sprite sheets in Unity.",
 	"displayName": "Bitmap Font Creator",
 	"unity": "2018.3",
