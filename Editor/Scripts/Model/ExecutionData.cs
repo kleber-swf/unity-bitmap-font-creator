@@ -6,16 +6,15 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 	[Serializable]
 	internal class ExecutionData : BitmapFontCreatorModel
 	{
-		public Texture2D Texture;
+		public Texture2D Texture = null;
 
-		public static new ExecutionData Default
+		public ExecutionData() : base() { }
+		public ExecutionData(BitmapFontCreatorModel from) : base(from) { }
+
+		public override void CopyTo(BitmapFontCreatorModel to)
 		{
-			get
-			{
-				var data = new ExecutionData { Texture = null };
-				BitmapFontCreatorModel.Default.CopyTo(data);
-				return data;
-			}
+			base.CopyTo(to);
+			if (to is ExecutionData t) t.Texture = Texture;
 		}
 	}
 }

@@ -31,13 +31,13 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 
 		private void RollbackSettings()
 		{
-			var profile = (BitmapFontCreatorModel)_settings.Profiles.Selected ?? ExecutionData.Default;
+			var profile = (BitmapFontCreatorModel)_settings.Profiles.Selected ?? new ExecutionData();
 			profile.CopyTo(_data);
 		}
 
 		private void ClearSettings()
 		{
-			ExecutionData.Default.CopyTo(_data);
+			new ExecutionData().CopyTo(_data);
 		}
 	}
 }

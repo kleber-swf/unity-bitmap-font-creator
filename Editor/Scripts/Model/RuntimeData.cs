@@ -11,7 +11,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 		public static RuntimeData Load()
 		{
 			var data = Resources.Load<RuntimeData>(DataPath);
-			data.Data ??= ExecutionData.Default;
+			data.Data ??= new ExecutionData();
 			return data;
 		}
 	}
