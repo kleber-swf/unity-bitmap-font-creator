@@ -10,20 +10,24 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 		private const string IgnoreCharacter = "\n";
 
 		[SerializeField] private string _characters = string.Empty;
-		public Orientation Orientation;
-		public int Cols;
-		public int Rows;
-		public float AlphaThreshold;
-		public bool Monospaced;
-		public bool CaseInsentive;
-		public float Ascent;
-		public float Descent;
-		public float FontSize;
-		public bool AutoFontSize;
-		public float LineSpacing;
-		public bool AutoLineSpacing;
-		public int DefaultCharacterSpacing;
-		public List<CharacterProps> CustomCharacterProps;
+		public Orientation Orientation = Orientation.Horizontal;
+		public int Cols = 1;
+		public int Rows = 1;
+		public float AlphaThreshold = 0f;
+		public bool Monospaced = false;
+		public bool CaseInsentive = false;
+		public int Ascent = 0;
+		public int Descent = 0;
+		public int FontSize = 0;
+		public bool AutoFontSize = true;
+		public int LineSpacing = 0;
+		public bool AutoLineSpacing = true;
+		public int DefaultCharacterSpacing = 0;
+		public List<CharacterProps> CustomCharacterProps = new();
+
+		public BitmapFontCreatorModel() { }
+
+		public BitmapFontCreatorModel(BitmapFontCreatorModel from) { from?.CopyTo(this); }
 
 		public string Characters
 		{
@@ -75,26 +79,5 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 
 		public void OnBeforeSerialize() { }
 		public void OnAfterDeserialize() { UpdateChacters(); }
-
-		public static BitmapFontCreatorModel Default => new()
-		{
-			Characters = string.Empty,
-			Orientation = Orientation.Horizontal,
-			Cols = 1,
-			Rows = 1,
-			AlphaThreshold = 0f,
-			LineSpacing = 0f,
-			AutoLineSpacing = true,
-			FontSize = 0f,
-			AutoFontSize = true,
-			Monospaced = false,
-			CaseInsentive = false,
-			Ascent = 0f,
-			Descent = 0f,
-			DefaultCharacterSpacing = 0,
-			CustomCharacterProps = new List<CharacterProps>(),
-			ValidCharacters = string.Empty,
-			ValidCharactersCount = 0
-		};
 	}
 }
