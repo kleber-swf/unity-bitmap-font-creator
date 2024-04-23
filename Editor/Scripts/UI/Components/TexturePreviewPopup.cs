@@ -19,8 +19,8 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 		private ExecutionData _data;
 		private PrefsModel _prefs;
 		private bool _hasContent;
-		private Rect _contentRect = new();
 
+		private Rect _contentRect = new();
 		private Vector2 _scrollPos = Vector2.zero;
 
 		public static TexturePreviewPopup Open(ExecutionData data, PrefsModel prefs)
@@ -74,7 +74,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			DrawTopBar();
 			var y = GUILayoutUtility.GetLastRect().yMax;
 			_contentRect = new Rect(0, y, position.width, position.height - y);
-			TextureNavigationHandler.HandleTextureNavigation(_contentRect, _zoomRange, ref _zoom);
+			TextureNavigationHandler.HandleTextureNavigation(_contentRect, _zoomRange, ref _zoom, ref _scrollPos);
 			DrawTexture();
 		}
 
