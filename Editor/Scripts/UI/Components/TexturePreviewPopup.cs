@@ -1,5 +1,7 @@
 using UnityEngine;
 using UnityEditor;
+using UnityEngine.UIElements;
+using System;
 
 namespace dev.klebersilva.tools.bitmapfontcreator
 {
@@ -17,6 +19,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 		private ExecutionData _data;
 		private PrefsModel _prefs;
 		private bool _hasContent;
+		private Rect _contentRect = new();
 
 		private Vector2 _scrollPos = Vector2.zero;
 
@@ -43,12 +46,15 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 		private void UpdateZoomRange(float width, float height)
 		{
 			var r = Mathf.Min(width, height);
-			var min = Mathf.Floor(_textureSizeRange.x / r / 0.1f) * 0.1f;  // rounding to the nearest 0.1
+			var min = _textureSizeRange.x / r;
+			min = min < 1f
+				? Mathf.Floor(min / 0.1f) * 0.1f // rounding to the nearest 0.1
+				: Mathf.Floor(min);              // or flooring to the nearest integer
 			var max = Mathf.Ceil(_textureSizeRange.y / r);  // ceiling to next integer
 
 			if (min == _zoomRange.x && max == _zoomRange.y) return;
 			_zoomRange = new Vector2(min, max);
-			_zoom = 1f;
+			_zoom = Mathf.Clamp(1f, min, max);
 		}
 
 		private void OnGUI()
@@ -66,7 +72,10 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 		private void DrawContent()
 		{
 			DrawTopBar();
-			DrawTexture(GUILayoutUtility.GetLastRect().yMax);
+			var y = GUILayoutUtility.GetLastRect().yMax;
+			_contentRect = new Rect(0, y, position.width, position.height - y);
+			TextureNavigationHandler.HandleTextureNavigation(_contentRect, _zoomRange, ref _zoom);
+			DrawTexture();
 		}
 
 		private void DrawTopBar()
@@ -114,7 +123,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			_prefs.TextureBackground = selection ? 0 : 1;
 		}
 
-		private void DrawTexture(float y)
+		private void DrawTexture()
 		{
 			var tw = _data.Texture.width;
 			var th = _data.Texture.height;
@@ -126,19 +135,18 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 
 			var textureRect = new Rect(
 				_texturePadding.x,
-				_texturePadding.y + y,
+				_texturePadding.y + _contentRect.y,
 				tw * _zoom,
 				th * _zoom
 			);
 
-			var scrollRect = new Rect(0, y, position.width, position.height - y);
 			var scrollContentRect = new Rect(
-				0, y,
+				0, _contentRect.y,
 				textureRect.width + _texturePadding.x * 2,
 				textureRect.height + _texturePadding.y * 2
 			);
 
-			_scrollPos = GUI.BeginScrollView(scrollRect, _scrollPos, scrollContentRect);
+			_scrollPos = GUI.BeginScrollView(_contentRect, _scrollPos, scrollContentRect);
 			GUI.DrawTextureWithTexCoords(textureRect,
 				_prefs.TextureBackground == 0 ? Styles.GridDarkTexture : Styles.GridLightTexture,
 				new Rect(0, 0, textureRect.width / _gridTexSize, textureRect.height / _gridTexSize), true);

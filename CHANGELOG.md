@@ -9,7 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
--  Preview panel zoom
+-  Preview panel zoom with UI widget
+-  Preview panel zoom with ctrl + mouse wheel
 
 ### Changed
 
