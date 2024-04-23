@@ -86,8 +86,14 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 		{
 			GUI.color = Color.cyan;
 			if (UIUtils.CenteredButton(UIContent.CreateButton, Styles.CreateButton))
-				BitmapFontCreator.TryCreateFont(_data, _prefsView.Model.WarnOnReplaceFont, out _error);
+				CreateFont();
 			GUI.color = Color.white;
+		}
+
+		private void CreateFont()
+		{
+			var font = BitmapFontCreator.TryCreateFont(_data, _prefsView.Model.WarnOnReplaceFont, out _error);
+			if (font != null) Debug.Log($"Font \"{font.name}\" successfully created.", font);
 		}
 
 		private void ShowCurrentError()

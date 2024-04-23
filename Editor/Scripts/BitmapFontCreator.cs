@@ -30,10 +30,10 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 
 		private const char IgnoreCharacter = ' ';
 
-		public static bool TryCreateFont(ExecutionData data, bool warnBeforeOverwrite, out string error)
+		public static Font TryCreateFont(ExecutionData data, bool warnBeforeOverwrite, out string error)
 		{
 			error = CheckForErrors(data);
-			if (!string.IsNullOrEmpty(error)) return false;
+			if (!string.IsNullOrEmpty(error)) return null;
 
 			var path = AssetDatabase.GetAssetPath(data.Texture);
 			var baseName = Path.GetFileNameWithoutExtension(path);
@@ -44,18 +44,18 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			if (warnBeforeOverwrite && !(AssetDatabase.GUIDFromAssetPath(materialPath) == null && AssetDatabase.GUIDFromAssetPath(fontPath) == null))
 			{
 				if (!EditorUtility.DisplayDialog("Warning", "Asset already exists. Overwrite? (It will keep the references)", "Yes", "No"))
-					return false;
+					return null;
 			}
 
 			var material = CreateMaterial(baseName, data.Texture);
-			var font = CreateFontAsset(baseName, material, data, out error);
-			if (!string.IsNullOrEmpty(error)) return false;
+			var font = CreateFont(baseName, material, data, out error);
+			if (!string.IsNullOrEmpty(error)) return null;
 
 			AssetDatabase.CreateAsset(material, materialPath);
-			CreateOrReplaceAsset(font, fontPath);
+			var fontAsset = CreateOrReplaceAsset(font, fontPath);
 
 			AssetDatabase.Refresh();
-			return true;
+			return fontAsset;
 		}
 
 		private static string CheckForErrors(ExecutionData data)
@@ -83,7 +83,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			return material;
 		}
 
-		private static Font CreateFontAsset(string baseName, Material material, ExecutionData data, out string error)
+		private static Font CreateFont(string baseName, Material material, ExecutionData data, out string error)
 		{
 			var custom = GetCustomPropsAsMap(data.CustomCharacterProps, out error);
 			if (!string.IsNullOrEmpty(error)) return null;
@@ -279,7 +279,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			}
 		}
 
-		private static void CreateOrReplaceAsset<T>(T asset, string path) where T : Object
+		private static T CreateOrReplaceAsset<T>(T asset, string path) where T : Object
 		{
 			T dest = AssetDatabase.LoadAssetAtPath<T>(path);
 			if (dest == null)
@@ -290,6 +290,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 				EditorUtility.SetDirty(dest);
 				AssetDatabase.SaveAssetIfDirty(dest);
 			}
+			return dest;
 		}
 
 		private static float CalcLineSpacing(ExecutionData data, FontMetrics metrics)
