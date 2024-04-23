@@ -37,6 +37,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 		public static readonly GUIStyle CounterLabelRight = new(EditorStyles.label)
 		{
 			stretchHeight = true,
+			stretchWidth = true,
 			alignment = TextAnchor.LowerCenter,
 			fontStyle = FontStyle.Italic,
 			normal = new()
@@ -46,21 +47,16 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			},
 			imagePosition = ImagePosition.ImageLeft,
 			contentOffset = new Vector2(-17, 0),
+			border = new RectOffset(0, 16, 16, 0),
 		};
 
-		public static readonly GUIStyle CounterLabelWrong = new(EditorStyles.label)
+		public static readonly GUIStyle CounterLabelWrong = new(CounterLabelRight)
 		{
-			stretchHeight = true,
-			stretchWidth = true,
-			alignment = TextAnchor.LowerCenter,
-			fontStyle = FontStyle.Italic,
 			normal = new()
 			{
 				background = new GUIStyle("WinBtnCloseMac").normal.background,
 				textColor = EditorStyles.label.normal.textColor,
 			},
-			imagePosition = ImagePosition.ImageLeft,
-			contentOffset = new Vector2(-17, 0),
 		};
 
 
