@@ -34,5 +34,19 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			GUILayout.EndHorizontal();
 			return value;
 		}
+
+		public static Color ColorField(GUIContent label, Color value)
+		{
+			value = EditorGUILayout.ColorField(GUIContent.none, value, false, true, false, GUILayout.Width(Styles.ColorFieldWidth));
+			GUILayout.Label(label, Styles.ToolbarLabel);
+			return value;
+		}
+
+		public static void Divider(int left = 0, int right = 0)
+		{
+			GUILayout.Space(left);
+			GUILayout.Label(GUIContent.none, Styles.Divider);
+			GUILayout.Space(right);
+		}
 	}
 }

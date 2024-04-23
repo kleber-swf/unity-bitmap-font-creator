@@ -6,7 +6,13 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 	internal class TexturePreviewPopup : EditorWindow
 	{
 		private static readonly Vector2Int _texturePadding = new(20, 20);
+		private static readonly Vector2 _textureSizeRange = new(128f, 2048f);
 		private static readonly float _gridTexSize = 48f;
+
+		// Info: This is a quick and dirty way to persist the zoom values between window opens and closes.
+		// It assumes that there will be only one instance of this window at a time
+		private static Vector2 _zoomRange = new(0.5f, 3f);
+		private static float _zoom = 1f;
 
 		private ExecutionData _data;
 		private PrefsModel _prefs;
@@ -28,7 +34,21 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			_data = data;
 			_prefs = prefs;
 			_hasContent = _data != null && _data.Texture != null && _data.Rows > 0 && _data.Cols > 0;
+
+			if (_hasContent)
+				UpdateZoomRange(_data.Texture.width, _data.Texture.height);
 			ShowUtility();
+		}
+
+		private void UpdateZoomRange(float width, float height)
+		{
+			var r = Mathf.Min(width, height);
+			var min = Mathf.Floor(_textureSizeRange.x / r / 0.1f) * 0.1f;  // rounding to the nearest 0.1
+			var max = Mathf.Ceil(_textureSizeRange.y / r);  // ceiling to next integer
+
+			if (min == _zoomRange.x && max == _zoomRange.y) return;
+			_zoomRange = new Vector2(min, max);
+			_zoom = 1f;
 		}
 
 		private void OnGUI()
@@ -54,23 +74,44 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			GUILayout.BeginHorizontal(Styles.Toolbar);
 			GUILayout.FlexibleSpace();
 
-			_prefs.GridColor = EditorGUILayout.ColorField(GUIContent.none, _prefs.GridColor, false, true, false, GUILayout.Width(24));
-			GUILayout.Label(UIContent.GridColorLabel, Styles.ToolbarLabel);
+			DrawZoomGroup();
 
-			_prefs.HeightColor = EditorGUILayout.ColorField(GUIContent.none, _prefs.HeightColor, false, true, false, GUILayout.Width(24));
-			GUILayout.Label(UIContent.HeightColorLabel, Styles.ToolbarLabel);
+			UIUtils.Divider(10, 10);
+			DrawColorGroup();
 
-			_prefs.BaselineColor = EditorGUILayout.ColorField(GUIContent.none, _prefs.BaselineColor, false, true, false, GUILayout.Width(24));
-			GUILayout.Label(UIContent.BaselineColorLabel, Styles.ToolbarLabel);
-
+			UIUtils.Divider(0, 5);
+			DrawBackgroundSelector();
 			GUILayout.Space(10);
+
+			GUILayout.EndHorizontal();
+		}
+
+		private void DrawZoomGroup()
+		{
+			GUILayout.Space(10);
+			GUILayout.BeginHorizontal();
+			GUILayout.Label(UIContent.ZoomLabel, Styles.ToolbarLabel);
+			EditorGUIUtility.labelWidth = 30;
+			EditorGUIUtility.fieldWidth = 30;
+			_zoom = EditorGUILayout.Slider(_zoom, _zoomRange.x, _zoomRange.y);
+			GUILayout.EndHorizontal();
+		}
+
+		private void DrawColorGroup()
+		{
+			GUILayout.Label(UIContent.ColorsLabel, Styles.ToolbarLabel);
+			_prefs.GridColor = UIUtils.ColorField(UIContent.GridColorLabel, _prefs.GridColor);
+			_prefs.HeightColor = UIUtils.ColorField(UIContent.HeightColorLabel, _prefs.HeightColor);
+			_prefs.BaselineColor = UIUtils.ColorField(UIContent.BaselineColorLabel, _prefs.BaselineColor);
+		}
+
+		private void DrawBackgroundSelector()
+		{
 			var selection = GUILayout.Toggle(
 				_prefs.TextureBackground == 0,
 				_prefs.TextureBackground == 0 ? UIContent.DarkTextureIcon : UIContent.LightTextureIcon,
 				Styles.BackgroundTextureIcon);
 			_prefs.TextureBackground = selection ? 0 : 1;
-
-			GUILayout.EndHorizontal();
 		}
 
 		private void DrawTexture(float y)
@@ -83,14 +124,19 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 
 			var ratio = tw > th ? aw / tw : ah / th;
 
-			var textureRect = new Rect(_texturePadding.x,
+			var textureRect = new Rect(
+				_texturePadding.x,
 				_texturePadding.y + y,
-				tw * ratio,
-				th * ratio
+				tw * _zoom,
+				th * _zoom
 			);
 
-			var scrollRect = new Rect(0, y, position.width, position.height);
-			var scrollContentRect = new Rect(0, y, textureRect.width + _texturePadding.x * 2, textureRect.height + _texturePadding.y * 2 + y);
+			var scrollRect = new Rect(0, y, position.width, position.height - y);
+			var scrollContentRect = new Rect(
+				0, y,
+				textureRect.width + _texturePadding.x * 2,
+				textureRect.height + _texturePadding.y * 2
+			);
 
 			_scrollPos = GUI.BeginScrollView(scrollRect, _scrollPos, scrollContentRect);
 			GUI.DrawTextureWithTexCoords(textureRect,

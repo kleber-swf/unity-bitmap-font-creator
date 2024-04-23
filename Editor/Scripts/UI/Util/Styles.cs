@@ -6,6 +6,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 	internal static class Styles
 	{
 		public static readonly float AutoToggleWidth = 50f;
+		public static readonly float ColorFieldWidth = 24f;
 
 		public static readonly Font MonospacedFont = Resources.Load<Font>("Fonts/monospaced");
 		public static readonly Texture2D GridDarkTexture = Resources.Load<Texture2D>("Textures/grid-dark");
@@ -105,6 +106,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			padding = new(0, 3, 0, 0),
 			alignment = TextAnchor.MiddleLeft,
 			stretchHeight = true,
+			stretchWidth = true,
 		};
 
 		public static readonly GUIStyle BackgroundTextureIcon = new("HelpBox")
@@ -113,6 +115,12 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			imagePosition = ImagePosition.ImageOnly,
 			fixedWidth = 20,
 			fixedHeight = 20,
+		};
+
+		public static readonly GUIStyle Divider = new("DopesheetBackground")
+		{
+			stretchHeight = true,
+			fixedWidth = 3
 		};
 	}
 }

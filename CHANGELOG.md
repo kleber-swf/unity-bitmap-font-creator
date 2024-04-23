@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+-  Preview panel zoom
+
 ### Changed
 
 -  Preview panel now closes itself when the game starts avoiding some unnecessary console errors

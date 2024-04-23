@@ -42,11 +42,13 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 		public static readonly GUIContent WarnOnReplaceProfile = new("Warn before replacing profile", "Warn before replacing an existing profile");
 
 		public static readonly GUIContent NoContent = new("Invalid texture", "There is no texture selected or the number of rows or columns are set to zero");
+		public static readonly GUIContent ZoomLabel = new("Zoom", "Texture zoom level");
+		public static readonly GUIContent ColorsLabel = new("Colors", "Line colors");
 		public static readonly GUIContent GridColorLabel = new("Grid", "Color for the grid lines showing rows and columns");
 		public static readonly GUIContent HeightColorLabel = new("Height", "Color for de glyph hight line (ascent + descent)");
 		public static readonly GUIContent BaselineColorLabel = new("Baseline", "Color for the baseline (descent)");
 
-		public static readonly GUIContent DarkTextureIcon = new() { image = Styles.GridDarkTexture, };
-		public static readonly GUIContent LightTextureIcon = new() { image = Styles.GridLightTexture };
+		public static readonly GUIContent DarkTextureIcon = new() { image = Styles.GridDarkTexture, tooltip = "Using dark background" };
+		public static readonly GUIContent LightTextureIcon = new() { image = Styles.GridLightTexture, tooltip = "Using light background" };
 	}
 }
