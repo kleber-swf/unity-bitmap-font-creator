@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+-  Preview panel now closes itself when the game starts avoiding some unnecessary console errors
+
 ### Fixed
 
 -  Character count icon

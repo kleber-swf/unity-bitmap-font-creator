@@ -10,6 +10,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 
 		private ExecutionData _data;
 		private PrefsModel _prefs;
+		private bool _hasContent;
 
 		private Vector2 _scrollPos = Vector2.zero;
 
@@ -26,12 +27,19 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			maxSize = new Vector2(1920, 1920);
 			_data = data;
 			_prefs = prefs;
+			_hasContent = _data != null && _data.Texture != null && _data.Rows > 0 && _data.Cols > 0;
 			ShowUtility();
 		}
 
 		private void OnGUI()
 		{
-			if (_data.Texture != null && _data.Rows > 0 && _data.Cols > 0) DrawContent();
+			if (EditorApplication.isPlaying)
+			{
+				Close();
+				return;
+			}
+
+			if (_hasContent) DrawContent();
 			else GUILayout.Label(UIContent.NoContent, Styles.CenterLabel);
 		}
 
