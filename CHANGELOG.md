@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 -  Preview panel now closes itself when the game starts avoiding some unnecessary console errors
 -  Using proper cursors for pan and zoom
+-  Preview background grid has now 1px/10px/100px/... size depending on the size of the texture
 
 ### Fixed
 

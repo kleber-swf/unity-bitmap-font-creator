@@ -7,9 +7,9 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 	{
 		private static readonly Vector2Int _texturePadding = new(10, 10);
 		private static readonly Vector2 _textureSizeRange = new(128f, 2048f);
-		private static readonly float _gridTexSize = 48f;
 
 		private Vector2 _scrollPos = Vector2.zero;
+		private MouseCursor _cursor = MouseCursor.Arrow;
 
 		// Info: This is a quick and dirty way to persist the zoom values between window opens and closes.
 		// It assumes that there will be only one instance of this window at a time
@@ -45,69 +45,6 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			DrawTexture(position, data, prefs);
 		}
 
-		private void DrawTexture(Rect position, ExecutionData data, PrefsModel prefs)
-		{
-			var tw = data.Texture.width;
-			var th = data.Texture.height;
-
-			var aw = position.width - _texturePadding.x * 2;
-			var ah = position.height - _texturePadding.y * 2;
-
-			var ratio = tw > th ? aw / tw : ah / th;
-
-			var textureRect = new Rect(
-				_texturePadding.x,
-				_texturePadding.y + position.y,
-				tw * _zoom,
-				th * _zoom
-			);
-
-			var scrollContentRect = new Rect(
-				0, position.y,
-				textureRect.width + _texturePadding.x * 2,
-				textureRect.height + _texturePadding.y * 2
-			);
-
-			_scrollPos = GUI.BeginScrollView(position, _scrollPos, scrollContentRect);
-			GUI.DrawTextureWithTexCoords(textureRect,
-				prefs.TextureBackground == 0 ? Styles.GridDarkTexture : Styles.GridLightTexture,
-				new Rect(0, 0, textureRect.width / _gridTexSize, textureRect.height / _gridTexSize), true);
-			GUI.DrawTexture(textureRect, data.Texture, ScaleMode.ScaleToFit, true);
-			DrawGrid(textureRect, data, prefs, ratio);
-			GUI.EndScrollView();
-		}
-
-		private void DrawGrid(Rect rect, ExecutionData data, PrefsModel prefs, float ratio)
-		{
-			var cellSize = new Vector2(rect.width / data.Cols, rect.height / data.Rows);
-
-			var r = rect;
-			for (var i = 0; i < data.Rows + 1; i++)
-			{
-				r.y = rect.y + i * cellSize.y;
-				r.height = 1;
-				EditorGUI.DrawRect(r, prefs.GridColor);
-				if (i == 0) continue;
-
-				r.height = 1;
-				r.y -= data.Descent * ratio;
-				EditorGUI.DrawRect(r, prefs.BaselineColor);
-
-				r.y -= data.Ascent * ratio;
-				EditorGUI.DrawRect(r, prefs.HeightColor);
-			}
-
-			r = rect;
-			r.width = 1;
-			for (var i = 0; i < data.Cols + 1; i++)
-			{
-				r.x = rect.x + i * cellSize.x;
-				EditorGUI.DrawRect(r, prefs.GridColor);
-			}
-		}
-
-
-		private MouseCursor _cursor = MouseCursor.Arrow;
 
 		private void HandleTextureNavigation(Rect rect, Event e)
 		{
@@ -135,6 +72,69 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 				_scrollPos.y -= e.delta.y;
 				_cursor = MouseCursor.Pan;
 				e.Use();
+			}
+		}
+
+		private void DrawTexture(Rect position, ExecutionData data, PrefsModel prefs)
+		{
+			var tw = data.Texture.width;
+			var th = data.Texture.height;
+
+			var textureRect = new Rect(
+				_texturePadding.x,
+				_texturePadding.y + position.y,
+				tw * _zoom,
+				th * _zoom
+			);
+
+			var scrollContentRect = new Rect(
+				0, position.y,
+				textureRect.width + _texturePadding.x * 2,
+				textureRect.height + _texturePadding.y * 2
+			);
+
+			_scrollPos = GUI.BeginScrollView(position, _scrollPos, scrollContentRect);
+
+			// background
+			var bgTextureSize = 2 * Mathf.Pow(10, Mathf.Max(tw, th) / 1024);
+			GUI.DrawTextureWithTexCoords(textureRect,
+				prefs.TextureBackground == 0 ? Styles.GridDarkTexture : Styles.GridLightTexture,
+				new Rect(0, 0, tw / bgTextureSize, th / bgTextureSize), true);
+
+			// texture
+			GUI.DrawTexture(textureRect, data.Texture, ScaleMode.ScaleToFit, true);
+
+			// grid
+			DrawGrid(textureRect, data, prefs);
+
+			GUI.EndScrollView();
+		}
+
+		private void DrawGrid(Rect rect, ExecutionData data, PrefsModel prefs)
+		{
+			var cellSize = new Vector2(rect.width / data.Cols, rect.height / data.Rows);
+			var r = rect;
+
+			for (var i = 0; i < data.Rows + 1; i++)
+			{
+				r.y = rect.y + i * cellSize.y;
+				r.height = 1;
+				EditorGUI.DrawRect(r, prefs.GridColor);
+				if (i == 0) continue;
+
+				r.y -= data.Descent * _zoom;
+				EditorGUI.DrawRect(r, prefs.BaselineColor);
+
+				r.y -= data.Ascent * _zoom;
+				EditorGUI.DrawRect(r, prefs.HeightColor);
+			}
+
+			r = rect;
+			r.width = 1;
+			for (var i = 0; i < data.Cols + 1; i++)
+			{
+				r.x = rect.x + i * cellSize.x;
+				EditorGUI.DrawRect(r, prefs.GridColor);
 			}
 		}
 	}

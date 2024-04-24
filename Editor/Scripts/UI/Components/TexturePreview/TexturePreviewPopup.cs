@@ -71,7 +71,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 		{
 			GUILayout.Space(10);
 			GUILayout.BeginHorizontal();
-			EditorGUIUtility.labelWidth = 30;
+			EditorGUIUtility.labelWidth = 35;
 			EditorGUIUtility.fieldWidth = 30;
 			GUILayout.Label(UIContent.ZoomLabel, Styles.ToolbarLabel);
 			_preview.DrawZoomSlider();
