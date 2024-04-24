@@ -47,7 +47,7 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 		{
 			DrawTopBar();
 			var y = GUILayoutUtility.GetLastRect().yMax;
-			_preview.DrawTextureViewer(position, y, _data, _prefs);
+			_preview.DrawTextureViewer(new(0, y, position.width, position.height - y), _data, _prefs);
 		}
 
 		private void DrawTopBar()

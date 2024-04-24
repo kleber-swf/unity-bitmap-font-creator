@@ -5,11 +5,10 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 {
 	internal class PreviewHandler
 	{
-		private static readonly Vector2Int _texturePadding = new(20, 20);
+		private static readonly Vector2Int _texturePadding = new(10, 10);
 		private static readonly Vector2 _textureSizeRange = new(128f, 2048f);
 		private static readonly float _gridTexSize = 48f;
 
-		private Rect _contentRect = new();
 		private Vector2 _scrollPos = Vector2.zero;
 
 		// Info: This is a quick and dirty way to persist the zoom values between window opens and closes.
@@ -22,8 +21,8 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			var r = Mathf.Min(width, height);
 			var min = _textureSizeRange.x / r;
 			min = min < 1f
-				? Mathf.Floor(min / 0.1f) * 0.1f // rounding to the nearest 0.1
-				: Mathf.Floor(min);              // or flooring to the nearest integer
+				? Mathf.Floor(min / 0.1f) * 0.1f             // rounding to the nearest 0.1
+				: Mathf.Floor(min);                          // or flooring to the nearest integer
 			var max = Mathf.Ceil(_textureSizeRange.y / r);  // ceiling to next integer
 
 			if (min == _zoomRange.x && max == _zoomRange.y) return;
@@ -36,11 +35,13 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			_zoom = EditorGUILayout.Slider(_zoom, _zoomRange.x, _zoomRange.y);
 		}
 
-		// TODO remove y
-		public void DrawTextureViewer(Rect position, float y, ExecutionData data, PrefsModel prefs)
+		public void DrawTextureViewer(Rect position, ExecutionData data, PrefsModel prefs)
 		{
-			_contentRect = new Rect(0, y, position.width, position.height - y);
-			HandleTextureNavigation(_contentRect);
+			var e = Event.current;
+			if (e.type == EventType.Repaint)
+				EditorGUIUtility.AddCursorRect(position, _cursor);
+
+			HandleTextureNavigation(position, e);
 			DrawTexture(position, data, prefs);
 		}
 
@@ -56,18 +57,18 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 
 			var textureRect = new Rect(
 				_texturePadding.x,
-				_texturePadding.y + _contentRect.y,
+				_texturePadding.y + position.y,
 				tw * _zoom,
 				th * _zoom
 			);
 
 			var scrollContentRect = new Rect(
-				0, _contentRect.y,
+				0, position.y,
 				textureRect.width + _texturePadding.x * 2,
 				textureRect.height + _texturePadding.y * 2
 			);
 
-			_scrollPos = GUI.BeginScrollView(_contentRect, _scrollPos, scrollContentRect);
+			_scrollPos = GUI.BeginScrollView(position, _scrollPos, scrollContentRect);
 			GUI.DrawTextureWithTexCoords(textureRect,
 				prefs.TextureBackground == 0 ? Styles.GridDarkTexture : Styles.GridLightTexture,
 				new Rect(0, 0, textureRect.width / _gridTexSize, textureRect.height / _gridTexSize), true);
@@ -105,29 +106,36 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 			}
 		}
 
-		private void HandleTextureNavigation(Rect rect)
-		{
-			var e = Event.current;
-			if (!rect.Contains(e.mousePosition)) return;
-			if (e.control && e.isScrollWheel) _zoom = HandleZoom(_zoom, e);
-			else if (e.isMouse && e.button == 2) _scrollPos = HandlePan(_scrollPos, e);
-		}
 
-		private float HandleZoom(float zoom, Event e)
-		{
-			zoom = Mathf.Clamp(zoom - e.delta.y, _zoomRange.x, _zoomRange.y);
-			GUI.changed = true;
-			e.Use();
-			return zoom;
-		}
+		private MouseCursor _cursor = MouseCursor.Arrow;
 
-		private Vector2 HandlePan(Vector2 scrollPos, Event e)
+		private void HandleTextureNavigation(Rect rect, Event e)
 		{
-			if (!(e.button == 2 && e.type == EventType.MouseDrag)) return scrollPos;
-			scrollPos.x -= e.delta.x;
-			scrollPos.y -= e.delta.y;
-			e.Use();
-			return scrollPos;
+			if (e.type == EventType.Repaint || e.type == EventType.Layout || !rect.Contains(e.mousePosition))
+				return;
+
+			_cursor = MouseCursor.Arrow;
+
+			// zoom
+			if (e.control)
+			{
+				_cursor = MouseCursor.Zoom;
+				if (e.isScrollWheel)
+				{
+					_zoom = Mathf.Clamp(_zoom - e.delta.y, _zoomRange.x, _zoomRange.y);
+					GUI.changed = true;
+					e.Use();
+				}
+			}
+
+			// pan
+			if (e.button == 2 && e.type == EventType.MouseDrag)
+			{
+				_scrollPos.x -= e.delta.x;
+				_scrollPos.y -= e.delta.y;
+				_cursor = MouseCursor.Pan;
+				e.Use();
+			}
 		}
 	}
 }
