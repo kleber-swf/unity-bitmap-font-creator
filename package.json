@@ -19,5 +19,12 @@
 		"sprite",
 		"sprite-sheet",
 		"texture-packer"
+	],
+	"samples": [
+		{
+			"displayName": "Alphanumeric Sample Bitmap Font",
+			"description": "A simple bitmap font to show the usage of the plugin.",
+			"path": "Samples~/SampleBitmapFont"
+		}
 	]
 }

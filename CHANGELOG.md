@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 -  Preview panel zoom with ctrl + mouse wheel
 -  Preview panel pan with mouse middle button
 -  Feedback when a font is created successfully
+-  A sample bitmap font to show the usage of the plugin
 
 ### Changed
 
