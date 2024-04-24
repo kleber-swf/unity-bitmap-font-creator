@@ -32,35 +32,62 @@ Make sure your texture has the _Read/Write_ enabled inside its properties.
 
 Settings can be saved to [profiles](#profiles) and retrieved to be used later.
 
--  **Texture Properties**
+### Texture Properties
 
-   -  **Texture**: Texture used for the font. This is not saved to the profile.
-   -  **Cols**: Number of columns in the texture.
-   -  **Rows**: Number of rows in the texture.
-   -  **Orientation**: Order to look up for characters in the texture. Values: horizontal, vertical.
-   -  **Alpha Threshold**: Alpha threshold to identify characters bounds.
+-  **Texture**: Texture used for the font. This is not saved to the profile.
+-  **Cols**: Number of columns in the texture.
+-  **Rows**: Number of rows in the texture.
+-  **Orientation**: Order to look up for characters in the texture. Values: horizontal, vertical.
+-  **Alpha Threshold**: Alpha threshold to identify characters bounds.
 
--  **Font Properties**
+### Font Properties
 
-   -  **Font Size**: Base font size in pixels
-      -  **Auto**: Automatically calculate the font size based on ascent property or cell size
-   -  **Line Spacing**: Vertical spacing between lines.
-      -  **Auto**: Automatically calculate the line spacing based on cell height
-   -  **Ascent**: Font ascent. It's the part of the glyphs that should be above the baseline.
-   -  **Descent**: Font descent. It's the part of the glyphs that should be below the baseline.
-   -  **Monospaced**: Whether the result font should be monospaced.
+-  **Font Size**: Base font size in pixels
+   -  **Auto**: Automatically calculate the font size based on ascent property or cell size
+-  **Line Spacing**: Vertical spacing between lines.
+   -  **Auto**: Automatically calculate the line spacing based on cell height
+-  **Ascent**: Font ascent. It's the part of the glyphs that should be above the baseline.
+-  **Descent**: Font descent. It's the part of the glyphs that should be below the baseline.
+-  **Monospaced**: Whether the result font should be monospaced.
 
--  **Characters**
+### Characters
 
-   -  **Case Insentive**: Whether the characters for lowercase and uppercase are the same.
-   -  **Character Spacing**: Default spacing between characters.
-   -  **Character Set**: Predefined character set to use. This is not saved to the profile.
-   -  **Characters**: Characters used in the font in order they appear in the texture. Use the space character to represent blank spaces in the texture. You can break lines as much as you need to make it easier to add the character according to the texture.
-      -  Note: the space character is generated based on the smallest character width found in the font texture
-   -  **Custom Character Properties**: Custom properties for each characters, if any.
-      -  **Char**: Character to apply the properties.
-      -  **Spacing**: Horizontal spacing after the character (advance). Ignored if font is monospaced.
-      -  **Padding**: Custom horizontal and vertical padding to add before the character.
+-  **Case Insentive**: Whether the characters for lowercase and uppercase are the same.
+-  **Character Spacing**: Default spacing between characters.
+-  **Character Set**: Predefined character set to use. This is not saved to the profile.
+-  **Characters**: Characters used in the font in order they appear in the texture. Use the space character to represent blank spaces in the texture. You can break lines as much as you need to make it easier to add the character according to the texture.
+   -  Note: the space character is generated based on the smallest character width found in the font texture
+-  **Custom Character Properties**: Custom properties for each characters, if any.
+   -  **Char**: Character to apply the properties.
+   -  **Spacing**: Horizontal spacing after the character (advance). Ignored if font is monospaced.
+   -  **Padding**: Custom horizontal and vertical padding to add before the character.
+
+## Preview Panel
+
+Preview the texture with current rows, columns, ascent and descent properties.
+
+You can access it by clicking on the "Preview" button in the [Texture Properties](#texture-properties) group.
+
+![Preview Window](./Documentation/screenshot-02.png)
+
+-  **Zoom**: Texture zoom level
+
+   > _You can zoom in and out by using **`ctrl` + mouse wheel** and pan the view by using the **mouse middle button**_
+
+-  **Colors**: Line colors
+
+   -  **Grid**: Color for the grid lines showing rows and columns.
+   -  **Height**: Color for de glyph hight line (ascent + descent).
+   -  **Baseline**: Color for the baseline (descent).
+
+-  **Background**: Choose between dark and light background patterns.
+
+## Actions
+
+-  **Guess (Rows and Cols)**: Guess the number of rows and columns of the texture based on transparency gaps.
+-  **Create**: Creates the font using the given settings.
+-  **Rollback**: Rollback settings to the selected profile or default if none is selected.
+-  **Default**: Reset settings to their default values.
 
 ## Preferences
 
@@ -69,18 +96,6 @@ Preferences are accessed by clicking on the three dots at the bottom right corne
 -  **Warn before overwrite**: Warn before overwriting an existing font. This will replace the old font keeping the references.
 -  **Warn before replacing settings**: Warn before replacing settings when selecting a profile.
 -  **Warn before replacing profile**: Warn before replacing an existing profile.
-
-## Actions
-
--  **Preview**: Preview the texture with current rows, columns, ascent and descent properties. ![Preview Window](./Documentation/screenshot-02.png)
-   -  **Grid**: Color for the grid lines showing rows and columns.
-   -  **Height**: Color for de glyph hight line (ascent + descent).
-   -  **Baseline**: Color for the baseline (descent).
-   -  **Background**: Choose between dark and light background patterns.
--  **Guess (Rows and Cols)**: Guess the number of rows and columns of the texture based on transparency gaps.
--  **Create**: Creates the font using the given settings.
--  **Rollback**: Rollback settings to the selected profile or default if none is selected.
--  **Default**: Reset settings to their default values.
 
 ## Profiles
 
