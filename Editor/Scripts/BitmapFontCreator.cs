@@ -283,7 +283,10 @@ namespace dev.klebersilva.tools.bitmapfontcreator
 		{
 			T dest = AssetDatabase.LoadAssetAtPath<T>(path);
 			if (dest == null)
+			{
 				AssetDatabase.CreateAsset(asset, path);
+				dest = asset;
+			}
 			else
 			{
 				EditorUtility.CopySerialized(asset, dest);
